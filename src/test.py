@@ -9,7 +9,6 @@ client = discord.Client()
 async def on_ready():
     # 起動したらターミナルにログイン通知が表示される
     print('ログインしました')
-
 # メッセージ受信時に動作する処理
 
 
