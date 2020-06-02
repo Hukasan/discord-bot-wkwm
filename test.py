@@ -1,5 +1,5 @@
 import discord
-TOKEN = "NzEyMTk4NDE2MjY4MjYzNDg1.XtCdJg.bVns_TtLAeifDBvJHCHAFt384Ts"
+TOKEN = "NzEyMTk4NDE2MjY4MjYzNDg1.XtYkiA.ZiJsdgSV_a6GQneweEOrmuj8BF8"
 
 client = discord.Client()
 # 起動時に動作する処理
