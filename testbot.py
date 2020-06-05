@@ -31,7 +31,7 @@ async def on_message(message):
     # 「/neko」と発言したら「にゃーん」が返る処理
     if message.content == '/neko':
         await message.channel.send('にゃーん')
-    if message.content == 'わけわかめ':
+    if message.content in 'わけわかめ':
         await message.channel.send('わけわかめを検出しました')
 
 # Botの起動とDiscordサーバーへの接続
