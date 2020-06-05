@@ -1,5 +1,6 @@
 import discord
 import logging
+from datetime import datetime
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -40,7 +41,7 @@ export_channel_id = 718354659592634430
 @client.event
 async def on_message_delete(message):
     export_channel = client.get_channel(export_channel_id)
-    await export_channel.send("[Deleted]投稿者:"+message.author.name+"#"+message.author.discriminator+"\r\n"+message.content+"\r\n")
+    await export_channel.send("["+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"|削除]\n投稿者:"+message.author.name+"#"+message.author.discriminator+"\n"+message.content)
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
