@@ -35,13 +35,14 @@ async def on_message(message):
     if 'わけわかめ' in message.content:
         await message.channel.send('わけわかめを検出しました')
 
-export_channel_id = 718354659592634430
+delete_log_channel_id = 718354659592634430
 
 
 @client.event
 async def on_message_delete(message):
-    export_channel = client.get_channel(export_channel_id)
-    await export_channel.send("["+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"|削除]\n投稿者:"+message.author.name+"#"+message.author.discriminator+"\n"+message.content)
+    export_channel = client.get_channel(delete_log_channel_id)
+    await export_channel.send("["+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"|削除]\n"+message.author.mention+"\n"+"#"+message.channel.name+" \n"+message.content)
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
+# 削除履歴
