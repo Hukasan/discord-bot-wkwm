@@ -17,10 +17,10 @@ client = discord.Client()
 
 @client.event
 async def on_ready():
-    # 起動したらターミナルにログイン通知が表示される
+    # ターミナル出力
     print('ログインしました-')
 
-# メッセージ受信時に動作する処理
+# メッセージ関連
 
 
 @client.event
@@ -33,6 +33,14 @@ async def on_message(message):
         await message.channel.send('にゃーん')
     if 'わけわかめ' in message.content:
         await message.channel.send('わけわかめを検出しました')
+
+export_channel_id = 718354659592634430
+
+
+@client.event
+async def on_message_delete(message):
+    export_channel = client.get_channel(export_channel_id)
+    await export_channel.send("[Deleted]投稿者:"+message.author.name+"#"+message.author.discriminator+"\r\n"+message.content+"\r\n")
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
