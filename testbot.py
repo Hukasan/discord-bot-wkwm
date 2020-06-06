@@ -1,6 +1,9 @@
 import discord
 import logging
 from datetime import datetime
+import random
+
+delete_log_channel_id = 718354659592634430  # 削除履歴チャンネルID
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -14,17 +17,23 @@ TOKEN = "NzEyMTk4NDE2MjY4MjYzNDg1.XtYkiA.ZiJsdgSV_a6GQneweEOrmuj8BF8"
 
 client = discord.Client()
 # 起動時に動作する処理
+gamelist = []
 
 
-@client.event
+@ client.event
 async def on_ready():
     # ターミナル出力
     print('ログインしました-')
-
-# メッセージ関連
+    await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist)-1)]))
 
 
 @client.event
+async def on_raw_message_edit(payload):
+    await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist)-1)]))
+# メッセージ応答系
+
+
+@ client.event
 async def on_message(message):
     # メッセージ送信者がBotだった場合は無視する
     if message.author.bot:
@@ -34,15 +43,13 @@ async def on_message(message):
         await message.channel.send('にゃーん')
     if 'わけわかめ' in message.content:
         await message.channel.send('わけわかめを検出しました')
+        # 削除監視機能
 
-delete_log_channel_id = 718354659592634430
 
-
-@client.event
+@ client.event
 async def on_message_delete(message):
     export_channel = client.get_channel(delete_log_channel_id)
     await export_channel.send("["+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"|削除]\n"+message.author.mention+"\n"+"#"+message.channel.name+" \n"+message.content)
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
-# 削除履歴
