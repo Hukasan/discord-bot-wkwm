@@ -17,7 +17,7 @@ TOKEN = "NzEyMTk4NDE2MjY4MjYzNDg1.XtYkiA.ZiJsdgSV_a6GQneweEOrmuj8BF8"
 
 client = discord.Client()
 # 起動時に動作する処理
-gamelist = []
+gamelist = ["現実逃避", "シャドウバース", "荒野行動", "大富豪オンライン", "バトロワチーミング", "苗ちん", "親フラ"]
 
 
 @ client.event
