@@ -43,6 +43,8 @@ async def on_message(message):
         await message.channel.send('にゃーん')
     if 'わけわかめ' in message.content:
         await message.channel.send('わけわかめを検出しました')
+    if '草' in message.content:
+        await message.channel.send('こいつ草とかいってます')
         # 削除監視機能
 
 
