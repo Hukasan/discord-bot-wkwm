@@ -33,7 +33,7 @@ async def on_ready():
     # ターミナル出力
     print('ログインしました-')
     await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist)-1)]))
-    bot_room = client.get_channel(bot_room_id)
+    # bot_room = client.get_channel(bot_room_id)
 
 
 @client.event  # gemestatus変更
