@@ -48,7 +48,7 @@ async def on_message(message):
         return
     # 「/neko」と発言したら「にゃーん」が返る処理
     if message.content == '/neko':
-        await message.channel.send('にゃーん')
+        await message.channel.send('にゃ～ん')
     if 'わけわかめ' in message.content:
         await message.channel.send('わけわかめを検出しました')
     if '草' in message.content:
