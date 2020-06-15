@@ -1,0 +1,6 @@
+py-discord-bot-venv/
+.vscode/
+py-discord-bot.code-workspace
+get-pip.py
+discord.log
+json_test.py
