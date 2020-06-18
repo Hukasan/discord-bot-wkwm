@@ -2,18 +2,14 @@ import discord
 import logging
 from datetime import datetime
 import random
-import json
-from collections import OrderedDict
-from box import Box
+from json_io import json_io
 
+jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
 
-with open('profile.json', 'r', encoding="utf-8_sig") as f:
-    res_j = json.load(f)
-
-gamelist = res_j["statuses"][0]["game"]
-delete_log_channel_id = res_j["profile"]["delete_log_channel_id"]
-room_id = res_j["profile"]["room_id"]
-TOKEN = res_j["profile"]["token"]
+gamelist = f.status.game
+delete_log_channel_id = f.profile.delete_log_channel_id
+room_id = f.profile.room_id
+TOKEN = f.profile.token
 
 
 logger = logging.getLogger('discord')
