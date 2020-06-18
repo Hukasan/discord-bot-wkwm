@@ -5,7 +5,7 @@ import random
 import json
 
 
-with open('response.json', 'r', encoding="utf-8_sig") as f:
+with open('profile.json', 'r', encoding="utf-8_sig") as f:
     res_j = json.load(f)
 
 gamelist = res_j["statuses"][0]["game"]
@@ -60,13 +60,6 @@ async def on_message_delete(message):
     export_channel = client.get_channel(delete_log_channel_id)
     await export_channel.send("["+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"|削除]\n"+message.author.mention+"\n"+"#"+message.channel.name+" \n"+message.content)
 
-
-# async def role_comment_check():
-#     for message in bot_room.history(limit=100):
-#         if message.author == client.user:
-#             if message.content == "暇ですか":
-#                 await return 1
-#     await retun 0
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
