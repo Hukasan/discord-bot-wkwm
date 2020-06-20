@@ -30,18 +30,19 @@ def yes_no_input(choice):
 
 
 def state_init(fp: Box):
+    fp.cr = {}
     fp.cr.name = False
     fp.cr.react = False
     fp.cr.com = False
     fp.cr.catcall = False
     fp.cr.change = False
+    fp.cr.end = False
     fp.cr.content = []
 
 
 jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
 pc, fp = json_io().get("Z:/Github/discord-bot-id/status.json")
 
-fp.cr = {}
 state_init(fp)
 pc.write()
 
@@ -66,66 +67,68 @@ async def on_raw_message_edit(payload):
 
 @ client.event  # メッセージ応答系
 async def on_message(message):
-    global fp, f, pc, jc
-    jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
-    pc, fp = json_io().get("Z:/Github/discord-bot-id/status.json")
-    cd = f.commands.to_dict()
-    reactd = f.catcalls.to_dict()
     # メッセージ送信者がBotだった場合は無視する
     if message.author.bot:
         return
-    elif fp.cr.name:
-        if message.content == 'q':
-            state_init(fp)
-            await message.channel.send("取り消し")
-        if fp.cr.change:
-            if yes_no_input(message.content):
-                fp.cr.change = True
-            else:
-                fp.cr.name = False
-        else:
-            fp.cr.content = message.content
-
-        if fp.cr.com and message.content in cd:
-            await message.channel.send("もう追加されてるよ,変更する？")
-            fp.cr.change = 1
-            fp.cr.name = 0
-        elif fp.cr.catcall and message.content in reactd:
-            await message.channel.send("もう追加されてるよ,変更する？(Y/N)")
-            fp.cr.change = 1
-            fp.cr.name = 0
-        await message.channel.send("返答は？")
-        fp.cr.react = True
-        fp.cr.name = False
-    elif fp.cr.react == True:
-        if fp.cr.com == True:
-            cd[fp.cr.content] = {'reaction': message.content}
-            f.commands = cd
-        elif fp.cr.catcall == True:
-            reactd[fp.cr.content] = {'reaction': message.content}
-            f.catcalls = reactd
-        await message.channel.send("追加かんりょう")
-        jc.write()
-        state_init(fp)
-
-    elif message.content[0] == '/':
-        command = message.content[1:]
-        if command == 'command_add':
-            fp.cr.name = True
-            fp.cr.com = True
-            await message.channel.send("追加コマンドをドウゾ(キャンセル : ｑ)")
-        elif command == 'react_add':
-            fp.cr.name = True
-            fp.cr.catcall = True
-            await message.channel.send("追加リアクションをドウゾ(キャンセル : ｑ)")
-        elif command in cd:
-            await message.channel.send(cd.get(command).get('reaction'))
     else:
-        for react in reactd:
-            if react in message.content:
-                await message.channel.send(reactd.get(react).get('reaction'))
-                break
-    pc.write()
+        global fp, f, pc, jc
+        jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
+        pc, fp = json_io().get("Z:/Github/discord-bot-id/status.json")
+        cd = f.commands.to_dict()
+        reactd = f.catcalls.to_dict()
+
+        if fp.cr.name:
+            if fp.cr.change:
+                if yes_no_input(message.content):
+                    fp.cr.change = False
+                else:
+                    fp.cr.end = True
+            if message.content == 'q' or fp.cr.end:
+                state_init(fp)
+                await message.channel.send("取り消し")
+            else:
+                if fp.cr.com and message.content in cd:
+                    await message.channel.send("もう追加されてるよ,変更する？")
+                    fp.cr.change = True
+                    fp.cr.name = False
+                elif fp.cr.catcall and message.content in reactd:
+                    await message.channel.send("もう追加されてるよ,変更する？(Y/N)")
+                    fp.cr.change = True
+                    fp.cr.name = False
+                fp.cr.content
+                await message.channel.send("返答は？")
+                fp.cr.react = True
+                fp.cr.name = False
+        elif fp.cr.react:
+            if fp.cr.com:
+                cd[fp.cr.content] = {'reaction': message.content}
+                f.commands = cd
+            elif fp.cr.catcall:
+                reactd[fp.cr.content] = {'reaction': message.content}
+                f.catcalls = reactd
+            message.channel.send("追加かんりょう")
+            jc.write()
+            state_init(fp)
+
+        elif message.content[0] == '/':
+            command = message.content[1:]
+            if command == 'command_add':
+                fp.cr.name = True
+                fp.cr.com = True
+                await message.channel.send("追加コマンドをドウゾ(キャンセル : ｑ)")
+            elif command == 'react_add':
+                fp.cr.name = True
+                fp.cr.catcall = True
+                await message.channel.send("追加リアクションをドウゾ(キャンセル : ｑ)")
+            elif command in cd:
+                await message.channel.send(cd.get(command).get('reaction'))
+        else:
+            for react in reactd:
+                if react in message.content:
+                    await message.channel.send(reactd.get(react).get('reaction'))
+                    break
+        print(fp.to_dict())
+        pc.write()
 
 
 # @ client.event  # 削除監視機能
