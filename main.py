@@ -36,7 +36,7 @@ def json_io_load(name: str) -> (json_io, Box):
     if name == 'profile':
         jc, f = json_io().get("./json/profile.json")
     elif name == 'state':
-        jc, f = json_io().get("./json/status.json")
+        jc, f = json_io().get("./json/state.json")
     return jc, f
 
 
