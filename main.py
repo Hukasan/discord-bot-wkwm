@@ -2,9 +2,8 @@ import discord
 import logging
 from datetime import datetime
 import random
-from json_io import json_io
+from app.json_io import json_io
 from box import Box
-
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -35,9 +34,9 @@ def state_init(fp: Box):
 
 def json_io_load(name: str) -> (json_io, Box):
     if name == 'profile':
-        jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
+        jc, f = json_io().get("./json/profile.json")
     elif name == 'state':
-        jc, f = json_io().get("Z:/Github/discord-bot-id/status.json")
+        jc, f = json_io().get("./json/status.json")
     return jc, f
 
 
@@ -77,8 +76,8 @@ async def on_message(message):
         return
     else:
         global fp, f, pc, jc
-        jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
-        pc, fp = json_io().get("Z:/Github/discord-bot-id/status.json")
+        jc, f = json_io_load('profile')
+        pc, fp = json_io_load('state')
         cd = f.commands.to_dict()
         reactd = f.catcalls.to_dict()
         if fp.cr.change:
