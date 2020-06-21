@@ -5,13 +5,6 @@ import random
 from json_io import json_io
 from box import Box
 
-jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
-pc, fp = json_io().get("Z:/Github/discord-bot-id/status.json")
-
-gamelist = f.status.game
-delete_log_channel_id = f.profile.delete_log_channel_id
-room_id = f.profile.room_id
-TOKEN = f.profile.token
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -23,7 +16,7 @@ logger.addHandler(handler)
 
 
 def yes_no_input(choice):
-    if choice in ['y', 'ye', 'yes']:
+    if choice in ['Y', 'y', 'ye', 'yes', 'Ｙ', 'ｙ']:
         return True
     else:
         return False
@@ -40,11 +33,25 @@ def state_init(fp: Box):
     fp.cr.content = []
 
 
-jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
-pc, fp = json_io().get("Z:/Github/discord-bot-id/status.json")
+def json_io_load(name: str) -> (json_io, Box):
+    if name == 'profile':
+        jc, f = json_io().get("Z:/Github/discord-bot-id/profile.json")
+    elif name == 'state':
+        jc, f = json_io().get("Z:/Github/discord-bot-id/status.json")
+    return jc, f
 
+
+fc, f = json_io_load('profile')
+gamelist = f.status.game
+delete_log_channel_id = f.profile.delete_log_channel_id
+room_id = f.profile.room_id
+TOKEN = f.profile.token
+
+pc, fp = json_io_load('state')
 state_init(fp)
+cr = fp.cr
 pc.write()
+
 
 # 起動時に動作する処理
 
@@ -53,11 +60,9 @@ client = discord.Client()
 
 @ client.event
 async def on_ready():
-    # ターミナル出力
-    print('ログインしました-')
     room_channel = client.get_channel(room_id)
     await room_channel.send(datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"ログインしました")
-    # await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist)-1)]))
+    await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist)-1)]))
 
 
 @ client.event  # gemestatus変更
@@ -76,26 +81,26 @@ async def on_message(message):
         pc, fp = json_io().get("Z:/Github/discord-bot-id/status.json")
         cd = f.commands.to_dict()
         reactd = f.catcalls.to_dict()
-
-        if fp.cr.name:
-            if fp.cr.change:
-                if yes_no_input(message.content):
-                    fp.cr.change = False
-                else:
-                    fp.cr.end = True
-            if message.content == 'q' or fp.cr.end:
-                state_init(fp)
-                await message.channel.send("取り消し")
+        if fp.cr.change:
+            if yes_no_input(message.content):
+                fp.cr.change = False
+                fp.cr.react = True
+                pc.write()
+                await message.channel.send("返答は?")
+                return
             else:
-                if fp.cr.com and message.content in cd:
-                    await message.channel.send("もう追加されてるよ,変更する？")
-                    fp.cr.change = True
-                    fp.cr.name = False
-                elif fp.cr.catcall and message.content in reactd:
-                    await message.channel.send("もう追加されてるよ,変更する？(Y/N)")
-                    fp.cr.change = True
-                    fp.cr.name = False
-                fp.cr.content
+                fp.cr.end = True
+        if message.content == 'q' or fp.cr.end:
+            state_init(fp)
+            await message.channel.send("取り消し")
+        elif fp.cr.name:
+            if (fp.cr.com and message.content in cd) or (fp.cr.catcall and message.content in reactd):
+                await message.channel.send("もう追加されてるよ,変更する？(Y/N)")
+                fp.cr.change = True
+                fp.cr.name = False
+                fp.cr.content = message.content
+            else:
+                fp.cr.content = message.content
                 await message.channel.send("返答は？")
                 fp.cr.react = True
                 fp.cr.name = False
@@ -106,7 +111,7 @@ async def on_message(message):
             elif fp.cr.catcall:
                 reactd[fp.cr.content] = {'reaction': message.content}
                 f.catcalls = reactd
-            message.channel.send("追加かんりょう")
+            await message.channel.send("追加かんりょう")
             jc.write()
             state_init(fp)
 

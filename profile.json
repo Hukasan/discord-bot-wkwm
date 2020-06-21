@@ -30,14 +30,17 @@
     },
     "join": { "reaction": "http://banazaru.wp.xdomain.jp/" },
     "まっさか": { "reaction": "カーニバル" },
-    "clan": { "reaction": "21805" }
+    "clan": { "reaction": "21805" },
+    "あ": { "reaction": "q" },
+    "Y": { "reaction": "うんち" }
   },
   "catcalls": {
     "わけわかめ": { "reaction": "わけわかめを検出しました" },
     "草": { "reaction": "こいつ草とかいってます" },
     "くさ": { "reaction": "へっ、反応しないとでも思ったか" },
     "モンキーズ": { "reaction": "その名を呼ぶでない、癪に障る" },
-    "萎え": { "reaction": "元気だして" },
-    "暇": { "reaction": "知ってる" }
+    "萎え": { "reaction": "Y" },
+    "暇": { "reaction": "知ってる" },
+    "Y": { "reaction": "どんまい" }
   }
 }
