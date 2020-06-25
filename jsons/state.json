@@ -1,11 +1,1 @@
-{
-  "cr": {
-    "name": false,
-    "react": false,
-    "com": false,
-    "catcall": false,
-    "change": false,
-    "end": false,
-    "content": []
-  }
-}
+{"talk": {"ins": ["NULL", "NULL", "NULL", "NULL", "NULL"], "name": "NULL", "key": "NULL", "fname": false, "freact": false, "fend1": false, "fend2": false}, "test": "test!"}
