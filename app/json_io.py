@@ -2,29 +2,27 @@ from box import Box
 
 
 class json_io:
-    fname = []
-    jf = Box
-
-    def __init__(self):
-        pass
-
-    def get(self, file_path: str):
+    def __init__(self, file_path: str):
         self.fname = file_path
+        self.jf = Box
+
+    def get(self):
         try:
             self.jf = Box.from_json(filename=self.fname)
             return self, self.jf
         except:
-            print("ERROR : file_open_error")
+            print(self.fname+"ERROR : file_open_error")
 
     def write(self):
         try:
             self.jf.to_json(self.fname)
         except:
-            print("ERROR : file_export_error")
+            print("ERROR : file_export_error["+self.fname+']')
 
 
 if __name__ == "__main__":
-    file_path = "Z:/Github/discord-bot-id/profile.json"
-    jc, f = json_io().get(file_path)
-    f.profile.name = "test4"
+    file_path = "./jsons/state.json"
+    jc, f = json_io(file_path).get()
+    name = "test"
+    f[name] = "test!"
     jc.write()

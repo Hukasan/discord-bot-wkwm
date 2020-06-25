@@ -6,42 +6,15 @@
     "name": true,
     "description": "わけわかめbot"
   },
-  "status": {
-    "game": [
-      "現実逃避",
-      "シャドウバース",
-      "荒野行動",
-      "大富豪オンライン",
-      "バトロワチーミング",
-      "苗ちん",
-      "親フラ"
-    ]
-  },
-  "commands": {
-    "command_add": { "description": "返答コマンドを追加します" },
-    "react_add": { "description": "会話中から検出する文言を追加します" },
-    "neko": {
-      "reaction": "にゃーん?",
-      "description": "にゃーんと鳴き返します"
+  "cmds": {
+    "help": {
+      "desc": "諸々のデータを追加 /add cmd ->コマンド追加"
     },
-    "lobi": {
-      "reaction": "オエッhttps://lobi.co/invite/wu3hsu",
-      "description": "lobi本部のURlを吐き出します"
+    "add": {
+      "desc": "諸々のデータを追加 /add cmd ->コマンド追加"
     },
-    "join": { "reaction": "http://banazaru.wp.xdomain.jp/" },
-    "まっさか": { "reaction": "カーニバル" },
-    "clan": { "reaction": "21805" },
-    "あ": { "reaction": "q" },
-    "Y": { "reaction": "うんち" }
-  },
-  "catcalls": {
-    "わけわかめ": { "reaction": "わけわかめを検出しました" },
-    "草": { "reaction": "こいつ草とかいってます" },
-    "くさ": { "reaction": "へっ、反応しないとでも思ったか" },
-    "モンキーズ": { "reaction": "その名を呼ぶでない、癪に障る" },
-    "萎え": { "reaction": "Y" },
-    "暇": { "reaction": "知ってる" },
-    "Y": { "reaction": "どんまい" },
-    "うんち": { "reaction": "汚いね" }
+    "view": {
+      "desc": "追加しているコマンドを一覧表示 /view cmd ->コマンド一覧"
+    }
   }
 }

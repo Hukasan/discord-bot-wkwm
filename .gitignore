@@ -1,5 +1,4 @@
 py-discord-bot-venv/
-__pycache__/
 .vscode/
 py-discord-bot.code-workspace
 get-pip.py
