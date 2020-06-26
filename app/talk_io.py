@@ -1,8 +1,8 @@
 from box import Box
-from app.json_io import json_io
 import discord
 from functools import partial
 import pprint
+from json_io import json_io
 
 
 class talk_io:
@@ -26,7 +26,7 @@ class talk_io:
 
     def reset(self):
         self.st.talk = Box({
-            "ins": ["NULL"]*5,
+            "ins": ["NULL"] * 5,
             "name": "NULL",
             "key": "NULL",
             "fname": False,
@@ -37,6 +37,11 @@ class talk_io:
         self.stc.write()
 
     def eval_cmd(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         con = self.content
         st = self.st.talk
         if st.fend1:
@@ -55,7 +60,7 @@ class talk_io:
                     st.ins[i] = con
                     break
             self.stc.write()
-            return self.do_cmd(i+1)
+            return self.do_cmd(i + 1)
         else:
             ex = []
             for react in self.talks.catcalls:
@@ -63,17 +68,23 @@ class talk_io:
                     ex.append(self.talks.catcalls[react].react)
             return ex
 
-    def do_cmd(self, l: int):
+    def do_cmd(self, size: int):
         st = self.st.talk
         cmd = st.ins
         if cmd[0] == "add":
             if cmd[1] == "cmd":
                 self.method2 = partial(
-                    self.add_json, bc=self.talksc, b=self.talks.cmds, l=l)
+                    self.add_json,
+                    bc=self.talksc,
+                    b=self.talks.cmds,
+                    size=size)
                 return self.method2()
             elif cmd[1] == "react":
                 self.method2 = partial(
-                    self.add_json, bc=self.talksc, b=self.talks.catcalls, l=l)
+                    self.add_json,
+                    bc=self.talksc,
+                    b=self.talks.catcalls,
+                    size=size)
                 return self.method2()
         elif cmd[0] == 'help':
             return self.felp_view(mode=cmd[1])
@@ -94,7 +105,7 @@ class talk_io:
             return 'キャンセルします'
         return comment
 
-    def add_json(self, bc: json_io, b: Box, l: int) -> str:
+    def add_json(self, bc: json_io, b: Box, size: int) -> str:
         st = self.st.talk
         con = self.content
         ex = [None, "コマンドは？", "返答は？", "すでに追加されているよ、変更する？",
@@ -131,14 +142,26 @@ class talk_io:
         if mode == 'NULL':
             mode = 'all'
         if mode == 'all':
-            exs = pprint.pformat(self.talks.to_dict(), )
+            temp = self.talks.to_dict()
+            for t in temp:
+                if 'react' in t:
+                    del temp['react']
+                else:
+                    for t2 in t:
+                        if 'react' in t:
+                            del t2['react']
+            exs = pprint.pformat(temp)
+        elif mode == 'cmd':
+            exs = pprint.pformat(self.talks.cmds.to_dict(), )
+        elif mode == 'react':
+            exs = pprint.pformat(self.talks.catcalls.to_dict(), )
         self.reset()
         return exs
 
 
 if __name__ == "__main__":
     c = talk_io()
-    print(c.enter(message=None, content="/neko"))
+    print(c.enter(message=None, content="/help"))
     # print(c.enter(message=None, content="test"))
     # print(c.enter(message=None, content="y"))
     # print(c.enter(message=None, content="testdesu"))

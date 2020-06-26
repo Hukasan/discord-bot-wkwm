@@ -2,9 +2,11 @@ import discord
 import logging
 from datetime import datetime
 import random
-from app.json_io import json_io
-from app.talk_io import talk_io
-from box import Box
+
+import sys
+sys.path.append("./app/")
+from app.json_io import json_io  # nopep
+from app.talk_io import talk_io  # nopep
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -29,13 +31,13 @@ client = discord.Client()
 @ client.event
 async def on_ready():  # 起動時に動作する処理
     room_channel = client.get_channel(room_id)
-    await room_channel.send(datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"ログインしました")
-    await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist)-1)]))
+    await room_channel.send(datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "ログインしました")
+    await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist) - 1)]))
 
 
 @ client.event  # gemestatus変更
 async def on_raw_message_edit(payload):
-    await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist)-1)]))
+    await client.change_presence(activity=discord.Game(gamelist[random.randint(0, len(gamelist) - 1)]))
 
 
 @ client.event  # メッセージ応答系
@@ -51,13 +53,15 @@ async def on_message(message):
                     if not (ex in [None, 'NULL', ' ', '　']):
                         await message.channel.send(ex)
             else:
-                await message.channel.send(exs)
+                await message.channel.send(exs[0])
 
 
 # @ client.event  # 削除監視機能
 # async def on_message_delete(message):
 #     export_channel = client.get_channel(delete_log_channel_id)
-# await export_channel.send("["+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"|削除]\n"+message.author.mention+"\n"+"#"+message.channel.name+" \n"+message.content)
+# await export_channel.send("["+datetime.now().strftime('%Y-%m-%d
+# %H:%M:%S')+"|削除]\n"+message.author.mention+"\n"+"#"+message.channel.name+"
+# \n"+message.content)
 
 # Botの起動とDiscordサーバーへの接続
 if __name__ == "__main__":
