@@ -5,8 +5,8 @@ import random
 
 import sys
 sys.path.append("./app/")
-from app.json_io import json_io  # nopep
-from app.talk_io import talk_io  # nopep
+from app.json_io import json_io  # noqa # nopep
+from app.talk_io import talk_io  # noqa # nopep
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
