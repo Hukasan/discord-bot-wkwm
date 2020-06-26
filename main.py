@@ -53,7 +53,7 @@ async def on_message(message):
                     if not (ex in [None, 'NULL', ' ', '　']):
                         await message.channel.send(ex)
             else:
-                await message.channel.send(exs[0])
+                await message.channel.send(exs)
 
 
 # @ client.event  # 削除監視機能
