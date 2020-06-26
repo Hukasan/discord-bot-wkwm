@@ -1,5 +1,6 @@
 {
   "cmds": {
+    "desc": "[/]のあとにつける系",
     "neko": { "react": "にゃーん?", "desc": "にゃーんと鳴き返します" },
     "lobi": {
       "react": "オエッhttps://lobi.co/invite/wu3hsu",
@@ -10,7 +11,8 @@
     "test": { "react": "testdesu" },
     "tepu": { "react": "あん♡" }
   },
-  "catcalls": {
+  "cats": {
+    "desc": "勝手に反応しちゃう系",
     "わけわかめ": { "react": "わけわかめを検出しました" },
     "草": { "react": "こいつ草とかいってます" },
     "くさ": { "react": "へっ、反応しないとでも思ったか" },

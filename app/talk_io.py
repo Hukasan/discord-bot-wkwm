@@ -63,9 +63,9 @@ class talk_io:
             return self.do_cmd(i + 1)
         else:
             ex = []
-            for react in self.talks.catcalls:
+            for react in self.talks.cats:
                 if react in self.content:
-                    ex.append(self.talks.catcalls[react].react)
+                    ex.append(self.talks.cats[react].react)
             return ex
 
     def do_cmd(self, size: int):
@@ -83,7 +83,7 @@ class talk_io:
                 self.method2 = partial(
                     self.add_json,
                     bc=self.talksc,
-                    b=self.talks.catcalls,
+                    b=self.talks.cats,
                     size=size)
                 return self.method2()
         elif cmd[0] == 'help':
@@ -137,27 +137,31 @@ class talk_io:
         self.stc.write()
         return ex[ex_num]
 
+    def alldelete_key(self, a, target_key):
+        delete_key_list = []
+        for key, value in a.items():
+            if (key == target_key) or (key in target_key):
+                delete_key_list.append(key)
+            elif isinstance(value, dict):
+                self.alldelete_key(value, target_key)
+        for dkey in delete_key_list:
+            del a[dkey]
+
     def felp_view(self, mode: str):
         exs = []
         if mode == 'NULL':
             mode = 'all'
         if mode == 'all':
             temp = self.talks.to_dict()
-            for t in temp:
-                if 'react' in t:
-                    del temp['react']
-                else:
-                    for t2 in t:
-                        if 'react' in t:
-                            del t2['react']
+            self.alldelete_key(temp, ['react', 'status'])
             exs = pprint.pformat(temp)
         elif mode == 'cmd':
             exs = pprint.pformat(self.talks.cmds.to_dict(), )
         elif mode == 'react':
-            exs = pprint.pformat(self.talks.catcalls.to_dict(), )
+            exs = pprint.pformat(self.talks.cats.to_dict(), )
         self.reset()
-        return exs
-
+        return exs.replace('{', ' ').replace('}', '').replace('  \'desc\':', '').replace('\'',' ').replace(',','')
+        # return  exs
 
 if __name__ == "__main__":
     c = talk_io()
