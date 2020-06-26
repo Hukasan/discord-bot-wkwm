@@ -2,7 +2,7 @@ from box import Box
 import discord
 from functools import partial
 import pprint
-from json_io import json_io
+from json_io import json_io  # noqa
 
 
 class talk_io:
