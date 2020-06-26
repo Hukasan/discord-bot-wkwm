@@ -10,14 +10,14 @@ class json_io:
         try:
             self.jf = Box.from_json(filename=self.fname)
             return self, self.jf
-        except:
-            print(self.fname+"ERROR : file_open_error")
+        except BaseException:
+            print(self.fname + "ERROR : file_open_error")
 
     def write(self):
         try:
             self.jf.to_json(self.fname)
-        except:
-            print("ERROR : file_export_error["+self.fname+']')
+        except BaseException:
+            print("ERROR : file_export_error[" + self.fname + ']')
 
 
 if __name__ == "__main__":
