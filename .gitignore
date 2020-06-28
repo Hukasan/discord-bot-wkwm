@@ -1,8 +1,5 @@
-discord-bot-venv/
+discord-bot-id-env/
+dicord-bot-id.code-workspace
 .vscode/
-py-discord-bot.code-workspace
-get-pip.py
 discord.log
-json_test.py
-無視/
 tempCodeRunnerFile.py
