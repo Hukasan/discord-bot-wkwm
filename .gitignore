@@ -2,4 +2,5 @@ discord-bot-id-env/
 dicord-bot-id.code-workspace
 .vscode/
 discord.log
+__pycache__
 tempCodeRunnerFile.py
