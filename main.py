@@ -48,12 +48,9 @@ async def on_message(message):
     else:
         exs = talk.enter(message=message, content=message.content)
         if exs:
-            if isinstance(exs[0], list):
-                for ex in exs:
-                    if not (ex in [None, 'NULL', ' ', '　']):
-                        await message.channel.send(ex)
-            else:
-                await message.channel.send(*exs)
+            for ex in exs:
+                if not (ex in [None, 'NULL', ' ', '　']):
+                    await message.channel.send(ex)
 
 
 # @ client.event  # 削除監視機能

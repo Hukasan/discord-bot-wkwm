@@ -18,9 +18,11 @@ class talk_io:
         self.st.talk = "NULL"
         self.reset()
         self.talksc, self.talks = json_io("./jsons/Hangar.json").get()
+
     def relode(self):
-        self.stc, self.st=self.stc.get()
-        self.talksc, self.talks=self.talksc.get()
+        self.stc, self.st = self.stc.get()
+        self.talksc, self.talks = self.talksc.get()
+
     def enter(self, message: discord.message, content: str) -> list:
         self.relode()
         self.message = message
@@ -155,12 +157,13 @@ class talk_io:
             temp = self.talks.MonCmds.to_dict()
         elif mode == 'react':
             temp = self.talks.cats.to_dict()
-        else :
+        else:
             temp = self.talks.to_dict()
-        self.alldelete_key(temp, ['react', 'status','desc'])
-        exs = pprint.pformat(temp,width=33,sort_dicts=False)
+        self.alldelete_key(temp, ['react', 'status', 'desc'])
+        exs = pprint.pformat(temp, width=33, sort_dicts=False)
         self.reset()
-        return exs.replace('{', ' ').replace('}', '').replace('  \'desc\':', '').replace('\'',' ').replace(',','')
+        return exs.replace('{', ' ').replace('}', '').replace('  \'desc\':', '').replace('\'', ' ').replace(',', '')
+
 
 if __name__ == "__main__":
     c = talk_io()
