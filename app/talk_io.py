@@ -167,7 +167,7 @@ class talk_io:
 
 if __name__ == "__main__":
     c = talk_io()
-    print(c.enter(message=None, content="わけわかめ"))
+    print(c.enter(message=None, content="/help cmd"))
     # print(c.enter(message=None, content="test"))
     # print(c.enter(message=None, content="y"))
     # print(c.enter(message=None, content="testdesu"))
