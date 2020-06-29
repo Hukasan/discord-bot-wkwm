@@ -48,18 +48,20 @@ async def on_message(message):
     else:
         exs = talk.enter(message=message, content=message.content)
         if exs:
-            for ex in exs:
-                if not (ex in [None, "NULL", ' ', '　']):
-                    await message.channel.send(ex)
+            if isinstance(exs[0], list):
+                for ex in exs:
+                    if not (ex in [None, "NULL", ' ', '　']):
+                        await message.channel.send(ex)
+            else:
+                await message.channel.send(*exs)
 
+                # @ client.event  # 削除監視機能
+                # async def on_message_delete(message):
+                #     export_channel = client.get_channel(delete_log_channel_id)
+                # await export_channel.send("["+datetime.now().strftime('%Y-%m-%d
+                # %H:%M:%S')+"|削除]\n"+message.author.mention+"\n"+"#"+message.channel.name+"
+                # \n"+message.content)
 
-# @ client.event  # 削除監視機能
-# async def on_message_delete(message):
-#     export_channel = client.get_channel(delete_log_channel_id)
-# await export_channel.send("["+datetime.now().strftime('%Y-%m-%d
-# %H:%M:%S')+"|削除]\n"+message.author.mention+"\n"+"#"+message.channel.name+"
-# \n"+message.content)
-
-# Botの起動とDiscordサーバーへの接続
+                # Botの起動とDiscordサーバーへの接続
 if __name__ == "__main__":
     client.run(TOKEN)
