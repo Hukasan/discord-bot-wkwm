@@ -18,8 +18,11 @@ class talk_io:
         self.st.talk = "NULL"
         self.reset()
         self.talksc, self.talks = json_io("./jsons/Hangar.json").get()
-
-    def enter(self, message: discord.message, content: str) -> str:
+    def relode(self):
+        self.stc, self.st=self.stc.get()
+        self.talksc, self.talks=self.talksc.get()
+    def enter(self, message: discord.message, content: str) -> list:
+        self.relode()
         self.message = message
         self.content = content
         return self.eval_cmd()
@@ -76,7 +79,7 @@ class talk_io:
                 self.method2 = partial(
                     self.add_json,
                     bc=self.talksc,
-                    b=self.talks.cmds,
+                    b=self.talks.MonCmds,
                     size=size)
                 return self.method2()
             elif cmd[1] == "react":
@@ -88,8 +91,8 @@ class talk_io:
                 return self.method2()
         elif cmd[0] == 'help':
             return self.felp_view(mode=cmd[1])
-        elif cmd[0] in self.talks.cmds:
-            ex = self.talks.cmds[cmd[0]].react
+        elif cmd[0] in self.talks.MonCmds:
+            ex = self.talks.MonCmds[cmd[0]].react
             self.reset()
             return ex
         else:
@@ -148,24 +151,20 @@ class talk_io:
             del a[dkey]
 
     def felp_view(self, mode: str):
-        exs = []
-        if mode == 'NULL':
-            mode = 'all'
-        if mode == 'all':
-            temp = self.talks.to_dict()
-            self.alldelete_key(temp, ['react', 'status'])
-            exs = pprint.pformat(temp)
-        elif mode == 'cmd':
-            exs = pprint.pformat(self.talks.cmds.to_dict(), )
+        if mode == 'cmd':
+            temp = self.talks.MonCmds.to_dict()
         elif mode == 'react':
-            exs = pprint.pformat(self.talks.cats.to_dict(), )
+            temp = self.talks.cats.to_dict()
+        else :
+            temp = self.talks.to_dict()
+        self.alldelete_key(temp, ['react', 'status','desc'])
+        exs = pprint.pformat(temp,width=33,sort_dicts=False)
         self.reset()
         return exs.replace('{', ' ').replace('}', '').replace('  \'desc\':', '').replace('\'',' ').replace(',','')
-        # return  exs
 
 if __name__ == "__main__":
     c = talk_io()
-    print(c.enter(message=None, content="/help"))
+    print(c.enter(message=None, content="わけわかめ"))
     # print(c.enter(message=None, content="test"))
     # print(c.enter(message=None, content="y"))
     # print(c.enter(message=None, content="testdesu"))
