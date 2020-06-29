@@ -71,10 +71,7 @@ class talk_io:
             for react in self.talks.cats:
                 if react in self.content:
                     ex.append(self.talks.cats[react].react)
-            if isinstance(ex[0], list):
-                return ex
-            else:
-                return ''.join(ex)
+            return ex
 
     def do_cmd(self, size: int):
         st = self.st.talk
