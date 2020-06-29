@@ -49,7 +49,7 @@ async def on_message(message):
         exs = talk.enter(message=message, content=message.content)
         if exs:
             for ex in exs:
-                if not (ex in [None, 'NULL', ' ', '　']):
+                if not (ex in [None, "NULL", ' ', '　']):
                     await message.channel.send(ex)
 
 
