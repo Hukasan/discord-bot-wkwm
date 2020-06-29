@@ -1,1 +1,1 @@
-discordbot: python main.py
+discordbot: python3.8 main.py

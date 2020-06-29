@@ -53,7 +53,8 @@ async def on_message(message):
                     if not (ex in [None, "NULL", ' ', '　']):
                         await message.channel.send(ex)
             else:
-                await message.channel.send(*exs)
+                await message.channel.send(''.join(exs))
+                discord.Message.channel
 
                 # @ client.event  # 削除監視機能
                 # async def on_message_delete(message):
