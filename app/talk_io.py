@@ -71,7 +71,10 @@ class talk_io:
             for react in self.talks.cats:
                 if react in self.content:
                     ex.append(self.talks.cats[react].react)
-            return ex
+            if isinstance(ex[0], list):
+                return ex
+            else:
+                return ''.join(ex)
 
     def do_cmd(self, size: int):
         st = self.st.talk
@@ -167,7 +170,7 @@ class talk_io:
 
 if __name__ == "__main__":
     c = talk_io()
-    print(c.enter(message=None, content="/help cmd"))
+    print(c.enter(message=None, content="わけわかめ"))
     # print(c.enter(message=None, content="test"))
     # print(c.enter(message=None, content="y"))
     # print(c.enter(message=None, content="testdesu"))
