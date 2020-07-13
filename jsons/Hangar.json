@@ -1,73 +1,85 @@
 {
-  "CherryCmds": {
-    "lobi": {
-      "react": "オエッhttps://lobi.co/invite/wu3hsu",
-      "desc": "lobi本部のURlを吐き出します"
-    },
-    "join": {
-      "react": "http://banazaru.wp.xdomain.jp/",
-      "desc": "ホームページを吐き出します"
-    },
-    "clan": {
-      "react": "21805",
-      "desc": "クラン番号を吐き出します"
-    },
-    "add": {
-      "desc": "各コマンドを追加します"
-    }
+  "TalkState": {
+    "ins": ["NULL", true, "NULL", "NULL", "NULL"],
+    "name": "NULL",
+    "key": "NULL",
+    "fname": false,
+    "freact": false,
+    "fend1": false,
+    "fend2": false
   },
-  "MonCmds": {
-    "lobi": {
-      "react": "オエッhttps://lobi.co/invite/wu3hsu",
-      "desc": "lobi本部のURlを吐き出します"
+  "Cmds": {
+    "CherryCmds": {
+      "lobi": {
+        "react": "\u30aa\u30a8\u30c3https://lobi.co/invite/wu3hsu",
+        "desc": "lobi\u672c\u90e8\u306eURl\u3092\u5410\u304d\u51fa\u3057\u307e\u3059"
+      },
+      "join": {
+        "react": "http://banazaru.wp.xdomain.jp/",
+        "desc": "\u30db\u30fc\u30e0\u30da\u30fc\u30b8\u3092\u5410\u304d\u51fa\u3057\u307e\u3059"
+      },
+      "clan": {
+        "react": "21805",
+        "desc": "\u30af\u30e9\u30f3\u756a\u53f7\u3092\u5410\u304d\u51fa\u3057\u307e\u3059"
+      },
+      "add": {
+        "desc": "\u5404\u30b3\u30de\u30f3\u30c9\u3092\u8ffd\u52a0\u3057\u307e\u3059"
+      },
+      "jyoken": {
+        "react": "\u30fb\u30dc\u30a4\u30b9\u30c1\u30e3\u30c3\u30c8\u53ef\u80fdor\u805e\u304d\u5c02\n\u30fb\u30a4\u30f3\u7387\n\u30fb\u30af\u30e9\u30f3\u6226\u3067\u306e\u30e1\u30a4\u30f3\u30ad\u30e3\u30e9\u306e\u30b9\u30af\u30b7\u30e7\n\u30fb\u514d\u9664\u5e0c\u671b\u306e\u65b9\u306f\u514d\u9664\u306b\u5024\u3059\u308b\u8a3c\u62e0\r\u30fb\u8a66\u9a13\u5e0c\u671b\u65e5\u6642"
+      }
     },
-    "neko": {
-      "react": "にゃーん?",
-      "desc": "にゃーんと鳴き返します"
-    },
-    "tepu": {
-      "react": "あん♡",
-      "desc": ""
-    },
-    "EnCo": {
-      "react": "・ボイスチャット可能or聞き専\n・イン率\n・クラン戦でのメインキャラのスクショ\n・免除希望の方は免除に値する証拠\r・試験希望日時"
+    "MonCmds": {
+      "lobi": {
+        "react": "\u30aa\u30a8\u30c3https://lobi.co/invite/wu3hsu",
+        "desc": "lobi\u672c\u90e8\u306eURl\u3092\u5410\u304d\u51fa\u3057\u307e\u3059"
+      },
+      "neko": {
+        "react": "\u306b\u3083\u30fc\u3093?",
+        "desc": "\u306b\u3083\u30fc\u3093\u3068\u9cf4\u304d\u8fd4\u3057\u307e\u3059"
+      },
+      "tepu": { "react": "\u3042\u3093\u2661", "desc": "" },
+      "\u7ae5\u8c9e": { "react": "\u3093\uff1f\u547c\u3093\u3060\uff1f\uff1f" }
     }
   },
   "cats": {
-    "desc": "勝手に反応しちゃう系",
-    "わけわかめ": {
-      "react": "わけわかめを検出しました"
+    "desc": "\u52dd\u624b\u306b\u53cd\u5fdc\u3057\u3061\u3083\u3046\u7cfb",
+    "\u308f\u3051\u308f\u304b\u3081": {
+      "react": "\u308f\u3051\u308f\u304b\u3081\u3092\u691c\u51fa\u3057\u307e\u3057\u305f"
     },
-    "草": {
-      "react": "こいつ草とかいってます",
+    "\u8349": {
+      "react": "\u3053\u3044\u3064\u8349\u3068\u304b\u3044\u3063\u3066\u307e\u3059",
       "desc": "a"
     },
-    "くさ": {
-      "react": "へっ、反応しないとでも思ったか",
+    "\u304f\u3055": {
+      "react": "\u3078\u3063\u3001\u53cd\u5fdc\u3057\u306a\u3044\u3068\u3067\u3082\u601d\u3063\u305f\u304b",
       "desc": ""
     },
-    "モンキーズ": {
-      "react": "その名を呼ぶでない、癪に障る",
+    "\u30e2\u30f3\u30ad\u30fc\u30ba": {
+      "react": "\u305d\u306e\u540d\u3092\u547c\u3076\u3067\u306a\u3044\u3001\u766a\u306b\u969c\u308b",
       "desc": ""
     },
-    "萎え": {
-      "react": "どんまい( *'∀')っ畄",
+    "\u840e\u3048": {
+      "react": "\u3069\u3093\u307e\u3044( *'\u2200')\u3063\u7544",
       "desc": ""
     },
-    "まっさか": {
-      "react": "カーニバル",
+    "\u307e\u3063\u3055\u304b": {
+      "react": "\u30ab\u30fc\u30cb\u30d0\u30eb",
       "desc": ""
+    },
+    "\u7ae5\u8c9e": {
+      "react": "\u547c\u3070\u308c\u305f\u6c17\u304c\u3057\u305f"
     }
   },
   "status": {
     "game": [
-      "現実逃避",
-      "シャドウバース",
-      "荒野行動",
-      "大富豪オンライン",
-      "バトロワチーミング",
-      "苗ちん",
-      "親フラ"
+      "\u73fe\u5b9f\u9003\u907f",
+      "\u30b7\u30e3\u30c9\u30a6\u30d0\u30fc\u30b9",
+      "\u8352\u91ce\u884c\u52d5",
+      "\u5927\u5bcc\u8c6a\u30aa\u30f3\u30e9\u30a4\u30f3",
+      "\u30d0\u30c8\u30ed\u30ef\u30c1\u30fc\u30df\u30f3\u30b0",
+      "\u82d7\u3061\u3093",
+      "\u89aa\u30d5\u30e9"
     ]
   }
 }
