@@ -15,7 +15,7 @@ class TalkIO(commands.Cog, name='TalkIO'):
 
     def jpop(self):
         try:
-            with open("../jsons/Hangar.json", mode='r', encoding='utf-8') as f:
+            with open("./jsons/Hangar.json", mode='r', encoding='utf-8') as f:
                 self.jf = json.load(f)
         except BaseException:
             print("Could not load Hangar.json for pop")
