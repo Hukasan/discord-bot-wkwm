@@ -23,7 +23,7 @@ class Help(commands.HelpCommand):
         cmddict = {}
         parent = "NULL"
         indexs = []
-        command_list = category.walk_commands()
+        command_list = list(category.walk_commands())
         for cmd in command_list:
             if cmd.root_parent:
                 index = cmd.parents.index(cmd.root_parent)
@@ -50,7 +50,10 @@ class Help(commands.HelpCommand):
                     cmddict[cmd.name] = {
                         "desc": cmd.description, "subcmds": {}}
         for parent in cmddict.keys():
-            content += f"{self.context.prefix}{parent} / {cmddict[parent]['desc']}\n"
+            try:
+                content += f"{self.context.prefix}{parent} / {cmddict[parent]['desc']}\n"
+            except KeyError:
+                pass
             if "subcmds" in cmddict[parent].keys():
                 a = sorted(cmddict[parent]["subcmds"].items(),
                            key=lambda x: x[0])
@@ -90,7 +93,6 @@ class Help(commands.HelpCommand):
                     continue
                 adjusted_content += "".join(line.split("\t" *
                                                        min_level)[1:]) + "\n"
-        print(enclosure + adjusted_content + enclosure)
         return enclosure + adjusted_content + enclosure
 
     async def send_bot_help(self, mapping):
