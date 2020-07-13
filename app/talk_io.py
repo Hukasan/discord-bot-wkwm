@@ -10,14 +10,13 @@ class talk_io:
     content = "NULL"
     st = talks = Box
     stc = talksc = json_io
-    method1 = None
-    method2 = None
+    method1 = method2 = None
 
     def __init__(self):
         self.stc, self.st = json_io("./jsons/state.json").get()
+        self.talksc, self.talks = json_io("./jsons/Hangar.json").get()
         self.st.talk = "NULL"
         self.reset()
-        self.talksc, self.talks = json_io("./jsons/Hangar.json").get()
 
     def relode(self):
         self.stc, self.st = self.stc.get()
@@ -27,9 +26,10 @@ class talk_io:
         self.relode()
         self.message = message
         self.content = content
-        return self.eval_cmd()
+        return self.analysis()
 
     def reset(self):
+        self.cmd_checked = False
         self.st.talk = Box({
             "ins": ["NULL"] * 5,
             "name": "NULL",
@@ -41,65 +41,18 @@ class talk_io:
         })
         self.stc.write()
 
-    def eval_cmd(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        con = self.content
+    def analysis(self):
         st = self.st.talk
         if st.fend1:
             return self.method1()
         elif st.fend2:
             return self.method2()
-        elif con[0] == '/':
-            st.fend2 = True
-            for i in range(len(st.ins)):
-                con = con[1:]
-                num = con.find(' ')
-                if num > (0):
-                    st.ins[i] = (con[:num])
-                    con = con[num:]
-                else:
-                    st.ins[i] = con
-                    break
-            self.stc.write()
-            return self.do_cmd(i + 1)
         else:
             ex = []
             for react in self.talks.cats:
                 if react in self.content:
                     ex.append(self.talks.cats[react].react)
             return ex
-
-    def do_cmd(self, size: int):
-        st = self.st.talk
-        cmd = st.ins
-        if cmd[0] == "add":
-            if cmd[1] == "cmd":
-                self.method2 = partial(
-                    self.add_json,
-                    bc=self.talksc,
-                    b=self.talks.MonCmds,
-                    size=size)
-                return self.method2()
-            elif cmd[1] == "react":
-                self.method2 = partial(
-                    self.add_json,
-                    bc=self.talksc,
-                    b=self.talks.cats,
-                    size=size)
-                return self.method2()
-        elif cmd[0] == 'help':
-            return self.felp_view(mode=cmd[1])
-        elif cmd[0] in self.talks.MonCmds:
-            ex = self.talks.MonCmds[cmd[0]].react
-            self.reset()
-            return ex
-        else:
-            self.reset()
-            return "NULL"
 
     def req_yn(self, comment: str):
         con = self.content
@@ -110,12 +63,10 @@ class talk_io:
             return 'キャンセルします'
         return comment
 
-    def add_json(self, bc: json_io, b: Box, size: int) -> str:
+    def add_json(self, bc: json_io, b: Box) -> str:
         st = self.st.talk
         con = self.content
-        ex = [None, "コマンドは？", "返答は？", "すでに追加されているよ、変更する？",
-              "説明をﾄﾞｰｿﾞ( *'∀')っ", "登録完了", ]
-        ex_num = 0
+        ex = [None, "key?", (st.key + '?'), "すでに追加されているよ、変更する？", "登録完了", ]
         if st.freact:
             b[st.name] = {st.key: con}
             bc.write()
@@ -126,19 +77,15 @@ class talk_io:
             st.fname = False
             if st.name in b:
                 st.fend1 = True
-                self.method1 = partial(self.req_yn, comment=ex[2])
+                self.method1 = partial(self.req_yn, comment=ex[2])  # Y/N関数呼び出し
                 ex_num = 3
             else:
                 ex_num = 2
             st.freact = True
         else:
-            if st.ins[2][0] == '!':
-                st.key = st.ins[2][1:]
-            else:
-                st.key = "react"
+            st.key = "react"
             st.fname = True
             ex_num = 1
-
         self.stc.write()
         return ex[ex_num]
 
@@ -167,8 +114,23 @@ class talk_io:
 
 if __name__ == "__main__":
     c = talk_io()
-    print(c.enter(message=None, content="わけわかめ"))
+    # print(c.enter(message=None, content="/help cmd"))
     # print(c.enter(message=None, content="test"))
     # print(c.enter(message=None, content="y"))
     # print(c.enter(message=None, content="testdesu"))
     # print(c.enter(message=None, content="/help"))
+
+    # def do_cmd(self, subcmds: str):
+    #     st = self.st.talk
+    #     st.fend2 = True
+    #     self.stc.write()
+
+    #     if subcmds[0] == 'help':
+    #         return self.felp_view(mode=subcmds[1])
+    #     elif subcmds[0] in self.talks.MonCmds:
+    #         ex = self.talks.MonCmds[subcmds[0]].react
+    #         self.reset()
+    #         return ex
+    #     else:
+    #         self.reset()
+    #         return "NULL"
