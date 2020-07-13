@@ -1,21 +1,14 @@
 import discord
-import logging
-from datetime import datetime
-import random
+from discord.ext import commands
 
 import sys
 sys.path.append("./app/")
-from app.json_io import json_io  # noqa # nopep
-from app.talk_io import talk_io  # noqa # nopep
+from app.TalkIOCog import TalkIO  # noqa # nopep
+from app.BaseOverwriteCog import Help  # noqa # nopep
 
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(
-    filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter(
-    '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+BOTTOKEN = "NzEyMTk4NDE2MjY4MjYzNDg1.XtYkiA.ZiJsdgSV_a6GQneweEOrmuj8BF8"
 
+<<<<<<< HEAD
 
 fc, f = json_io("./jsons/profile.json").get()
 delete_log_channel_id = f.profile.delete_log_channel_id
@@ -65,3 +58,10 @@ async def on_message(message):
 # Botの起動とDiscordサーバーへの接続
 if __name__ == "__main__":
     client.run(TOKEN)
+=======
+if __name__ == '__main__':
+    bot = commands.Bot(command_prefix="$", help_command=Help(),
+                       description="猿sのバナナ農園の精霊")
+    bot.add_cog(TalkIO(bot))
+    bot.run(BOTTOKEN)
+>>>>>>> a2c1353ecccb15de4d454c1e5b1e7cea0f2d0def

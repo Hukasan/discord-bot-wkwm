@@ -1,1 +1,11 @@
-{"talk": {"ins": ["NULL", "NULL", "NULL", "NULL", "NULL"], "name": "NULL", "key": "NULL", "fname": false, "freact": false, "fend1": false, "fend2": false}, "test": "test!"}
+{
+  "talk": {
+    "ins": ["NULL", "NULL", "NULL", "NULL", "NULL"],
+    "name": "NULL",
+    "key": "NULL",
+    "fname": false,
+    "freact": false,
+    "fend1": false,
+    "fend2": false
+  }
+}

@@ -3,4 +3,5 @@ dicord-bot-id.code-workspace
 .vscode/
 discord.log
 __pycache__
+app_forhanger
 tempCodeRunnerFile.py
