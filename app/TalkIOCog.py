@@ -70,7 +70,7 @@ class TalkIO(commands.Cog, name='TalkIO'):
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$add cmd -> コマンドを追加")
 
-    @cmd.command(aliases=["ca"], description="[※管理者のみ]コマンドを追加")
+    @cmd.command(aliases=["ca"], description="コマンド追加")
     async def add(self, ctx, key, reaction):
         """反応することばを追加します
             $cmd add key reaction
@@ -88,13 +88,11 @@ class TalkIO(commands.Cog, name='TalkIO'):
 
     @commands.group(description="リアクション管理コマンド")
     async def cat(self, ctx):
-        """リアクションに関するコマンド群
-        """
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cat view -> 一覧を表示")
 
     @commands.is_owner()
-    @cat.command(aliases=["ra"], description="[※管理者のみ]リアクションを追加")
+    @cat.command(aliases=["ra"], description=("リアクション追加"))
     async def add(self, ctx, trigger, reaction):
         try:
             self.jreact[trigger] = {"react": reaction}

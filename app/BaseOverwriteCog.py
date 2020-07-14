@@ -19,6 +19,7 @@ class Help(commands.HelpCommand):
         コマンドの集まり（Group、Cog）から木の枝状のコマンドリスト文字列を生成する。
         生成した文字列は enlosure 引数に渡された文字列で囲われる。
         """
+
         content = ""
         cmddict = {}
         parent = "NULL"
@@ -64,8 +65,8 @@ class Help(commands.HelpCommand):
                         subcmds = sorted(
                             cmddict[parent]["subcmds"][indexs[i]].items(), key=lambda x: x[0])
                         for subcmd in subcmds:
-                            indent = "\t" * (indexs[i])
-                            content += f"{indent} - {subcmd[0]} / {subcmd[1]}\n"
+                            indent = "\t" * (indexs[i]+1)
+                            content += f"{indent}- {subcmd[0]}:{subcmd[1]}\n"
             indexs = []
         min_level = float("inf")
         adjusted_content = ""
@@ -130,7 +131,7 @@ class Help(commands.HelpCommand):
                             "`, `".join(group.aliases) + "`", inline=False)
         if group.help:
             embed.add_field(name="HelpText：", value=group.help, inline=False)
-        embed.add_field(name="SubCommandText：", value=await self.create_category_tree(group, "```"), inline=False)
+        embed.add_field(name="サブコマンド:", value=await self.create_category_tree(group, "```"), inline=False)
         await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, command):

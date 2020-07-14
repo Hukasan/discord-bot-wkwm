@@ -2,34 +2,28 @@
   "Cmds": {
     "lobi": {
       "react": "オエッhttps://lobi.co/invite/wu3hsu",
-      "desc": "lobi本部のURlを吐き出します"
+      "desc": "lobi本部のURLを吐き出します"
     },
     "join": {
       "react": "http://banazaru.wp.xdomain.jp/",
       "desc": "ホームページを吐き出します"
     },
     "clan": { "react": "21805", "desc": "クラン番号を吐き出します" },
-    "add": { "desc": "各コマンドを追加します" }
-  },
-  "MonCmds": {
-    "lobi": {
-      "react": "オエッhttps://lobi.co/invite/wu3hsu",
-      "desc": "lobi本部のURlを吐き出します"
-    },
+    "add": { "desc": "各コマンドを追加します" },
+
     "neko": { "react": "にゃーん?", "desc": "にゃーんと鳴き返します" },
-    "tepu": { "react": "あん♡", "desc": "" },
-    "EnCo": {
+    "require": {
       "react": "・ボイスチャット可能or聞き専\n・イン率\n・クラン戦でのメインキャラのスクショ\n・免除希望の方は免除に値する証拠\r・試験希望日時"
     }
   },
   "cats": {
     "desc": "勝手に反応しちゃう系",
     "わけわかめ": { "react": "わけわかめを検出しました" },
-    "草": { "react": "こいつ草とかいってます", "desc": "a" },
+    "草": { "react": "こいつ草とかいってます" },
     "くさ": { "react": "こいつ草とかいってます" },
-    "モンキーズ": { "react": "その名を呼ぶでない、癪に障る", "desc": "" },
-    "萎え": { "react": "どんまい( *'∀')っ畄", "desc": "" },
-    "まっさか": { "react": "カーニバル", "desc": "" }
+    "モンキーズ": { "react": "その名を呼ぶでない、癪に障る" },
+    "萎え": { "react": "どんまい( *'∀')っ畄" },
+    "まっさか": { "react": "カーニバル" }
   },
   "status": {
     "game": [
