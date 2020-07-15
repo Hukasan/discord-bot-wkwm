@@ -1,5 +1,6 @@
 {
   "Cmds": {
+    "desc": "ユーザが追加した$から始まる予約語です",
     "lobi": {
       "react": "オエッhttps://lobi.co/invite/wu3hsu",
       "desc": "lobi本部のURLを吐き出します"

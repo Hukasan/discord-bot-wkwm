@@ -104,16 +104,22 @@ class TalkIO(commands.Cog, name='TalkIO'):
             await ctx.send("なぞかきこみえらー in cat add")
 
     def view_base_toembed(self, jsonf: dict, title: str) -> discord.Embed:
-        maped_list = map(str, list(self.jreact.keys())[1:])  # mapで要素すべてを文字列に
+        maped_list = map(str, list(jsonf.keys())[1:])  # mapで要素すべてを文字列に
         mojiretu = ','.join(maped_list)
         embed = discord.Embed(title=f"{title}",
-                              description=self.jreact["desc"], color=0x00ff00)
+                              description=jsonf["desc"], color=0x00ff00)
+        mojiretu = mojiretu.replace(',', '\r')
         embed.add_field(name="__CommandList__",
-                        value=mojiretu.replace(',', '\r'))  # noqa
+                        value=f"```{mojiretu}```")  # noqa
         return embed
 
-    @ cat.command(aliases=["v"], description="一覧表示")
+    @ cat.command(aliases=["v"], description="catcall一覧表示")
     async def view(self, ctx):
-        """反応することばを出力します
+        """反応することば一覧を出力します
         """
+        await ctx.send(embed=self.view_base_toembed(jsonf=self.jreact, title="CatCalls"))
+
+    @commands.command(description="ユーザによって追加されたやつを全部出します")
+    async def view(self, ctx):
+        await ctx.send(embed=self.view_base_toembed(jsonf=self.jcmd, title="Cmds"))
         await ctx.send(embed=self.view_base_toembed(jsonf=self.jreact, title="CatCalls"))
