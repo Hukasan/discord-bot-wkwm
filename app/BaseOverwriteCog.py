@@ -104,29 +104,31 @@ class Help(commands.HelpCommand):
     async def send_cog_help(self, cog):
         embed = discord.Embed(title=cog.qualified_name,
                               description=cog.description, color=0x00ff00)
-        embed.add_field(name="CommandList：", value=await self.create_category_tree(cog, "```"))
+        embed.add_field(name="__CommandList__", value=await self.create_category_tree(cog, "```"))
         await self.get_destination().send(embed=embed)
 
     async def send_group_help(self, group):
         embed = discord.Embed(title=f"{self.context.prefix}{group.qualified_name}",
                               description=group.description, color=0x00ff00)
         if group.aliases:
-            embed.add_field(name="AnotherCall：", value="`" +
+            embed.add_field(name="__AnotherCall__", value="`" +
                             "`, `".join(group.aliases) + "`", inline=False)
         if group.help:
-            embed.add_field(name="HelpText：", value=group.help, inline=False)
-        embed.add_field(name="サブコマンド:", value=await self.create_category_tree(group, "```"), inline=False)
+            embed.add_field(name="__HelpText__",
+                            value=group.help, inline=False)
+        embed.add_field(name="*サブコマンド:*", value=await self.create_category_tree(group, "```"), inline=False)
         await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, command):
         params = " ".join(command.clean_params.keys())
-        embed = discord.Embed(title=f"{self.context.prefix}{command.qualified_name} {params}",
+        embed = discord.Embed(title=f"__{self.context.prefix}{command.qualified_name} {params}__",
                               description=command.description, color=0x00ff00)
         if command.aliases:
-            embed.add_field(name="AnotherCall：", value="`" +
+            embed.add_field(name="__AnotherCall__", value="`" +
                             "`, `".join(command.aliases) + "`", inline=False)
         if command.help:
-            embed.add_field(name="HelpText：", value=command.help, inline=False)
+            embed.add_field(name="__HelpText__",
+                            value=command.help, inline=False)
         await self.get_destination().send(embed=embed)
 
     async def send_error_message(self, error):
