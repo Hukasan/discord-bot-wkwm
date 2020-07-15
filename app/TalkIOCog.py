@@ -42,7 +42,8 @@ class TalkIO(commands.Cog, name='TalkIO'):
             if cmd in self.jcmd:
                 await ctx.send(self.jcmd[cmd]["react"])
             else:
-                await ctx.send("こまんどいずのっとふぁうんどcheck $help")
+                # await ctx.send("こまんどいずのっとふぁうんどcheck $help")
+                await ctx.send(str(error))
         except IndexError:
             if str(error) == "trigger is a required argument that is missing.":
                 await ctx.send("入力する値の数が足りてません")
@@ -70,6 +71,7 @@ class TalkIO(commands.Cog, name='TalkIO'):
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$add cmd -> コマンドを追加")
 
+    @commands.is_owner()
     @cmd.command(aliases=["ca"], description="コマンド追加")
     async def add(self, ctx, key, reaction):
         """反応することばを追加します
@@ -101,14 +103,17 @@ class TalkIO(commands.Cog, name='TalkIO'):
         except BaseException:
             await ctx.send("なぞかきこみえらー in cat add")
 
+    def view_base_toembed(self, jsonf: dict, title: str) -> discord.Embed:
+        maped_list = map(str, list(self.jreact.keys())[1:])  # mapで要素すべてを文字列に
+        mojiretu = ','.join(maped_list)
+        embed = discord.Embed(title=title,
+                              description=self.jreact["desc"], color=0x00ff00)
+        embed.add_field(name="CommandList：",
+                        value=mojiretu.replace(',', '\r'))  # noqa
+        return embed
+
     @ cat.command(aliases=["v"], description="一覧表示")
     async def view(self, ctx):
         """反応することばを出力します
         """
-        maped_list = map(str, list(self.jreact.keys())[1:])  # mapで要素すべてを文字列に
-        mojiretu = ','.join(maped_list)
-        embed = discord.Embed(title="Catcalls",
-                              description=self.jreact["desc"], color=0x00ff00)
-        embed.add_field(name="CommandList：",
-                        value=mojiretu.replace(',', '\r'))  # noqa
-        await ctx.send(embed=embed)
+        await ctx.send(embed=self.view_base_toembed(jsonf=self.jreact, title="CatCalls"))

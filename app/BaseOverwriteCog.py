@@ -14,6 +14,29 @@ class Help(commands.HelpCommand):
     def export_map_byindex(self, index):
         pass
 
+    async def create_category_tree_method(self, cmd, index=0) -> str:
+        try:
+            await cmd.can_run(self.context)
+        except BaseException:
+            print(f"例外:{cmd.name}")
+            return''
+        content = str()
+        temp = str()
+        if 0 == index:
+            content = f"${cmd.name}:{cmd.description}\n"
+        else:
+            indent = (index+1)*"\t"
+            content = f"{indent}- {cmd.name}:{cmd.description}\n"
+        if isinstance(cmd, commands.Group):
+            for subcmd in cmd.walk_commands():
+                if not(subcmd.name == temp):
+                    content += await self.create_category_tree_method(
+                        cmd=subcmd, index=(index + 1))
+                temp = subcmd.name
+            return content
+        elif isinstance(cmd, commands.Command):
+            return content
+
     async def create_category_tree(self, category, enclosure):
         """
         コマンドの集まり（Group、Cog）から木の枝状のコマンドリスト文字列を生成する。
@@ -21,53 +44,11 @@ class Help(commands.HelpCommand):
         """
 
         content = ""
-        cmddict = {}
         parent = "NULL"
-        indexs = []
         command_list = list(category.walk_commands())
         for cmd in command_list:
-            if cmd.root_parent:
-                index = cmd.parents.index(cmd.root_parent)
-                if ((index + 1) * '\t'):
-                    if cmd.root_parent.name in cmddict.keys():
-                        if index in cmddict[cmd.root_parent.name]["subcmds"].keys():
-                            cmddict[cmd.root_parent.name]["subcmds"][index].update({
-                                cmd.name: cmd.description})
-                        else:
-                            cmddict[cmd.root_parent.name]["subcmds"].update({index: {
-                                cmd.name: cmd.description}})
-                    else:
-                        cmddict[cmd.root_parent.name] = {"subcmds": {index: {
-                            cmd.name: cmd.description}}}
-                else:
-                    if cmd.name in cmddict.keys():
-                        cmddict[cmd.name]["desc"] = cmd.description
-                    else:
-                        cmddict[cmd.name] = {"desc": cmd.description}
-            else:
-                if cmd.name in cmddict.keys():
-                    cmddict[cmd.name]["desc"] = cmd.description
-                else:
-                    cmddict[cmd.name] = {
-                        "desc": cmd.description, "subcmds": {}}
-        for parent in cmddict.keys():
-            try:
-                content += f"{self.context.prefix}{parent} / {cmddict[parent]['desc']}\n"
-            except KeyError:
-                pass
-            if "subcmds" in cmddict[parent].keys():
-                a = sorted(cmddict[parent]["subcmds"].items(),
-                           key=lambda x: x[0])
-                for b in a:
-                    indexs.append(b[0])
-                if indexs:
-                    for i in range(len(indexs)):
-                        subcmds = sorted(
-                            cmddict[parent]["subcmds"][indexs[i]].items(), key=lambda x: x[0])
-                        for subcmd in subcmds:
-                            indent = "\t" * (indexs[i]+1)
-                            content += f"{indent}- {subcmd[0]}:{subcmd[1]}\n"
-            indexs = []
+            if not(cmd.root_parent):
+                content += await self.create_category_tree_method(cmd=cmd)
         min_level = float("inf")
         adjusted_content = ""
 
