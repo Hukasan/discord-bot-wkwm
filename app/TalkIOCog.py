@@ -56,7 +56,7 @@ class TalkIO(commands.Cog, name='TalkIO'):
             return
         content = message.content
         self.jpop()
-        print(content)
+        print(f"->{content}")
         for key in self.jreact:
             if key in content:
                 await message.channel.send(self.jreact[key]["react"])
@@ -106,9 +106,9 @@ class TalkIO(commands.Cog, name='TalkIO'):
     def view_base_toembed(self, jsonf: dict, title: str) -> discord.Embed:
         maped_list = map(str, list(self.jreact.keys())[1:])  # mapで要素すべてを文字列に
         mojiretu = ','.join(maped_list)
-        embed = discord.Embed(title=title,
+        embed = discord.Embed(title=f"{title}",
                               description=self.jreact["desc"], color=0x00ff00)
-        embed.add_field(name="CommandList：",
+        embed.add_field(name="__CommandList__",
                         value=mojiretu.replace(',', '\r'))  # noqa
         return embed
 
