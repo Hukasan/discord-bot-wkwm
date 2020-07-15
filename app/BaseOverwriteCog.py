@@ -15,6 +15,9 @@ class Help(commands.HelpCommand):
         pass
 
     async def create_category_tree_method(self, cmd, index=0) -> str:
+        """
+        再帰関数。groupの最下層までを探索する
+        """
         try:
             await cmd.can_run(self.context)
         except BaseException:
