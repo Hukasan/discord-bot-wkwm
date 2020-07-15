@@ -1,3 +1,4 @@
+from os import environ
 import discord
 from discord.ext import commands
 
@@ -6,7 +7,7 @@ sys.path.append("./app/")
 from app.TalkIOCog import TalkIO  # noqa # nopep
 from app.BaseOverwriteCog import Help  # noqa # nopep
 
-BOTTOKEN = "NzEyMTk4NDE2MjY4MjYzNDg1.XtYkiA.ZiJsdgSV_a6GQneweEOrmuj8BF8"
+BOTTOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
 
 if __name__ == '__main__':
     bot = commands.Bot(command_prefix="$", help_command=Help(),
