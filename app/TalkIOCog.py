@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from collections import OrderedDict
 import json
 import sys
 
@@ -48,7 +47,7 @@ class TalkIO(commands.Cog, name='TalkIO'):
             if str(error) == "trigger is a required argument that is missing.":
                 await ctx.send("入力する値の数が足りてません")
             else:
-                await ctx.send("管轄外エラー:" + str(error))
+                await ctx.send("管轄外エラーon_message:" + str(error))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -123,3 +122,7 @@ class TalkIO(commands.Cog, name='TalkIO'):
     async def view(self, ctx):
         await ctx.send(embed=self.view_base_toembed(jsonf=self.jcmd, title="Cmds"))
         await ctx.send(embed=self.view_base_toembed(jsonf=self.jreact, title="CatCalls"))
+
+
+def setup(bot):
+    return bot.add_cog(TalkIO(bot))

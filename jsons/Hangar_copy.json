@@ -1,22 +1,26 @@
 {
-  "Cmds": {
-    "desc": "ユーザが追加した$から始まる予約語です",
-    "lobi": {
+  "Cmds": [
+    {
+      "name": "lobi",
       "react": "オエッhttps://lobi.co/invite/wu3hsu",
       "desc": "lobi本部のURLを吐き出します"
     },
-    "join": {
+    {
+      "name": "join",
       "react": "http://banazaru.wp.xdomain.jp/",
       "desc": "ホームページを吐き出します"
     },
-    "clan": { "react": "21805", "desc": "クラン番号を吐き出します" },
-    "add": { "desc": "各コマンドを追加します" },
-
-    "neko": { "react": "にゃーん?", "desc": "にゃーんと鳴き返します" },
-    "require": {
-      "react": "・ボイスチャット可能or聞き専\n・イン率\n・クラン戦でのメインキャラのスクショ\n・免除希望の方は免除に値する証拠\n・試験希望日時"
+    {
+      "name": "clan",
+      "react": "21805",
+      "desc": "クラン番号を吐き出します"
+    },
+    { "name": "neko", "react": "にゃーん?", "desc": "にゃーんと鳴き返します" },
+    {
+      "name": "require",
+      "react": "・ボイスチャット可能or聞き専\n・イン率\n・クラン戦でのメインキャラのスクショ\n・免除希望の方は免除に値する証拠\r・試験希望日時"
     }
-  },
+  ],
   "cats": {
     "desc": "会話の中から検出するとすかさず喋りだすyo\rCatcallとは「やじ」のいみだよ.",
     "わけわかめ": { "react": "わけわかめを検出しました" },
