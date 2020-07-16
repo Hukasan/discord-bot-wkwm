@@ -1,13 +1,20 @@
 import discord
 from discord.ext import commands
-from TalkIOCog import TalkIO  # noqa
-# from test import MusicCog
+
+
+@commands.command(description="プログラムを再読み込みします")
+async def relode(ctx: commands.Context):
+    bot = ctx.bot
+    for extension in list(bot.extensions):
+        print(f"{extension}isreloted")
+        bot.reload_extension(f"{extension}")
+    await ctx.send("再読み込み完了")
 
 
 class Help(commands.HelpCommand):
     def __init__(self):
         super().__init__()
-        self.no_category = "カテゴリ未設定"
+        self.no_category = "基本コマンド"
         self.command_attrs["description"] = "このメッセージを表示します。"
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
 
@@ -146,10 +153,6 @@ class Help(commands.HelpCommand):
         return f"{command.qualified_name} にサブコマンドは登録されていません。"
 
 
-if __name__ == "__main__":
-    bot = commands.Bot(command_prefix="$", help_command=Help(),
-                       description="試験用botです")
-    # bot.add_cog(AddminCog(bot))
-    # bot.add_cog(MusicCog(bot))
-    bot.add_cog(TalkIO(bot))
-    bot.run("NzEyMTk4NDE2MjY4MjYzNDg1.XtYkiA.ZiJsdgSV_a6GQneweEOrmuj8BF8")
+def setup(bot: commands.Bot):
+    bot.help_command = Help()
+    bot.add_command(relode)
