@@ -18,9 +18,6 @@ class Help(commands.HelpCommand):
         self.command_attrs["description"] = "このメッセージを表示します。"
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
 
-    def export_map_byindex(self, index):
-        pass
-
     async def create_category_tree_method(self, cmd, index=0) -> str:
         """
         再帰関数。groupの最下層までを探索する
