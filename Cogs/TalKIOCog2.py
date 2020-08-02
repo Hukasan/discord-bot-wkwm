@@ -1,47 +1,26 @@
 import discord
 from discord.ext import commands
-import json
-import sys
+from web import table
 
 
-class TalkIO(commands.Cog, name='TalkIO'):
+class TalkIO(commands.Cog, name='会話'):
     """会話系のコマンド群です
     """
 
     def __init__(self, bot):
         self.bot = bot
-        self.jpop()
-
-    def jpop(self):
-        try:
-            with open("./jsons/Hangar.json", mode='r', encoding='utf-8') as f:
-                self.jf = json.load(f)
-        except BaseException:
-            print("Could not load Hangar.json for pop")
-            print("EXIT")
-            sys.exit(1)
-        self.jreact = self.jf["cats"]
-        self.jcmd = self.jf["Cmds"]
-
-    def jpush(self):
-        try:
-            with open("../jsons/Hangar.json", mode='w',  encoding='utf-8') as f:
-                f.write(json.dumps(self.jf, ensure_ascii=False))
-        except BaseException:
-            print("Could not load Hangar.json for push")
-            print("EXIT")
-            sys.exit(1)
+        self.db_cmd = table.Cmdtb()
+        self.db_cat = table.Cattb()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        self.jpop()
         cmd = str()
         try:
             cmd = ((str(error)).split('"', maxsplit=2))[1]
-            if cmd in self.jcmd:
-                await ctx.send(self.jcmd[cmd]["react"])
+            result = self.db_cmd.tbselect(cmd)
+            if result:
+                await ctx.send(result[0].body)
             else:
-                # await ctx.send("こまんどいずのっとふぁうんどcheck $help")
                 await ctx.send(str(error))
         except IndexError:
             if str(error) == "trigger is a required argument that is missing.":
@@ -54,21 +33,20 @@ class TalkIO(commands.Cog, name='TalkIO'):
         if message.author.bot:
             return
         content = message.content
-        self.jpop()
         print(f"->{content}")
-        for key in self.jreact:
-            if key in content:
-                await message.channel.send(self.jreact[key]["react"])
+        for query in self.db_cat.tbselect():
+            if query.title in content:
+                await message.channel.send(query.body)
                 return
         pass
 
     @commands.is_owner()
-    @commands.group(description="コマンド管理コマンド")
+    @commands.group(description="コマンド管理")
     async def cmd(self, ctx):
         """[※管理者のみ]
         """
         if ctx.invoked_subcommand is None:
-            await ctx.send("サブコマンドがいるよ 例:\r$add cmd -> コマンドを追加")
+            await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンドを追加")
 
     @commands.is_owner()
     @cmd.command(aliases=["ca"], description="コマンド追加")
@@ -79,7 +57,11 @@ class TalkIO(commands.Cog, name='TalkIO'):
             key : 追加するコマンド[${key}]
             reaction : keyに対するリアクション
         """
-        await ctx.send("OK")
+        try:
+            self.db_cmd.add(title=key, body=reaction)
+            await ctx.send("さくせす")
+        except BaseException:
+            await ctx.send("なぞかきこみえらー in cat add")
 
     @add.error
     async def add_error(self, ctx, error):
@@ -96,8 +78,7 @@ class TalkIO(commands.Cog, name='TalkIO'):
     @cat.command(aliases=["ra"], description=("リアクション追加"))
     async def add(self, ctx, trigger, reaction):
         try:
-            self.jreact[trigger] = {"react": reaction}
-            self.jpush()
+            self.db_cat.add(title=trigger, body=reaction)
             await ctx.send("さくせす")
         except BaseException:
             await ctx.send("なぞかきこみえらー in cat add")

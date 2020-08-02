@@ -49,13 +49,15 @@ class Help(commands.HelpCommand):
         コマンドの集まり（Group、Cog）から木の枝状のコマンドリスト文字列を生成する。
         生成した文字列は enlosure 引数に渡された文字列で囲われる。
         """
+        content = ''
+        if isinstance(category, commands.Cog):
+            for cmd in list(category.walk_commands()):
+                if not(cmd.root_parent):
+                    content += await self.create_category_tree_method(cmd=cmd)
+        elif isinstance(category, commands.Group):
+            for cmd in list(category.walk_commands()):
+                content = await self.create_category_tree_method(cmd=cmd)
 
-        content = ""
-        parent = "NULL"
-        command_list = list(category.walk_commands())
-        for cmd in command_list:
-            if not(cmd.root_parent):
-                content += await self.create_category_tree_method(cmd=cmd)
         min_level = float("inf")
         adjusted_content = ""
 
@@ -106,8 +108,8 @@ class Help(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_cog_help(self, cog):
-        embed = discord.Embed(title=cog.qualified_name,
-                              description=cog.description, color=0x00ff00)
+        embed = discord.Embed(title=f"{cog.qualified_name}カテゴリ",
+                              description=f"{cog.description}", color=0x00ff00)
         embed.add_field(name="__CommandList__", value=await self.create_category_tree(cog, "```"))
         await self.get_destination().send(embed=embed)
 
@@ -118,7 +120,7 @@ class Help(commands.HelpCommand):
             embed.add_field(name="__AnotherCall__", value="`" +
                             "`, `".join(group.aliases) + "`", inline=False)
         if group.help:
-            embed.add_field(name="__HelpText__",
+            embed.add_field(name="概要",
                             value=group.help, inline=False)
         embed.add_field(name="*サブコマンド:*", value=await self.create_category_tree(group, "```"), inline=False)
         await self.get_destination().send(embed=embed)
@@ -141,7 +143,7 @@ class Help(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def command_not_found(self, string):
-        await self.get_destination().send(embed=embed)  # noqa
+        return f"{string} というコマンドは存在しません。"
 
     def subcommand_not_found(self, command, string):
         if isinstance(command, commands.Group) and len(command.all_commands) > 0:
