@@ -11,7 +11,7 @@ click==7.1.2
 discord==1.0.1
 discord.py==1.3.4
 flake8==3.8.3
--e git+https://github.com/Hukasan/discord-bot-id.git@a4d8fe263aa413790e6e4345a1693d35517eec72#egg=Flask
+# -e git+https://github.com/Hukasan/discord-bot-id.git@a4d8fe263aa413790e6e4345a1693d35517eec72#egg=Flask
 Flask-SQLAlchemy==2.4.4
 google-auth==1.19.2
 google-auth-oauthlib==0.4.1
