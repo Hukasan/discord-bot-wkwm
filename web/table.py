@@ -30,7 +30,6 @@ class DBIO():
         print(self.table.query.all())
 
     def tbselect(self, title=str()):
-        results = []
         result = self.table
         if title:
             result = self.table.query. \
