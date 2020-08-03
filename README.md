@@ -1,12 +1,17 @@
-# Discord bot 
+# Discord bot
+
 + discord.py
-+ python3.7.7
++ python3.8.0
 + Heroku による稼働
+
 ## whats do
+
 + 適当な応答
 + メンバーのゲームIDの管理とかできればな
   + データベース学ぶ必要があるため直近は無理
+
 ## 今晩実装したいこと
+
 + コードを綺麗に
 + しりとり機能
 + 覗き受付

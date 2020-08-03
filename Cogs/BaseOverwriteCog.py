@@ -101,9 +101,10 @@ class Help(commands.HelpCommand):
 
             command_list = await self.filter_commands(mapping[cog], sort=True)
             content = ""
-            for cmd in command_list:
-                content += f"`{self.context.prefix}{cmd.name}`\n {cmd.description}\n"
-            embed.add_field(name=cog_name, value=content, inline=False)
+            if command_list:
+                for cmd in command_list:
+                    content += f"`{self.context.prefix}{cmd.name}`\n {cmd.description}\n"
+                embed.add_field(name=cog_name, value=content, inline=False)
 
         await self.get_destination().send(embed=embed)
 
