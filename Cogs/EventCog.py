@@ -16,12 +16,9 @@ class Event(commands.Cog):
         self.room_id = (self.bot.config['wkwm']['room_id'])
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_member_update(self, before: discord.Member, after: discord.Member):
         await self.bot.wait_until_ready()
         self.room = self.bot.get_channel(self.room_id)
-
-    @commands.Cog.listener()
-    async def on_member_update(self, before: discord.Member, after: discord.Member):
         br = set(before.roles)
         ar = set(after.roles)
         dif = len(br) - len(ar)
