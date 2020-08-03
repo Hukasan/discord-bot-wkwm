@@ -17,6 +17,7 @@ class Event(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        await self.bot.wait_until_ready()
         self.room = self.bot.get_channel(self.room_id)
 
     @commands.Cog.listener()
