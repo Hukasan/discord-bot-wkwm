@@ -26,7 +26,7 @@ class TalkIO(commands.Cog, name='会話'):
             if str(error) == "trigger is a required argument that is missing.":
                 await ctx.send("入力する値の数が足りてません")
             else:
-                await ctx.send("管轄外エラーon_message:" + str(error))
+                await ctx.send(f"管轄外エラー:on_message```python{str(error)}```")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -54,8 +54,8 @@ class TalkIO(commands.Cog, name='会話'):
         """反応することばを追加します
             $cmd add key reaction
         Args:
-            key : 追加するコマンド[${key}]
-            reaction : keyに対するリアクション
+            key: 追加するコマンド[${key}]
+            reaction: keyに対するリアクション
         """
         try:
             self.db_cmd.add(title=key, body=reaction)
@@ -87,9 +87,9 @@ class TalkIO(commands.Cog, name='会話'):
         content = str()
         qlist = t.tbselect()
         for q in qlist:
-            content += f"・{q.title}\r"
+            content += f"・{q.title}\n"
         embed = discord.Embed(title=f"{title}", color=0x00ff00)
-        embed.add_field(name="__CommandList__",
+        embed.add_field(name="__List__",
                         value=f"```{content}```")  # noqa
         return embed
 
