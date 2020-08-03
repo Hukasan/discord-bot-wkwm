@@ -13,7 +13,7 @@ class Event(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.lastchecktime = (datetime.now(utc))
-        self.room_id(self.bot.config['wkwm']['room_id'])
+        self.room_id = (self.bot.config['wkwm']['room_id'])
 
     @commands.Cog.listener()
     async def on_ready(self):
