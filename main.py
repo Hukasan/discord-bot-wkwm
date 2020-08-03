@@ -17,7 +17,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     bot = commands.Bot(command_prefix="$",
                        description="猿sのバナナ農園の精霊")
-    config["wkwm"]["room_id"] = environ['ROOM_ID']
+    config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
     bot.config = config
     TOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
     for extension in extensions:
