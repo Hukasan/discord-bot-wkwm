@@ -13,9 +13,11 @@ class Event(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.lastchecktime = (datetime.now(utc))
-        self.room = self.bot.get_channel(self.bot.config['wkwm']['room_id'])
-        if not(self.room):
-            print("getchannelerror")
+        self.room_id(self.bot.config['wkwm']['room_id'])
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.room = self.bot.get_channel(self.room_id)
 
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
