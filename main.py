@@ -20,7 +20,7 @@ if __name__ == '__main__':
                        description="猿sのバナナ農園の精霊")
     config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
     config['wkwm']['welcome_room_id'] = environ['WELCOME_ROOM_ID']
-    config['wkwm']['leave_notice_room_id'] = environ['LEAVE_NOTICE_ID']
+    config['wkwm']['leave_notice_room_id'] = environ['LEAVE_NOTICE_ROOM_ID']
     config['wkwm']['nozoki_role_id'] = environ['NOZOKI_ROLE_ID']
     bot.config = config
     TOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
