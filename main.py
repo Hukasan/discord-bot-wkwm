@@ -19,9 +19,9 @@ if __name__ == '__main__':
     bot = commands.Bot(command_prefix="$",
                        description="猿sのバナナ農園の精霊")
     config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
-    config['wkwm']['welcome_room_id'] = 710732615879229481
-    config['wkwm']['leave_notice_room_id'] = 714408152061182033
-    config['wkwm']['role_nozoki_id'] = 709225085575364650
+    config['wkwm']['welcome_room_id'] = environ['WELCOME_ROOM_ID']
+    config['wkwm']['leave_notice_room_id'] = environ['LEAVE_NOTICE_ID']
+    config['wkwm']['nozoki_role_id'] = environ['NOZOKI_ROLE_ID']
     bot.config = config
     TOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
     for extension in extensions:
