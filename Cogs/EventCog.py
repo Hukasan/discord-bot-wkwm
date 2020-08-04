@@ -13,7 +13,7 @@ class Event(commands.Cog):
         self.bot = bot
         self.lastchecktime = (datetime.now(utc))
         self.room_id = int(self.bot.config['wkwm']['room_id'])
-        self.role_nozoki_id = int(self.bot.config['wkwm']['role_nozoki_id'])
+        self.role_nozoki_id = int(self.bot.config['wkwm']['nozoki_role_id'])
         self.welcome_room_id = int(self.bot.config['wkwm']['welcome_room_id'])
         self.welcome_message = str(self.bot.config['wkwm']['welcome_message'])
         self.leave_notice_room_id = int(
