@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from web import table
+from dispander import dispand
 
 
 class TalkIO(commands.Cog, name='会話'):
@@ -32,6 +33,7 @@ class TalkIO(commands.Cog, name='会話'):
     async def on_message(self, message):
         if message.author.bot:
             return
+        await dispand(message)
         content = message.content
         print(f"->{content}")
         for query in self.db_cat.tbselect():
@@ -100,7 +102,7 @@ class TalkIO(commands.Cog, name='会話'):
         await ctx.send(embed=self.view_base_toembed(t=self.db_cat, title="リアクション"))
 
     @commands.command(description="ユーザによって追加されたやつを全部出します")
-    async def view(self, ctx):
+    async def view(self, ctx):  # noqa
         await ctx.send(embed=self.view_base_toembed(t=self.db_cat, title="リアクション"))
         await ctx.send(embed=self.view_base_toembed(t=self.db_cmd, title="チャットコマンド"))
 
