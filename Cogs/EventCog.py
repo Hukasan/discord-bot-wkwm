@@ -2,6 +2,7 @@ from discord import Embed, Member, AuditLogAction
 from discord.ext import commands
 from datetime import datetime
 from pytz import utc
+from Cogs.OptionalSetting import Option
 
 
 class Event(commands.Cog):
@@ -19,12 +20,6 @@ class Event(commands.Cog):
         self.leave_notice_room_id = int(
             self.bot.config['wkwm']['leave_notice_room_id'])
 
-    def default_embed(self, message):
-        return Embed.from_dict({
-            'description': message,
-            'color': 0x00ff00,
-        })
-
     @ commands.Cog.listener()
     async def on_member_join(self, member: Member):
         if member.bot:
@@ -32,14 +27,14 @@ class Event(commands.Cog):
         role_member = member.guild.get_role(self.role_nozoki_id)
         await member.add_roles(role_member)
         welcome_room = self.bot.get_channel(self.welcome_room_id)
-        await welcome_room.send(embed=self.default_embed(f"ようこそ猿sのばなな農園へ🍌\r{member.mention}さん\r{self.welcome_message}"))
+        await welcome_room.send(embed=Option.default_embed(description=f"ようこそ猿sのばなな農園へ🍌\r{member.mention}さん\r{self.welcome_message}"))
 
-    @commands.Cog.listener()
+    @ commands.Cog.listener()
     async def on_member_remove(self, member: Member):
         if member.bot:
             return
         leave_notice_room = self.bot.get_channel(self.leave_notice_room_id)
-        await leave_notice_room.send(embed=self.default_embed(f" **{member.name}** が脱退しました \rUserID: {member.mention}"))
+        await leave_notice_room.send(embed=Option.default_embed(description=f" **{member.name}** が脱退しました \rUserID: {member.mention}"))
 
     @ commands.Cog.listener()
     async def on_member_update(self, before: Member, after: Member):

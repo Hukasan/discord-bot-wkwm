@@ -12,12 +12,13 @@ extensions = []
 extensions.append('BaseOverwriteCog')
 extensions.append('TalKIOCog2')
 extensions.append("EventCog")
+extensions.append("ReactionEvent")
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     bot = commands.Bot(command_prefix="$",
-                       description="猿sのバナナ農園の精霊")
+                       description="Saru's Wakewakaran Bot Project")
     config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
     config['wkwm']['welcome_room_id'] = environ['WELCOME_ROOM_ID']
     config['wkwm']['leave_notice_room_id'] = environ['LEAVE_NOTICE_ROOM_ID']
