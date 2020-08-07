@@ -29,11 +29,11 @@ class DBIO():
     def tbview(self):
         print(self.table.query.all())
 
-    def tbselect(self, title=str()):
+    def tbselect(self, id):
         result = self.table
-        if title:
+        if id:
             result = self.table.query. \
-                filter(self.table.title == title). \
+                filter(self.table.id == id). \
                 all()
             return result
         else:
@@ -50,7 +50,7 @@ class Cmdtb(DBIO):
         title = db.Column(db.String(), nullable=False, primary_key=True)
         body = db.Column(db.String(), nullable=False)
 
-    def add(self, title: str, body: str):
+    def add(self, id: str, body: str):
         """
         コマンド追加
 
@@ -59,8 +59,27 @@ class Cmdtb(DBIO):
             body (str): 返答
         """
         t = self.table()
-        t.title = title
+        t.id = id
         t.body = body
+        db.session.add(t)
+        db.session.commit()
+
+
+class MsfRtb(DBIO):
+    def __init__(self):
+        self.table = self.MsforReact
+
+    class MsforReact(db.Model):
+        __tablename__ = "msforreact"
+        mid = db.Column(db.Integer(), nullable=False, primary_key=True)
+        cid = db.Column(db.Integer(), nullable=False)
+        seed = db.Column(db.String(), nullable=True)
+
+    def add(self, message_id, channel_id, seed):
+        t = self.table
+        t.mid = message_id
+        t.cid = channel_id
+        t.seed = seed
         db.session.add(t)
         db.session.commit()
 

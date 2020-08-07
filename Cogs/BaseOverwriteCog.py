@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+from Cogs.OptionalSetting import Option
+import subprocess
 
 
 @commands.command(description="プログラムを再読み込みします")
@@ -8,7 +10,8 @@ async def relode(ctx: commands.Context):
     for extension in list(bot.extensions):
         print(f"{extension}isreloted")
         bot.reload_extension(f"{extension}")
-    await ctx.send("再読み込み完了")
+    print("再読み込み完了")
+    pass
 
 
 class Help(commands.HelpCommand):
@@ -87,15 +90,17 @@ class Help(commands.HelpCommand):
         return enclosure + adjusted_content + enclosure
 
     async def send_bot_help(self, mapping):
-        embed = discord.Embed(title="コマンド一覧", color=0x00ff00)
+        opt = Option(self.context.bot)
+        # owner = self.context.bot.get_user(self.context.bot.owner_id)
+        embed = await opt.default_embed(thumbnail=True, header='Command List', footer=("$help"))
         if self.context.bot.description:
             # もしBOTに description 属性が定義されているなら、それも埋め込みに追加する
-            embed.description = self.context.bot.description
+            embed.description = f"{self.context.bot.description}"
         for cog in mapping:
             if cog:
                 cog_name = cog.qualified_name
             else:
-                # mappingのキーはNoneになる可能性もある
+                # mappingのキーはNoneになる可能性もある)
                 # もしキーがNoneなら、自身のno_category属性を参照する
                 cog_name = self.no_category
 
