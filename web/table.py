@@ -29,7 +29,7 @@ class DBIO():
     def tbview(self):
         print(self.table.query.all())
 
-    def tbselect(self, id=str()):
+    def tbselect(self, id):
         result = self.table
         if id:
             result = self.table.query. \
@@ -47,7 +47,7 @@ class Cmdtb(DBIO):
 
     class Cmd(db.Model):
         __tablename__ = "cmds"
-        id = db.Column(db.String(), nullable=False, primary_key=True)
+        title = db.Column(db.String(), nullable=False, primary_key=True)
         body = db.Column(db.String(), nullable=False)
 
     def add(self, id: str, body: str):
@@ -90,10 +90,10 @@ class Cattb(DBIO):
 
     class Cat(db.Model):
         __tablename__ = "cats"
-        id = db.Column(db.String(), nullable=False, primary_key=True)
+        title = db.Column(db.String(), nullable=False, primary_key=True)
         body = db.Column(db.String(), nullable=False)
 
-    def add(self, id: str, body: str):
+    def add(self, title: str, body: str):
         """
         リアクション追加
 
@@ -102,7 +102,7 @@ class Cattb(DBIO):
             body (str): 返答
         """
         t = self.table()
-        t.id = id
+        t.title = title
         t.body = body
         db.session.add(t)
         db.session.commit()
