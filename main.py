@@ -17,7 +17,7 @@ extensions.append("ReactionEvent")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    bot = commands.Bot(command_prefix="$",
+    bot = commands.Bot(command_prefix="$", case_insensitive=True,
                        description="Saru's Wakewakaran Bot Project")
     config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
     config['wkwm']['welcome_room_id'] = environ['WELCOME_ROOM_ID']

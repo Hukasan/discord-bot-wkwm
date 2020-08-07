@@ -9,7 +9,7 @@ class TalkIO(commands.Cog, name='会話'):
     """会話系のコマンド群です
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
@@ -57,7 +57,7 @@ class TalkIO(commands.Cog, name='会話'):
 
     @commands.is_owner()
     @cmd.command(aliases=["うんち"], description="コマンド追加")
-    async def add(self, ctx, key, reaction):
+    async def cmdadd(self, ctx, key, reaction):
         """反応することばを追加します
             $cmd add key reaction
         Args:
@@ -70,52 +70,56 @@ class TalkIO(commands.Cog, name='会話'):
         except BaseException:
             await ctx.send("なぞかきこみえらー in cat add")
 
-    @add.error
-    async def add_error(self, ctx, error):
+    @cmdadd.error
+    async def cmdadd_error(self, ctx, error):
         print(type(error))
         if isinstance(error, commands.BadArgument):
             await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
 
-    @commands.group(description="リアクション管理コマンド", pass_context=True)
+    @commands.group(aliases=["c", "ｃ", "ｃａｔ"], description="リアクション管理コマンド")
     async def cat(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cat view -> 一覧を表示")
 
     @commands.is_owner()
-    @cat.command(aliases=["うんちっち"], description=("リアクション追加"))
-    async def add(self, ctx, trigger, reaction):
+    @cat.command(aliases=["c", "ｃ", "ｃａｔ"], description=("リアクション追加"))
+    async def catadd(self, ctx, trigger, reaction):
         # try:
         self.db_cat.add(id=trigger, body=reaction)
         await ctx.send("さくせす")
         # except BaseException:
         #     await ctx.send("なぞかきこみえらー in cat add")
 
-    @add.error
-    async def add_error(self, ctx, error):
+    @catadd.error
+    async def catadd_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
         await ctx.send(f"なぞかきこみえらー : cat add```python{error}```")
 
-    async def view_titles_toembed(self, t, title: str) -> discord.Embed:
+    async def view_titles_toembed(self, t, title=str(), action=str(), embed=discord.Embed()) -> discord.Embed:
         content = str()
         qlist = t.tbselect()
         for q in qlist:
             content += f"・{q.id}\n"
-        embed = await self.opt.default_embed(title=title)
-        embed.add_field(name="__List__",
-                        value=f"```{content}```")  # noqa
+        if not(embed):
+            embed = await self.opt.default_embed(footer=action)
+        embed.add_field(name=f"**{title}**", value=f"```{content}```")  # noqa
         return embed
 
-    @ cat.command(aliases=["v"], description="一覧表示")
-    async def view(self, ctx):
+    @ cat.command(aliases=["v", "view", "show", "ｖｉｅｗ", "ｖ"], description="追加されたリアクションを表示します")
+    async def catview(self, ctx):
         """反応することば一覧を出力します
         """
-        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション"))
+        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション", action="catview"))
 
-    @commands.command(description="追加された,会話コマンド,リアクションを全部表示します")
+    @commands.group(aliases=["ｖｉｅｗ", "ｖ", "v", "リアクション", "りあくしょん"], description="追加された,会話コマンド,リアクションを全部表示します")
     async def view(self, ctx):  # noqa
-        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション"))
-        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cmd, title="チャットコマンド"))
+        em = await self.view_titles_toembed(t=self.db_cat, title="リアクション", action="view")
+        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cmd, title="コマンド", embed=em))
+
+    @view.command()
+    async def cats(self, ctx):
+        pass
 
 
 def setup(bot):
