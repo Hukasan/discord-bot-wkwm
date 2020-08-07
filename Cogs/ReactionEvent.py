@@ -23,9 +23,7 @@ class ReactionEvent(commands.Cog):
                 message = channel.fetch_message(rrae.message_id)
                 if message.embeds:
                     if (len(message.embeds) == 1):
-
-            else:
-                print("pienn")
+                        print("pienn")
 
 
 def setup(bot):
