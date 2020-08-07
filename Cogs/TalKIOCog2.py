@@ -29,7 +29,7 @@ class TalkIO(commands.Cog, name='会話'):
             if str(error) == "trigger is a required argument that is missing.":
                 await ctx.send("入力する値の数が足りてません")
             else:
-                await ctx.send(f"管轄外エラー:on_message\r```{str(error)}```")
+                await ctx.send(f"管轄外エラー:on_message\r```python{str(error)}```")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -40,12 +40,9 @@ class TalkIO(commands.Cog, name='会話'):
         ex_content = str()
         print(f"->{content}")
         for query in self.db_cat.tbselect():
-            if query.id in content:
+            if query.title in content:
                 ex_content += query.body
-        if ex_content:
-            await message.channel.send(ex_content)
-            return
-        pass
+        await message.channel.send(ex_content)
 
     @commands.is_owner()
     @commands.group(description="コマンド管理")
@@ -76,7 +73,7 @@ class TalkIO(commands.Cog, name='会話'):
         if isinstance(error, commands.BadArgument):
             await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
 
-    @commands.group(description="リアクション管理コマンド", pass_context=True)
+    @commands.group(description="リアクション管理コマンド")
     async def cat(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cat view -> 一覧を表示")
@@ -84,23 +81,17 @@ class TalkIO(commands.Cog, name='会話'):
     @commands.is_owner()
     @cat.command(aliases=["うんちっち"], description=("リアクション追加"))
     async def add(self, ctx, trigger, reaction):
-        # try:
-        self.db_cat.add(id=trigger, body=reaction)
-        await ctx.send("さくせす")
-        # except BaseException:
-        #     await ctx.send("なぞかきこみえらー in cat add")
-
-    @add.error
-    async def add_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
-        await ctx.send(f"なぞかきこみえらー : cat add```python{error}```")
+        try:
+            self.db_cat.add(title=trigger, body=reaction)
+            await ctx.send("さくせす")
+        except BaseException:
+            await ctx.send("なぞかきこみえらー in cat add")
 
     async def view_titles_toembed(self, t, title: str) -> discord.Embed:
         content = str()
         qlist = t.tbselect()
         for q in qlist:
-            content += f"・{q.id}\n"
+            content += f"・{q.title}\n"
         embed = await self.opt.default_embed(title=title)
         embed.add_field(name="__List__",
                         value=f"```{content}```")  # noqa
@@ -110,7 +101,7 @@ class TalkIO(commands.Cog, name='会話'):
     async def view(self, ctx):
         """反応することば一覧を出力します
         """
-        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション"))
+        await ctx.send(embed=self.view_titles_toembed(t=self.db_cat, title="リアクション"))
 
     @commands.command(description="追加された,会話コマンド,リアクションを全部表示します")
     async def view(self, ctx):  # noqa
