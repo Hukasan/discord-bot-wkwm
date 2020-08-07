@@ -4,7 +4,7 @@ from Cogs.OptionalSetting import Option
 import subprocess
 
 
-@commands.command(description="プログラムを再読み込みします")
+@commands.command(aliases=['re', 'r'], description="プログラムを再読み込みします")
 async def relode(ctx: commands.Context):
     bot = ctx.bot
     for extension in list(bot.extensions):
