@@ -12,6 +12,7 @@ class Event(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.opt = Option(self.bot)
         self.lastchecktime = (datetime.now(utc))
         self.room_id = int(self.bot.config['wkwm']['room_id'])
         self.role_nozoki_id = int(self.bot.config['wkwm']['nozoki_role_id'])
@@ -27,14 +28,14 @@ class Event(commands.Cog):
         role_member = member.guild.get_role(self.role_nozoki_id)
         await member.add_roles(role_member)
         welcome_room = self.bot.get_channel(self.welcome_room_id)
-        await welcome_room.send(embed=await Option.default_embed(description=f"ようこそ猿sのばなな農園へ🍌\r{member.mention}さん\r{self.welcome_message}"))
+        await welcome_room.send(embed=await self.opt.default_embed(description=f"ようこそ猿sのばなな農園へ🍌\r{member.mention}さん\r{self.welcome_message}"))
 
     @ commands.Cog.listener()
     async def on_member_remove(self, member: Member):
         if member.bot:
             return
         leave_notice_room = self.bot.get_channel(self.leave_notice_room_id)
-        await leave_notice_room.send(embed=Option.default_embed(description=f" **{member.name}** が脱退しました \rUserID: {member.mention}"))
+        await leave_notice_room.send(embed=await self.opt.default_embed(description=f" **{member.name}** が脱退しました \rUserID: {member.mention}"))
 
     @ commands.Cog.listener()
     async def on_member_update(self, before, after):
