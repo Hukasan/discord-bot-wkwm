@@ -23,7 +23,7 @@ class Option():
             self.bot_info = await self.ctx.bot.application_info()
             embed = embed.set_thumbnail(url=str(self.bot_info.icon_url))
         if header:
-            if header_icon == "default":
+            if isinstance(footer, bool):
                 embed.set_author(name=header, icon_url=str(
                     self.bot_info.icon_url))
             elif header_icon:
