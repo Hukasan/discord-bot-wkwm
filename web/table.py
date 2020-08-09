@@ -40,6 +40,14 @@ class DBIO():
             results = self.table.query.all()
             return results
 
+    def tbdelete(self, id=str()):
+        result = self.table
+        if id:
+            result = self.table.query. \
+                filter(self.table.id == id). \
+                delete()
+            return result
+
 
 class Cmdtb(DBIO):
     def __init__(self):
@@ -71,14 +79,14 @@ class MsfRtb(DBIO):
 
     class MsforReact(db.Model):
         __tablename__ = "msforreact"
-        mid = db.Column(db.Integer(), nullable=False, primary_key=True)
-        cid = db.Column(db.Integer(), nullable=False)
+        id = db.Column(db.String(), nullable=False, primary_key=True)
+        cid = db.Column(db.String(), nullable=False)
         seed = db.Column(db.String(), nullable=True)
 
-    def add(self, message_id, channel_id, seed):
-        t = self.table
-        t.mid = message_id
-        t.cid = channel_id
+    def add(self, id: str, cid: str, seed: str):
+        t = self.table()
+        t.id = id
+        t.cid = cid
         t.seed = seed
         db.session.add(t)
         db.session.commit()

@@ -4,14 +4,14 @@ from Cogs.OptionalSetting import Option
 import subprocess
 
 
-@commands.command(aliases=['re', 'r'], description="プログラムを再読み込みします")
+@commands.command(aliases=["re", "r"], description="プログラムを再読み込みします")
 async def relode(ctx: commands.Context):
     bot = ctx.bot
     for extension in list(bot.extensions):
         print(f"{extension}isreloted")
         bot.reload_extension(f"{extension}")
     print("再読み込み完了")
-    pass
+    await ctx.message.add_reaction("☑")
 
 
 class Help(commands.HelpCommand):
@@ -35,7 +35,7 @@ class Help(commands.HelpCommand):
         if 0 == index:
             content = f"${cmd.name}:{cmd.description}\n"
         else:
-            indent = (index+1)*"\t"
+            indent = (index + 1) * "\t"
             content = f"{indent}- {cmd.name}:{cmd.description}\n"
         if isinstance(cmd, commands.Group):
             for subcmd in cmd.walk_commands():
@@ -90,9 +90,9 @@ class Help(commands.HelpCommand):
         return enclosure + adjusted_content + enclosure
 
     async def send_bot_help(self, mapping):
-        opt = Option(self.context.bot)
+        opt = Option(self.context)
         # owner = self.context.bot.get_user(self.context.bot.owner_id)
-        embed = await opt.default_embed(thumbnail=True, header='Command List', footer=("$help"))
+        embed = await opt.default_embed(thumbnail=True, header='Command List', footer=True)
         if self.context.bot.description:
             # もしBOTに description 属性が定義されているなら、それも埋め込みに追加する
             embed.description = f"{self.context.bot.description}"
@@ -107,6 +107,7 @@ class Help(commands.HelpCommand):
             command_list = await self.filter_commands(mapping[cog], sort=True)
             content = ""
             if command_list:
+                command_list = set(command_list)
                 for cmd in command_list:
                     content += f"`{self.context.prefix}{cmd.name}`\n {cmd.description}\n"
                 embed.add_field(name=cog_name, value=content, inline=False)
@@ -120,8 +121,10 @@ class Help(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_group_help(self, group):
-        embed = discord.Embed(title=f"{self.context.prefix}{group.qualified_name}",
-                              description=group.description, color=0x00ff00)
+        embed = discord.Embed(
+            title=f"{self.context.prefix}{group.qualified_name}",
+            description=group.description,
+            color=0x00ff00)
         if group.aliases:
             embed.add_field(name="__AnotherCall__", value="`" +
                             "`, `".join(group.aliases) + "`", inline=False)
@@ -133,8 +136,10 @@ class Help(commands.HelpCommand):
 
     async def send_command_help(self, command):
         params = " ".join(command.clean_params.keys())
-        embed = discord.Embed(title=f"__{self.context.prefix}{command.qualified_name} {params}__",
-                              description=command.description, color=0x00ff00)
+        embed = discord.Embed(
+            title=f"__{self.context.prefix}{command.qualified_name} {params}__",
+            description=command.description,
+            color=0x00ff00)
         if command.aliases:
             embed.add_field(name="__AnotherCall__", value="`" +
                             "`, `".join(command.aliases) + "`", inline=False)
@@ -152,7 +157,9 @@ class Help(commands.HelpCommand):
         return f"{string} というコマンドは存在しません。"
 
     def subcommand_not_found(self, command, string):
-        if isinstance(command, commands.Group) and len(command.all_commands) > 0:
+        if isinstance(
+                command, commands.Group) and len(
+                command.all_commands) > 0:
             # もし、そのコマンドにサブコマンドが存在しているなら
             return f"{command.qualified_name} に {string} というサブコマンドは登録されていません。"
         return f"{command.qualified_name} にサブコマンドは登録されていません。"
