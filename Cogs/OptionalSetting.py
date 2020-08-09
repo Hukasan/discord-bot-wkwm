@@ -13,6 +13,7 @@ class Option():
         config = {
             'color': 0x00ff00,
         }
+        self.bot_info = await self.ctx.bot.application_info()
         if title:
             config['title'] = title
         if description:
@@ -20,7 +21,6 @@ class Option():
         embed = Embed()
         embed = Embed.from_dict(config)
         if thumbnail:
-            self.bot_info = await self.ctx.bot.application_info()
             embed = embed.set_thumbnail(url=str(self.bot_info.icon_url))
         if header:
             if isinstance(footer, bool):
