@@ -13,7 +13,10 @@ class TalkIO(commands.Cog, name='会話'):
         self.bot = bot
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
-        self.opt = Option(self.bot)
+        self.opt = Option()
+    # def check_role_is_upper(self):
+    #     def predicate(ctx: commands.Context):
+    #         self.botctx.author
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -48,7 +51,7 @@ class TalkIO(commands.Cog, name='会話'):
         pass
 
     @commands.is_owner()
-    @commands.group(description="コマンド管理")
+    @commands.group(aliases=["cm"], description="コマンド管理")
     async def cmd(self, ctx):
         """[※管理者のみ]
         """
@@ -56,7 +59,7 @@ class TalkIO(commands.Cog, name='会話'):
             await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンドを追加")
 
     @commands.is_owner()
-    @cmd.command(aliases=["うんち"], description="コマンド追加")
+    @cmd.command(aliases=["a"], description="コマンド追加")
     async def cmdadd(self, ctx, key, reaction):
         """反応することばを追加します
             $cmd add key reaction
@@ -81,7 +84,6 @@ class TalkIO(commands.Cog, name='会話'):
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cat view -> 一覧を表示")
 
-    @commands.is_owner()
     @cat.command(aliases=["c", "ｃ", "ｃａｔ"], description=("リアクション追加"))
     async def catadd(self, ctx, trigger, reaction):
         # try:
@@ -96,25 +98,29 @@ class TalkIO(commands.Cog, name='会話'):
             await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
         await ctx.send(f"なぞかきこみえらー : cat add```python{error}```")
 
-    async def view_titles_toembed(self, t, title=str(), action=str(), embed=discord.Embed()) -> discord.Embed:
+    async def view_titles_toembed(self, t, title=str(), embed=discord.Embed()) -> discord.Embed:
         content = str()
         qlist = t.tbselect()
         for q in qlist:
             content += f"・{q.id}\n"
         if not(embed):
-            embed = await self.opt.default_embed(footer=action)
+            embed = await self.opt.default_embed(footer=True)
         embed.add_field(name=f"**{title}**", value=f"```{content}```")  # noqa
         return embed
 
-    @ cat.command(aliases=["v", "view", "show", "ｖｉｅｗ", "ｖ"], description="追加されたリアクションを表示します")
+    @ cat.command(aliases=["v", "view", "show", "ｖｉｅｗ",
+                           "ｖ"], description="追加されたリアクションを表示します")
     async def catview(self, ctx):
         """反応することば一覧を出力します
         """
-        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション", action="catview"))
+        self.opt.get_ctx(ctx)
+        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション"))
 
-    @commands.group(aliases=["ｖｉｅｗ", "ｖ", "v", "リアクション", "りあくしょん"], description="追加された,会話コマンド,リアクションを全部表示します")
+    @commands.group(aliases=["ｖｉｅｗ", "ｖ", "v", "リアクション",
+                             "りあくしょん"], description="追加された,会話コマンド,リアクションを全部表示します")
     async def view(self, ctx):  # noqa
-        em = await self.view_titles_toembed(t=self.db_cat, title="リアクション", action="view")
+        self.opt.get_ctx(ctx)
+        em = await self.view_titles_toembed(t=self.db_cat, title="リアクション")
         await ctx.send(embed=await self.view_titles_toembed(t=self.db_cmd, title="コマンド", embed=em))
 
     @view.command()
