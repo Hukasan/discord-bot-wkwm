@@ -92,7 +92,7 @@ class Help(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         opt = Option(self.context)
         # owner = self.context.bot.get_user(self.context.bot.owner_id)
-        embed = await opt.default_embed(thumbnail=True, header='Command List', footer=True)
+        embed = await opt.default_embed(header_icon=True, header='Command List', footer=True)
         if self.context.bot.description:
             # もしBOTに description 属性が定義されているなら、それも埋め込みに追加する
             embed.description = f"{self.context.bot.description}"
