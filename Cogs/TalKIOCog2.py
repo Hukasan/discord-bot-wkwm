@@ -56,7 +56,7 @@ class TalkIO(commands.Cog, name='会話'):
         """[※管理者のみ]
         """
         if ctx.invoked_subcommand is None:
-            await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンドを追加")
+            await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンド追加")
 
     @commands.is_owner()
     @cmd.command(aliases=["a"], description="コマンド追加")
@@ -79,7 +79,7 @@ class TalkIO(commands.Cog, name='会話'):
         if isinstance(error, commands.BadArgument):
             await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
 
-    @commands.group(aliases=["c", "ｃ", "ｃａｔ"], description="リアクション管理コマンド")
+    @commands.group(aliases=["c", "ｃ", "ｃａｔ"], description="リアクション管理")
     async def cat(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cat view -> 一覧を表示")
@@ -109,7 +109,7 @@ class TalkIO(commands.Cog, name='会話'):
         return embed
 
     @ cat.command(aliases=["v", "view", "show", "ｖｉｅｗ",
-                           "ｖ"], description="追加されたリアクションを表示します")
+                           "ｖ"], description="追加されたリアクションを表示")
     async def catview(self, ctx):
         """反応することば一覧を出力します
         """
@@ -117,7 +117,7 @@ class TalkIO(commands.Cog, name='会話'):
         await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション"))
 
     @commands.group(aliases=["ｖｉｅｗ", "ｖ", "v", "リアクション",
-                             "りあくしょん"], description="追加された,会話コマンド,リアクションを全部表示します")
+                             "りあくしょん"], description="コマンド、リアクションを表示")
     async def view(self, ctx):  # noqa
         self.opt.get_ctx(ctx)
         em = await self.view_titles_toembed(t=self.db_cat, title="リアクション")
