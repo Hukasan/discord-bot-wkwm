@@ -25,8 +25,7 @@ if __name__ == '__main__':
     config['wkwm']['nozoki_role_id'] = environ['NOZOKI_ROLE_ID']
 
     bot.config = config
-    # TOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
-    TOKEN = "NzQyMDA0MDk5MjU1NjMxOTA0.Xy_zKw.rRCRiqoZcWnqQy9h3pajl8KWLzs"
+    TOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
     for extension in extensions:
         bot.load_extension(f"Cogs.{extension}")
     bot.run(TOKEN)
