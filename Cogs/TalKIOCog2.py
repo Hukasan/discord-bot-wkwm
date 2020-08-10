@@ -23,16 +23,23 @@ class TalkIO(commands.Cog, name='Talk'):
         cmd = str()
         try:
             cmd = ((str(error)).split('"', maxsplit=2))[1]
+            dubleq = str(error).split("\"")
             result = self.db_cmd.tbselect(cmd)
             if result:
                 await ctx.send(result[0].body)
+            elif dubleq:
+                print(dubleq)
+                if dubleq[0] == "Command " and dubleq[2] == " is not found":
+                    await ctx.send(f"こまんどに　\" {dubleq[1]} \"　はないみたいです")
+                else:
+                    await ctx.send(f"コマンドエラー:\r```{str(error)}```")
             else:
-                await ctx.send(str(error))
+                await ctx.send(f"コマンドエラー:\r```{str(error)}```")
         except IndexError:
             if str(error) == "trigger is a required argument that is missing.":
                 await ctx.send("入力する値の数が足りてません")
             else:
-                await ctx.send(f"管轄外エラー:on_message\r```{str(error)}```")
+                await ctx.send(f"内部エラー:on_message\r```{str(error)}```")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -48,10 +55,9 @@ class TalkIO(commands.Cog, name='Talk'):
         if ex_content:
             await message.channel.send(ex_content)
             return
-        pass
 
     @commands.is_owner()
-    @commands.group(aliases=["cm"], description="コマンド管理")
+    @commands.group(aliases=["cm", "コマンド", "こまんど"], description="コマンド管理")
     async def cmds(self, ctx):
         """[※管理者のみ]
         """
@@ -59,7 +65,7 @@ class TalkIO(commands.Cog, name='Talk'):
             await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンド追加")
 
     @commands.is_owner()
-    @cmds.command(aliases=["a"], description="コマンド追加")
+    @cmds.command(aliases=["a", "ついか", "追加"], description="コマンド追加")
     async def cmdadd(self, ctx, key, reaction):
         """反応することばを追加します
             $cmd add key reaction
@@ -79,12 +85,13 @@ class TalkIO(commands.Cog, name='Talk'):
         if isinstance(error, commands.BadArgument):
             await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
 
-    @commands.group(aliases=["c", "ｃ", "ｃａｔ"], description="リアクション管理")
+    @commands.group(aliases=["c", "ｃ", "ｃａｔ", "りあくしょん",
+                             "リアクション", "キャッツ", "きゃっつ"], description="リアクション管理")
     async def cats(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cat view -> 一覧を表示")
 
-    @cats.command(aliases=["c", "ｃ", "ｃａｔ"], description=("リアクション追加"))
+    @cats.command(aliases=["add", "a", "ついか", "追加"], description=("リアクション追加"))
     async def catadd(self, ctx, trigger, reaction):
         # try:
         self.db_cat.add(id=trigger, body=reaction)
@@ -108,16 +115,27 @@ class TalkIO(commands.Cog, name='Talk'):
         embed.add_field(name=f"**{title}**", value=f"```{content}```")  # noqa
         return embed
 
-    @ cats.command(aliases=["v", "view", "show", "ｖｉｅｗ",
-                            "ｖ"], description="追加されたリアクションを表示")
+    @ cats.command(aliases=["v",
+                            "ｖｉｅｗ",
+                            "ｖ",
+                            "ビュー",
+                            "びゅー",
+                            "一覧",
+                            "いちらん"],
+                   description="追加されたリアクションを表示")
     async def catview(self, ctx):
         """反応することば一覧を出力します
         """
         self.opt.get_ctx(ctx)
         await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat, title="リアクション"))
 
-    @commands.group(aliases=["ｖｉｅｗ", "ｖ", "v", "リアクション",
-                             "りあくしょん"], description="コマンド、リアクション一覧")
+    @commands.group(aliases=["v",
+                             "ｖｉｅｗ",
+                             "ｖ",
+                             "ビュー",
+                             "びゅー",
+                             "一覧",
+                             "いちらん"], description="コマンド、リアクション一覧")
     async def view(self, ctx):  # noqa
         self.opt.get_ctx(ctx)
         em = await self.view_titles_toembed(t=self.db_cat, title="リアクション")
