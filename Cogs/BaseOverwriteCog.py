@@ -4,8 +4,9 @@ from Cogs.OptionalSetting import Option
 import subprocess
 
 
-@commands.command(aliases=["re", "r"], description="プログラムを再読み込みします")
-async def relode(ctx: commands.Context):
+@commands.is_owner()
+@commands.command(aliases=["re", "r", "l"], description="プログラムを再読み込み")
+async def load(ctx: commands.Context):
     bot = ctx.bot
     for extension in list(bot.extensions):
         print(f"{extension}isreloted")
@@ -17,8 +18,8 @@ async def relode(ctx: commands.Context):
 class Help(commands.HelpCommand):
     def __init__(self):
         super().__init__()
-        self.no_category = "基本コマンド"
-        self.command_attrs["description"] = "このメッセージを表示します。"
+        self.no_category = "Main"
+        self.command_attrs["description"] = "このメッセージを表示"
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
 
     async def create_category_tree_method(self, cmd, index=0) -> str:
@@ -105,12 +106,25 @@ class Help(commands.HelpCommand):
                 cog_name = self.no_category
 
             command_list = await self.filter_commands(mapping[cog], sort=True)
-            content = ""
+            content = str()
+            temp = str()
+            width = 4
             if command_list:
                 command_list = set(command_list)
                 for cmd in command_list:
-                    content += f"`{self.context.prefix}{cmd.name}`\n {cmd.description}\n"
-                embed.add_field(name=cog_name, value=content, inline=False)
+                    # if (len(cmd.name) % 2) == 0:
+                    #     temp = cmd.name.ljust(
+                    #         ((width) + int(len(cmd.name) / 2)), "　")
+                    # else:
+                    #     print((width) + int(len(cmd.name) / 2))
+                    #     temp = cmd.name.ljust(
+                    #         ((width) + int(len(cmd.name) / 2)), "　")
+                    #     temp += ' '
+                    content += f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
+                embed.add_field(
+                    name=f"> {cog_name}",
+                    value=content,
+                    inline=False)
 
         await self.get_destination().send(embed=embed)
 
@@ -167,4 +181,4 @@ class Help(commands.HelpCommand):
 
 def setup(bot: commands.Bot):
     bot.help_command = Help()
-    bot.add_command(relode)
+    bot.add_command(load)

@@ -34,7 +34,7 @@ class Option():
             if footer_url:
                 embed.set_footer(text=footer, icon_url=str(footer_url))
             if isinstance(footer, bool):
-                string = f"{self.ctx.bot.command_prefix} {self.ctx.command}"
+                string = f"{self.ctx.prefix} {self.ctx.command}"
                 if self.ctx.invoked_subcommand:
                     string += f" {(self.ctx.invoked_subcommand).name}"
                 embed.set_footer(text=string)
