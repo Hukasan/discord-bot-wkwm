@@ -25,16 +25,16 @@ if __name__ == '__main__':
             '？'],
         case_insensitive=True,
         description="Saru's Wakewakaran Bot Project")
-    config["wkwm"]["room_id"] = 742001514771382313
-    config['wkwm']['welcome_room_id'] = 742001514771382313
-    config['wkwm']['leave_notice_room_id'] = 742001514771382313
-    config['wkwm']['nozoki_role_id'] = 712526833995743252
-    TOKEN = "NzQyMDA0MDk5MjU1NjMxOTA0.Xy_zKw.rRCRiqoZcWnqQy9h3pajl8KWLzs"
-    # config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
-    # config['wkwm']['welcome_room_id'] = environ['WELCOME_ROOM_ID']
-    # config['wkwm']['leave_notice_room_id'] = environ['LEAVE_NOTICE_ROOM_ID']
-    # config['wkwm']['nozoki_role_id'] = environ['NOZOKI_ROLE_ID']
-    # TOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
+    # config["wkwm"]["room_id"] = 742001514771382313
+    # config['wkwm']['welcome_room_id'] = 742001514771382313
+    # config['wkwm']['leave_notice_room_id'] = 742001514771382313
+    # config['wkwm']['nozoki_role_id'] = 712526833995743252
+    # TOKEN = "NzQyMDA0MDk5MjU1NjMxOTA0.Xy_zKw.rRCRiqoZcWnqQy9h3pajl8KWLzs"
+    config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
+    config['wkwm']['welcome_room_id'] = environ['WELCOME_ROOM_ID']
+    config['wkwm']['leave_notice_room_id'] = environ['LEAVE_NOTICE_ROOM_ID']
+    config['wkwm']['nozoki_role_id'] = environ['NOZOKI_ROLE_ID']
+    TOKEN = environ['BOT_ACCESS_TOKEN']  # 環境変数から取得
     bot.config = config
     for extension in extensions:
         bot.load_extension(f"Cogs.{extension}")
