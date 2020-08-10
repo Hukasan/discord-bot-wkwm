@@ -5,7 +5,7 @@ import subprocess
 
 
 @commands.is_owner()
-@commands.command(aliases=["re", "r", "l"], description="プログラムを再読み込み")
+@commands.command(aliases=["re", "r", "l", "ｒ"], description="プログラムを再読み込み")
 async def load(ctx: commands.Context):
     bot = ctx.bot
     for extension in list(bot.extensions):
@@ -21,6 +21,7 @@ class Help(commands.HelpCommand):
         self.no_category = "Main"
         self.command_attrs["description"] = "このメッセージを表示"
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
+        self.command_attrs["aliases"] = ["ヘルプ", "へるぷ"]
 
     async def create_category_tree_method(self, cmd, index=0) -> str:
         """
@@ -107,19 +108,9 @@ class Help(commands.HelpCommand):
 
             command_list = await self.filter_commands(mapping[cog], sort=True)
             content = str()
-            temp = str()
-            width = 4
             if command_list:
                 command_list = set(command_list)
                 for cmd in command_list:
-                    # if (len(cmd.name) % 2) == 0:
-                    #     temp = cmd.name.ljust(
-                    #         ((width) + int(len(cmd.name) / 2)), "　")
-                    # else:
-                    #     print((width) + int(len(cmd.name) / 2))
-                    #     temp = cmd.name.ljust(
-                    #         ((width) + int(len(cmd.name) / 2)), "　")
-                    #     temp += ' '
                     content += f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
                 embed.add_field(
                     name=f"> {cog_name}",
