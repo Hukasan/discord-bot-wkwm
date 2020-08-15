@@ -1,6 +1,8 @@
 from os import environ
 from discord.ext import commands
 import logging
+logging.basicConfig(filename='log/logger.log', level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
 config = {
     'wkwm': {
@@ -25,6 +27,7 @@ if __name__ == '__main__':
             '？'],
         case_insensitive=True,
         description="Saru's Wakewakaran Bot Project")
+    # config["wkwm"]["lobby_id"] = 742001514771382313
     # config["wkwm"]["room_id"] = 742001514771382313
     # config['wkwm']['welcome_room_id'] = 742001514771382313
     # config['wkwm']['leave_notice_room_id'] = 742001514771382313

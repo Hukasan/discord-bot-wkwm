@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 from web import table
 from dispander import dispand
-from Cogs.OptionalSetting import Option
+from Cogs.app.OptionalSetting import Option
+from Cogs.app.TeamManage import Team
 
 
 class TalkIO(commands.Cog, name='Talk'):
@@ -14,9 +15,12 @@ class TalkIO(commands.Cog, name='Talk'):
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
         self.opt = Option()
-    # def check_role_is_upper(self):
-    #     def predicate(ctx: commands.Context):
-    #         self.botctx.author
+        self.team = Team(bot)
+        self.room_id = int(self.bot.config['wkwm']['room_id'])
+
+    def check_role_is_upper(self):
+        def predicate(ctx: commands.Context):
+            self.ctx.author
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -28,7 +32,6 @@ class TalkIO(commands.Cog, name='Talk'):
             if result:
                 await ctx.send(result[0].body)
             elif dubleq:
-                print(dubleq)
                 if dubleq[0] == "Command " and dubleq[2] == " is not found":
                     await ctx.send(f"こまんどに　\" {dubleq[1]} \"　はないみたいです")
                 else:
@@ -45,7 +48,8 @@ class TalkIO(commands.Cog, name='Talk'):
     async def on_message(self, message):
         if message.author.bot:
             return
-        await dispand(message)
+        await dispand(message)  # もしもdiscord内のメッセージリンクだったばあいそれをプレビュ
+        await self.team.scan_message(message, self.room_id)
         content = message.content
         ex_content = str()
         print(f"->{content}")
@@ -73,11 +77,8 @@ class TalkIO(commands.Cog, name='Talk'):
             key: 追加するコマンド[${key}]
             reaction: keyに対するリアクション
         """
-        try:
-            self.db_cmd.add(title=key, body=reaction)
-            await ctx.send("さくせす")
-        except BaseException:
-            await ctx.send("なぞかきこみえらー in cat add")
+        self.db_cmd.add(id=key, body=reaction)
+        await ctx.send("さくせす")
 
     @cmdadd.error
     async def cmdadd_error(self, ctx, error):
@@ -93,11 +94,8 @@ class TalkIO(commands.Cog, name='Talk'):
 
     @cats.command(aliases=["add", "a", "ついか", "追加"], description=("リアクション追加"))
     async def catadd(self, ctx, trigger, reaction):
-        # try:
         self.db_cat.add(id=trigger, body=reaction)
         await ctx.send("さくせす")
-        # except BaseException:
-        #     await ctx.send("なぞかきこみえらー in cat add")
 
     @catadd.error
     async def catadd_error(self, ctx, error):

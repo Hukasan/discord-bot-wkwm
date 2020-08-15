@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Cogs.OptionalSetting import Option
+from Cogs.app.OptionalSetting import Option
 import subprocess
 
 
@@ -9,7 +9,7 @@ import subprocess
 async def load(ctx: commands.Context):
     bot = ctx.bot
     for extension in list(bot.extensions):
-        print(f"{extension}isreloted")
+        print(f"{extension}　is　reloted")
         bot.reload_extension(f"{extension}")
     print("再読み込み完了")
     await ctx.message.add_reaction("☑")

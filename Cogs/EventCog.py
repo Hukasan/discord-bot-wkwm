@@ -2,7 +2,7 @@ from discord import Embed, Member, AuditLogAction, User, Message
 from discord.ext import commands
 from datetime import datetime
 from pytz import utc
-from Cogs.OptionalSetting import Option
+from Cogs.app.OptionalSetting import Option
 from web import table
 
 
