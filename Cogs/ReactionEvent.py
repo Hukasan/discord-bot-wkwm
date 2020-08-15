@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.abc import GuildChannel, PrivateChannel
 # from datetime import datetime
 # from pytz import utc
-from Cogs.OptionalSetting import Option
+from Cogs.app.OptionalSetting import Option
 from web import table
 
 

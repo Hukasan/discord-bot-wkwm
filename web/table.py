@@ -3,6 +3,8 @@ from flask import Flask
 from werkzeug.datastructures import ImmutableDict
 from hamlish_jinja import HamlishExtension
 from os import environ as getpath
+from logging import getLogger
+logger = getLogger(__name__)
 
 
 class FlaskwithHamlish(Flask):
@@ -30,6 +32,7 @@ class DBIO():
         print(self.table.query.all())
 
     def tbselect(self, id=str()):
+        # try:
         result = self.table
         if id:
             result = self.table.query. \
@@ -39,14 +42,15 @@ class DBIO():
         else:
             results = self.table.query.all()
             return results
+        # except BaseExceptio
 
     def tbdelete(self, id=str()):
-        result = self.table
         if id:
-            result = self.table.query. \
+            self.table.query. \
                 filter(self.table.id == id). \
                 delete()
-            return result
+            db.session.commit()
+        db.session.close()
 
 
 class Cmdtb(DBIO):
@@ -67,10 +71,17 @@ class Cmdtb(DBIO):
             body (str): 返答
         """
         t = self.table()
-        t.id = id
-        t.body = body
-        db.session.add(t)
+        if not(self.tbdelete(id=id)):
+            t.id = id
+            t.body = body
+            db.session.add(t)
+        else:
+            t.query. \
+                filter(t.id == id). \
+                first()
+            t.body = body
         db.session.commit()
+        db.session.close()
 
 
 class MsfRtb(DBIO):
@@ -85,11 +96,12 @@ class MsfRtb(DBIO):
 
     def add(self, id: str, cid: str, seed: str):
         t = self.table()
-        t.id = id
-        t.cid = cid
-        t.seed = seed
-        db.session.add(t)
-        db.session.commit()
+        if not(self.tbdelete(id=id)):
+            t.id = id
+            t.cid = cid
+            t.seed = seed
+            db.session.add(t)
+        db.session.close()
 
 
 class Cattb(DBIO):
@@ -110,10 +122,18 @@ class Cattb(DBIO):
             body (str): 返答
         """
         t = self.table()
-        t.id = id
-        t.body = body
-        db.session.add(t)
+        if not(self.tbdelete(id=id)):
+            t.id = id
+            t.body = body
+            db.session.add(t)
+        else:
+            t.query. \
+                filter(t.id == id). \
+                first()
+            t.body = body
         db.session.commit()
+        db.session.close()
+
 
 # def view():
 #     for cmd in Cmd.query.all():
