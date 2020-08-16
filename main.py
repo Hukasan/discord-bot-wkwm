@@ -1,6 +1,6 @@
 from os import environ
 from discord.ext import commands
-# import logging
+import logging
 # logging.basicConfig(filename='log/logger.log', level=logging.ERROR)
 # logger = logging.getLogger(__name__)
 
