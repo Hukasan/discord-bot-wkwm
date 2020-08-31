@@ -27,12 +27,6 @@ if __name__ == '__main__':
             '？'],
         case_insensitive=True,
         description="Saru's Wakewakaran Bot Project")
-    # config["wkwm"]["lobby_id"] = 742001514771382313
-    # config["wkwm"]["room_id"] = 742001514771382313
-    # config['wkwm']['welcome_room_id'] = 742001514771382313
-    # config['wkwm']['leave_notice_room_id'] = 742001514771382313
-    # config['wkwm']['nozoki_role_id'] = 712526833995743252
-    # TOKEN = "NzQyMDA0MDk5MjU1NjMxOTA0.Xy_zKw.rRCRiqoZcWnqQy9h3pajl8KWLzs"
     config["wkwm"]["room_id"] = environ['BOT_ROOM_ID']
     config['wkwm']['welcome_room_id'] = environ['WELCOME_ROOM_ID']
     config['wkwm']['leave_notice_room_id'] = environ['LEAVE_NOTICE_ROOM_ID']

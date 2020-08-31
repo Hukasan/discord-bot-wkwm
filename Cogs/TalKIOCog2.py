@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from web import table
 from dispander import dispand
+import dispander
 from Cogs.app.OptionalSetting import Option
 from Cogs.app.TeamManage import Team
 
@@ -22,27 +23,27 @@ class TalkIO(commands.Cog, name='Talk'):
         def predicate(ctx: commands.Context):
             self.ctx.author
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        cmd = str()
-        try:
-            cmd = ((str(error)).split('"', maxsplit=2))[1]
-            dubleq = str(error).split("\"")
-            result = self.db_cmd.tbselect(cmd)
-            if result:
-                await ctx.send(result[0].body)
-            elif dubleq:
-                if dubleq[0] == "Command " and dubleq[2] == " is not found":
-                    await ctx.send(f"こまんどに　\" {dubleq[1]} \"　はないみたいです")
-                else:
-                    await ctx.send(f"コマンドエラー:\r```{str(error)}```")
-            else:
-                await ctx.send(f"コマンドエラー:\r```{str(error)}```")
-        except IndexError:
-            if str(error) == "trigger is a required argument that is missing.":
-                await ctx.send("入力する値の数が足りてません")
-            else:
-                await ctx.send(f"内部エラー:on_message\r```{str(error)}```")
+    # @commands.Cog.listener()
+    # async def on_command_error(self, ctx, error):
+    #     cmd = str()
+    #     try:
+    #         cmd = ((str(error)).split('"', maxsplit=2))[1]
+    #         dubleq = str(error).split("\"")
+    #         result = self.db_cmd.tbselect(cmd)
+    #         if result:
+    #             await ctx.send(result[0].body)
+    #         elif dubleq:
+    #             if dubleq[0] == "Command " and dubleq[2] == " is not found":
+    #                 await ctx.send(f"こまんどに　\" {dubleq[1]} \"　はないみたいです")
+    #             else:
+    #                 await ctx.send(f"コマンドエラー:\r```{str(error)}```")
+    #         else:
+    #             await ctx.send(f"コマンドエラー:\r```{str(error)}```")
+    #     except IndexError:
+    #         if str(error) == "trigger is a required argument that is missing.":
+    #             await ctx.send("入力する値の数が足りてません")
+    #         else:
+    #             await ctx.send(f"内部エラー:on_message\r```{str(error)}```")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -52,13 +53,39 @@ class TalkIO(commands.Cog, name='Talk'):
         await self.team.scan_message(message, self.room_id)
         content = message.content
         ex_content = str()
-        print(f"->{content}")
+        # print(f"->{content}")
         for query in self.db_cat.tbselect():
             if query.id in content:
                 ex_content += query.body
         if ex_content:
             await message.channel.send(ex_content)
             return
+
+    @commands.command(aliases=["ピン留め", "ピン", "ぴんどめ"], description="ぴんどめ表示")
+    async def pins(self, ctx: commands.Context):
+        for ms in await ctx.channel.pins():
+            await ctx.send(embed=(dispander.compose_embed(ms)))
+
+    @commands.command(aliases=["ロールメンバー", "ろーるめんばー",
+                               "rm"], description="ロールメンバ表示")
+    async def rolemember(self, ctx: commands.Context, name: str):
+        g = discord.Guild
+        g = ctx.guild
+        opt = Option(ctx)
+        await opt.default_embed(title=f"SerchRole\"{name}\"")
+        i = 0
+        context = str()
+        for role in await g.fetch_roles():
+            if role.name == name:
+                for m in role.members:
+                    i += 1
+                    context += f"{i} : {m.mention}\r"
+                break
+        if context:
+            opt.add(name="Result", value=context, inline=False)
+        else:
+            opt.add(name="Result", value="見つかりませんでしたてへ。", inline=False)
+        await opt.sendEmbed(None)
 
     @commands.is_owner()
     @commands.group(aliases=["cm", "コマンド", "こまんど"], description="コマンド管理")
@@ -120,8 +147,9 @@ class TalkIO(commands.Cog, name='Talk'):
                               "いちらん"], description="コマンド、リアクション一覧")
     async def view(self, ctx):  # noqa
         self.opt.get_ctx(ctx)
-        em = await self.view_titles_toembed(t=self.db_cat, title="リアクション")
-        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cmd, title="コマンド", embed=em))
+        await self.view_titles_toembed(t=self.db_cat, title="リアクション")
+        await self.view_titles_toembed(t=self.db_cmd, title="コマンド")
+        await self.opt.sendEmbed(None)
 
     @ view.command(aliases=["リアクション", "り", "りあくしょん", "reaction", "react"],
                    description="追加されたリアクションを表示")
@@ -129,18 +157,18 @@ class TalkIO(commands.Cog, name='Talk'):
         """反応することば一覧を出力します
         """
         self.opt.get_ctx(ctx)
-        await ctx.send(embed=await self.view_titles_toembed(t=self.db_cat,
-                                                            title="リアクション"))
+        await self.view_titles_toembed(t=self.db_cat,
+                                       title="リアクション")
+        await self.opt.sendEmbed()
 
-    async def view_titles_toembed(self, t, title=str(), embed=discord.Embed()) -> discord.Embed:
+    async def view_titles_toembed(self, t, title=str()):
         content = str()
         qlist = t.tbselect()
         for q in qlist:
             content += f"・{q.id}\n"
-        if not(embed):
-            embed = await self.opt.default_embed(footer=True)
-        embed.add_field(name=f"**{title}**", value=f"```{content}```")  # noqa
-        return embed
+        if not(self.opt.embed):
+            await self.opt.default_embed(footer=True)
+        self.opt.add(name=f"**{title}**", value=f"```{content}```")  # noqa
 
 
 def setup(bot):

@@ -84,26 +84,6 @@ class Cmdtb(DBIO):
         db.session.close()
 
 
-class MsfRtb(DBIO):
-    def __init__(self):
-        self.table = self.MsforReact
-
-    class MsforReact(db.Model):
-        __tablename__ = "msforreact"
-        id = db.Column(db.String(), nullable=False, primary_key=True)
-        cid = db.Column(db.String(), nullable=False)
-        seed = db.Column(db.String(), nullable=True)
-
-    def add(self, id: str, cid: str, seed: str):
-        t = self.table()
-        if not(self.tbdelete(id=id)):
-            t.id = id
-            t.cid = cid
-            t.seed = seed
-            db.session.add(t)
-        db.session.close()
-
-
 class Cattb(DBIO):
     def __init__(self):
         self.table = self.Cat
@@ -135,22 +115,43 @@ class Cattb(DBIO):
         db.session.close()
 
 
-# def view():
-#     for cmd in Cmd.query.all():
-#         print(f"{cmd.title}|{cmd.body}")
+class MsfRtb(DBIO):
+    def __init__(self):
+        self.table = self.MsforReact
+
+    class MsforReact(db.Model):
+        __tablename__ = "msforreact"
+        id = db.Column(db.String(), nullable=False, primary_key=True)
+        cid = db.Column(db.String(), nullable=False)
+        seed = db.Column(db.String(), nullable=True)
+
+    def add(self, id: str, cid: str, seed: str):
+        t = self.table()
+        if not(self.tbdelete(id=id)):
+            t.id = id
+            t.cid = cid
+            t.seed = seed
+            db.session.add(t)
+        db.session.close()
 
 
-# @app.route('/')
-# def hello_world():
-#     entries = Entry_cmd.query.all()
-#     return render_template('index.haml', entries=entries)
+class EmbedPages(DBIO):
+    def __init__(self):
+        self.table = self.Page
 
+    class Page(db.Model):
+        __tablename__ = "embedpages"
+        id = db.Column(db.String(), nullable=False, primary_key=True)
+        number = db.Column(db.Integer, nullable=False)
+        content = db.Column(db.String(), nullable=False)
+        isnow = db.Column(db.Boolean(), nullable=False)
 
-# @app.route('/post', methods=['POST'])
-# def add_entry():
-#     entry = Entry_cmd()
-#     entry.title = request.form['title']
-#     entry.body = request.form['body']
-#     db.session.add(entry)
-#     db.session.commit()
-#     return redirect(url_for('hello_world'))
+    def add(self, id: str, number: int, content: str, isnow: bool):
+        t = self.table()
+        if not(self.tbdelete(id=id)):
+            t.id = id
+            t.number = number
+            t.content = content
+            t.isnow = isnow
+            db.session.add(t)
+        db.session.close()
