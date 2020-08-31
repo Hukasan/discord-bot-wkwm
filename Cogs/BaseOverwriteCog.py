@@ -94,10 +94,10 @@ class Help(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         opt = Option(self.context)
         # owner = self.context.bot.get_user(self.context.bot.owner_id)
-        embed = await opt.default_embed(header_icon=True, header='Command List', footer=True)
+        await opt.default_embed(header_icon=True, header='Command List', footer=True)
         if self.context.bot.description:
             # もしBOTに description 属性が定義されているなら、それも埋め込みに追加する
-            embed.description = f"{self.context.bot.description}"
+            opt.embed.description = f"{self.context.bot.description}"
         for cog in mapping:
             if cog:
                 cog_name = cog.qualified_name
@@ -112,12 +112,12 @@ class Help(commands.HelpCommand):
                 command_list = set(command_list)
                 for cmd in command_list:
                     content += f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
-                embed.add_field(
+                opt.embed.add_field(
                     name=f"> {cog_name}",
                     value=content,
                     inline=False)
-
-        await self.get_destination().send(embed=embed)
+        await opt.sendEmbed()
+        # await self.get_destination().send(embed=embed)
 
     async def send_cog_help(self, cog):
         embed = discord.Embed(title=f"{cog.qualified_name}カテゴリ",
