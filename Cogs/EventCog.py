@@ -25,14 +25,13 @@ class Event(commands.Cog):
 
     @ commands.Cog.listener()
     async def on_member_join(self, member: Member):
-        ms = Message
         if member.bot:
             return
         role_member = member.guild.get_role((self.role_nozoki_id))
         await member.add_roles(role_member)
         welcome_room = self.bot.get_channel(self.welcome_room_id)
-        ms = await welcome_room.send(embed=await self.opt.default_embed(description=f"ようこそ猿sのばなな農園へ🍌\r{member.mention}さん\r{self.welcome_message}"))
-        self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed='w')
+        await self.opt.default_embed(description=[{member.mention}, f"ようこそ猿sのばなな農園へ🍌\r{member.name}さん", self.welcome_message])
+        await self.opt.sendEmbed(welcome_room)
 
     @ commands.Cog.listener()
     async def on_member_remove(self, member: Member):
