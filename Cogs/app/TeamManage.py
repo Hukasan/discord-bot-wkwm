@@ -19,9 +19,8 @@ class Team():
         self.cid = int()
 
     async def scan_message(self, message: discord.Message, channel_id: int):
-        self.ctx = await self.bot.get_context(message)
+        self.ctx = self.opt.ctx = await self.bot.get_context(message)
         self.cid = channel_id if channel_id else self.ctx.channel
-        self.opt.get_ctx(self.ctx)
         result = repatter.match(string=message.content)
         if result:
             self.size = int(result.group(1))
