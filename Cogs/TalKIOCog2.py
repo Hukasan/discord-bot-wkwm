@@ -99,7 +99,7 @@ class TalkIO(commands.Cog, name='Talk'):
     @cmds.command(aliases=["a", "ついか", "追加"], description="コマンド追加")
     async def cmdsadd(self, ctx, key, reaction):
         self.db_cmd.add(id=key, body=reaction)
-        await ctx.send("さくせす")
+        await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
 
     @cmdsadd.error
     async def cmdsadd_error(self, ctx, error):

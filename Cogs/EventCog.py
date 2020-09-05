@@ -13,13 +13,12 @@ class Event(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.opt = Option()
         self.db_ms = table.MsfRtb()
         self.lastchecktime = (datetime.now(utc))
         self.room_id = int(self.bot.config['wkwm']['room_id'])
         self.role_nozoki_id = int(self.bot.config['wkwm']['nozoki_role_id'])
         self.welcome_room_id = int(self.bot.config['wkwm']['welcome_room_id'])
-        self.welcome_message = str(self.bot.config['wkwm']['welcome_message'])
+        self.welcome_message = (self.bot.config['wkwm']['welcome_message'])
         self.leave_notice_room_id = int(
             self.bot.config['wkwm']['leave_notice_room_id'])
 
@@ -30,25 +29,31 @@ class Event(commands.Cog):
         role_member = member.guild.get_role((self.role_nozoki_id))
         await member.add_roles(role_member)
         welcome_room = self.bot.get_channel(self.welcome_room_id)
-        await self.opt.default_embed(description=[{member.mention}, f"ようこそ猿sのばなな農園へ🍌\r{member.name}さん", self.welcome_message])
-        await self.opt.sendEmbed(welcome_room)
+        opt = Option(target=welcome_room)
+        desc = ["ようこそ猿sのばなな農園へ🍌🐵", f"{member.name}さん"]
+        desc.extend(self.welcome_message)
+        await opt.default_embed(description=desc, header="🗑このチャットはあなたがリアクションをつけると消去されます")
+        ms = await opt.sendEmbed(nomal=member.mention)
+        self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed='w')
 
     @ commands.Cog.listener()
     async def on_member_remove(self, member: Member):
         if member.bot:
             return
         leave_notice_room = self.bot.get_channel(self.leave_notice_room_id)
-        await leave_notice_room.send(embed=await self.opt.default_embed(description=f" **{member.name}** が脱退しました \rUserID: {member.mention}"))
+        opt = Option(target=leave_notice_room)
+        await opt.default_embed(description=[f"　**{member.name}**　が脱退しました", f"UserID: {member.mention}"])
+        await opt.sendEmbed()
 
     @ commands.Cog.listener()
     async def on_member_update(self, before, after):
-        self.room = self.bot.get_channel(self.room_id)
+        room = self.bot.get_channel(self.room_id)
+        opt = Option(target=room)
         br = set(before.roles)
         ar = set(after.roles)
         dif = len(br) - len(ar)
         if dif != 0:
             conf = list((br - ar) if len(br) > len(ar) else (ar - br))
-            # print(f"__________{self.lastchecktime}____________")
             async for entry in after.guild.audit_logs(action=AuditLogAction.member_role_update, oldest_first=False):
                 if entry.created_at > self.lastchecktime.replace(tzinfo=None):
                     if isinstance(
@@ -58,10 +63,11 @@ class Event(commands.Cog):
                             User):
                         if dif > 0:
                             conf = list(br - ar)
-                            await self.room.send(f'{entry.user.mention} は {after.mention} から **{conf[0].name}** のロールを抜きました')
+                            await opt.default_embed(description=[f"管理者{entry.user.mention} があなたから", f"<**{conf[0].name}**>のロールを抜きましたどんまい"])
                         elif dif < 0:
                             conf = list(ar - br)
-                            await self.room.send(f'{entry.user.mention} が {after.mention} に **{conf[0].name}** のロールを与え給いました')
+                            await opt.default_embed(description=[f"管理者{entry.user.mention} があなたに", f"<**{conf[0].name}**>のロールを与えました🎉"])
+                        await opt.sendEmbed(nomal=f"{after.mention}")
         self.lastchecktime = (datetime.now(utc))
 
 
