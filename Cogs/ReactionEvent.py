@@ -38,7 +38,6 @@ class ReactionEvent(Cog):
         usr = self.bot.get_user(rrae.user_id)
         channel = TextChannel
         channel = self.bot.get_channel(rrae.channel_id)
-        print(type(rrae.emoji))
         emoji = self.bot.get_emoji(rrae.emoji.id)
         if bool(channel) & bool(emoji):
             if usr:
