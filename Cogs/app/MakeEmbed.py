@@ -4,7 +4,7 @@ from os import linesep
 # from copy import copy
 
 
-class Option():
+class MakeEmbed():
     def __init__(self, ctx=None, bot=None, target=None):
         self.ctx = ctx
         self.bot = ctx.bot if ctx else bot

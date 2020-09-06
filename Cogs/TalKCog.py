@@ -2,12 +2,12 @@ from discord import Guild
 from discord.ext import commands
 from web import table
 from dispander import dispand, compose_embed
-from Cogs.app.OptionalSetting import Option
+from Cogs.app.MakeEmbed import MakeEmbed
 from Cogs.app.TeamManage import Team
 from gc import collect
 
 
-class TalkIO(commands.Cog, name='Talk'):
+class Talk(commands.Cog):
     """会話系のコマンド群です
     """
 
@@ -15,7 +15,7 @@ class TalkIO(commands.Cog, name='Talk'):
         self.bot = bot
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
-        self.opt = Option()
+        self.opt = MakeEmbed()
         self.team = Team(bot)
         self.room_id = int(self.bot.config['wkwm']['room_id'])
 
@@ -53,7 +53,6 @@ class TalkIO(commands.Cog, name='Talk'):
         await self.team.scan_message(message, self.room_id)
         content = message.content
         ex_content = str()
-        # print(f"->{content}")
         for query in self.db_cat.tbselect():
             if query.id in content:
                 ex_content += query.body
@@ -61,32 +60,6 @@ class TalkIO(commands.Cog, name='Talk'):
             await message.channel.send(ex_content)
             return
         collect()
-
-    @commands.command(aliases=["ピン留め", "ピン", "ぴんどめ"], description="ぴんどめ表示")
-    async def pins(self, ctx: commands.Context):
-        for ms in await ctx.channel.pins():
-            await ctx.send(embed=(compose_embed(ms)))
-
-    @commands.command(aliases=["ロールメンバー", "ろーるめんばー",
-                               "rm"], description="ロールメンバ表示")
-    async def rolemember(self, ctx: commands.Context, name: str):
-        g = Guild
-        g = ctx.guild
-        opt = Option(ctx)
-        await opt.default_embed(title=f"SerchRole\"{name}\"")
-        i = 0
-        context = str()
-        for role in await g.fetch_roles():
-            if role.name == name:
-                for m in role.members:
-                    i += 1
-                    context += f"{i} : {m.mention}\r"
-                break
-        if context:
-            opt.add(name="Result", value=context, inline=False)
-        else:
-            opt.add(name="Result", value="見つかりませんでしたてへ。", inline=False)
-        await opt.sendEmbed(None)
 
     @commands.is_owner()
     @commands.group(aliases=["cm", "コマンド", "こまんど"], description="コマンド管理")
@@ -173,4 +146,4 @@ class TalkIO(commands.Cog, name='Talk'):
 
 
 def setup(bot):
-    return bot.add_cog(TalkIO(bot))
+    return bot.add_cog(Talk(bot))
