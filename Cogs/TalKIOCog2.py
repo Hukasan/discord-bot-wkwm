@@ -1,10 +1,10 @@
-import discord
+from discord import Guild
 from discord.ext import commands
 from web import table
-from dispander import dispand
-import dispander
+from dispander import dispand, compose_embed
 from Cogs.app.OptionalSetting import Option
 from Cogs.app.TeamManage import Team
+from gc import collect
 
 
 class TalkIO(commands.Cog, name='Talk'):
@@ -60,16 +60,17 @@ class TalkIO(commands.Cog, name='Talk'):
         if ex_content:
             await message.channel.send(ex_content)
             return
+        collect()
 
     @commands.command(aliases=["ピン留め", "ピン", "ぴんどめ"], description="ぴんどめ表示")
     async def pins(self, ctx: commands.Context):
         for ms in await ctx.channel.pins():
-            await ctx.send(embed=(dispander.compose_embed(ms)))
+            await ctx.send(embed=(compose_embed(ms)))
 
     @commands.command(aliases=["ロールメンバー", "ろーるめんばー",
                                "rm"], description="ロールメンバ表示")
     async def rolemember(self, ctx: commands.Context, name: str):
-        g = discord.Guild
+        g = Guild
         g = ctx.guild
         opt = Option(ctx)
         await opt.default_embed(title=f"SerchRole\"{name}\"")

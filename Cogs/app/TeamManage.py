@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+from discord import Message
+from discord.ext.commands import Cog, Bot, Context
 import re
 from Cogs.app.OptionalSetting import Option
 
@@ -10,15 +10,15 @@ repatter = re.compile(pattern=pattern)
 
 
 class Team():
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.teams = {}
         self.bot = bot
-        self.ctx = commands.Context
+        self.ctx = Context
         self.size = int()
         self.opt = Option()
         self.cid = int()
 
-    async def scan_message(self, message: discord.Message, channel_id: int):
+    async def scan_message(self, message: Message, channel_id: int):
         self.ctx = self.opt.ctx = await self.bot.get_context(message)
         self.cid = channel_id if channel_id else self.ctx.channel
         result = repatter.match(string=message.content)
