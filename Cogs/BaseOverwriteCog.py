@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from Cogs.app.OptionalSetting import Option
-import subprocess
 
 
 @commands.is_owner()

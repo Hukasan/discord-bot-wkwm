@@ -1,17 +1,17 @@
 from discord import Embed, Member, AuditLogAction, User, Message
-from discord.ext import commands
+from discord.ext.commands import Cog, Bot
 from datetime import datetime
 from pytz import utc
 from Cogs.app.OptionalSetting import Option
 from web import table
 
 
-class Event(commands.Cog):
+class Event(Cog):
     """
     特殊なイベントでの処理です
     """
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.db_ms = table.MsfRtb()
         self.lastchecktime = (datetime.now(utc))
@@ -22,7 +22,7 @@ class Event(commands.Cog):
         self.leave_notice_room_id = int(
             self.bot.config['wkwm']['leave_notice_room_id'])
 
-    @ commands.Cog.listener()
+    @ Cog.listener()
     async def on_member_join(self, member: Member):
         if member.bot:
             return
@@ -36,7 +36,7 @@ class Event(commands.Cog):
         ms = await opt.sendEmbed(nomal=member.mention)
         self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed='w')
 
-    @ commands.Cog.listener()
+    @ Cog.listener()
     async def on_member_remove(self, member: Member):
         if member.bot:
             return
@@ -45,7 +45,7 @@ class Event(commands.Cog):
         await opt.default_embed(description=[f"　**{member.name}**　が脱退しました", f"UserID: {member.mention}"])
         await opt.sendEmbed()
 
-    @ commands.Cog.listener()
+    @ Cog.listener()
     async def on_member_update(self, before, after):
         room = self.bot.get_channel(self.room_id)
         opt = Option(target=room)

@@ -1,5 +1,4 @@
 from discord import Embed, TextChannel
-from discord.ext import commands
 from web import table
 from os import linesep
 # from copy import copy

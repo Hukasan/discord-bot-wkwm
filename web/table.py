@@ -3,8 +3,8 @@ from flask import Flask
 from werkzeug.datastructures import ImmutableDict
 from hamlish_jinja import HamlishExtension
 from os import environ as getpath
-from logging import getLogger
-logger = getLogger(__name__)
+# from logging import getLogger
+# logger = getLogger(__name__)
 
 
 class FlaskwithHamlish(Flask):
