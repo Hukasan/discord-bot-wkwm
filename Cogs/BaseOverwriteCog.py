@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Cogs.app.OptionalSetting import Option
+from Cogs.app.MakeEmbed import MakeEmbed
 
 
 @commands.is_owner()
@@ -91,7 +91,7 @@ class Help(commands.HelpCommand):
         return enclosure + adjusted_content + enclosure
 
     async def send_bot_help(self, mapping):
-        opt = Option(self.context)
+        opt = MakeEmbed(self.context)
         await opt.default_embed(header_icon=True, header='Command List', footer=True)
         if self.context.bot.description:
             opt.config['description'] = f"{self.context.bot.description}"

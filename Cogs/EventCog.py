@@ -2,7 +2,7 @@ from discord import Embed, Member, AuditLogAction, User, Message
 from discord.ext.commands import Cog, Bot
 from datetime import datetime
 from pytz import utc
-from Cogs.app.OptionalSetting import Option
+from Cogs.app.MakeEmbed import MakeEmbed
 from web import table
 
 
@@ -29,7 +29,7 @@ class Event(Cog):
         role_member = member.guild.get_role((self.role_nozoki_id))
         await member.add_roles(role_member)
         welcome_room = self.bot.get_channel(self.welcome_room_id)
-        opt = Option(target=welcome_room)
+        opt = MakeEmbed(target=welcome_room)
         desc = ["ようこそ猿sのばなな農園へ🍌🐵", f"{member.name}さん"]
         desc.extend(self.welcome_message)
         await opt.default_embed(description=desc, header="🗑このチャットはあなたがリアクションをつけると消去されます")
@@ -41,14 +41,14 @@ class Event(Cog):
         if member.bot:
             return
         leave_notice_room = self.bot.get_channel(self.leave_notice_room_id)
-        opt = Option(target=leave_notice_room)
+        opt = MakeEmbed(target=leave_notice_room)
         await opt.default_embed(description=[f"　**{member.name}**　が脱退しました", f"UserID: {member.mention}"])
         await opt.sendEmbed()
 
     @ Cog.listener()
     async def on_member_update(self, before, after):
         room = self.bot.get_channel(self.room_id)
-        opt = Option(target=room)
+        opt = MakeEmbed(target=room)
         br = set(before.roles)
         ar = set(after.roles)
         dif = len(br) - len(ar)
