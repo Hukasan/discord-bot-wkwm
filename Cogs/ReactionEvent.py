@@ -36,8 +36,8 @@ class ReactionEvent(commands.Cog):
         usr = self.bot.get_user(rrae.user_id)
         channel = TextChannel
         channel = self.bot.get_channel(rrae.channel_id)
-        if isinstance(channel, TextChannel):
-            if (usr):
+        if channel:
+            if usr:
                 if usr.bot:
                     return
                 message = Message
