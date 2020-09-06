@@ -1,5 +1,6 @@
 from os import environ
 from discord.ext import commands
+from gc import collect
 # import logging
 # logging.basicConfig(filename='log/logger.log', level=logging.ERROR)
 # logger = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ extensions.append("ReactionEvent")
 
 
 if __name__ == '__main__':
+    collect()
     # logging.basicConfig(level=logging.INFO)
     bot = commands.Bot(
         command_prefix=[
