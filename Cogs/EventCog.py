@@ -61,13 +61,17 @@ class Event(commands.Cog):
                             Member) | isinstance(
                             entry.target,
                             User):
+                        nozoki = room.guild.get_role(self.role_nozoki_id)
                         if dif > 0:
                             conf = list(br - ar)
-                            await opt.default_embed(description=[f"管理者{entry.user.mention} があなたから", f"<**{conf[0].name}**>のロールを抜きましたどんまい"])
+                            if conf[0] != nozoki:
+                                await opt.default_embed(description=[f"管理者{entry.user.mention} があなたから", f"<**{conf[0].name}**>のロールを抜きましたどんまい"])
                         elif dif < 0:
                             conf = list(ar - br)
-                            await opt.default_embed(description=[f"管理者{entry.user.mention} があなたに", f"<**{conf[0].name}**>のロールを与えました🎉"])
-                        await opt.sendEmbed(nomal=f"{after.mention}")
+                            if conf[0] != nozoki:
+                                await opt.default_embed(description=[f"管理者{entry.user.mention} があなたに", f"<**{conf[0].name}**>のロールを与えました🎉"])
+                        if opt.config:
+                            await opt.sendEmbed(nomal=f"{after.mention}")
         self.lastchecktime = (datetime.now(utc))
 
 

@@ -132,6 +132,7 @@ class MsfRtb(DBIO):
             t.cid = cid
             t.seed = seed
             db.session.add(t)
+        db.session.commit()
         db.session.close()
 
 
@@ -154,4 +155,5 @@ class EmbedPages(DBIO):
             t.content = content
             t.isnow = isnow
             db.session.add(t)
+        db.session.commit()
         db.session.close()
