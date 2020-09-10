@@ -1,6 +1,5 @@
-from os import environ
 from discord.ext import commands
-from gc import collect
+from os import environ, listdir, path
 # import logging
 # logging.basicConfig(filename='log/logger.log', level=logging.ERROR)
 # logger = logging.getLogger(__name__)
@@ -9,20 +8,15 @@ config = {
     'wkwm': {
         'welcome_message': [
             "入隊希望などその他申請は各チャンネルへお願いします。",
-            "各受付チャンネルのピン留めに詳細が有ります。"]
-    }
+            "各受付チャンネルのピン留めに詳細が有ります。"]}}
 
-}
-
-extensions = []
-extensions.append('BaseOverwriteCog')
-extensions.append('TalKIOCog2')
-extensions.append("EventCog")
-extensions.append("ReactionEvent")
+p = '/home/hukasan/discord-bot-id/Cogs'
+files = listdir(p)
+extensions = [path.splitext(f)[0]
+              for f in files if path.isfile(path.join(p, f))]
 
 
 if __name__ == '__main__':
-    collect()
     # logging.basicConfig(level=logging.INFO)
     bot = commands.Bot(
         command_prefix=[
