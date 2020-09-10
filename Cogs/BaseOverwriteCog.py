@@ -132,16 +132,17 @@ class Help(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, command):
-        params = " ".join(command.clean_params.keys())
+        params = "} {".join(command.clean_params.keys())
+        params = '{' + params + '}'
         embed = discord.Embed(
-            title=f"__{self.context.prefix}{command.qualified_name} {params}__",
+            title=f"{self.context.prefix}{command.qualified_name} {params}",
             description=command.description,
             color=0x00ff00)
         if command.aliases:
-            embed.add_field(name="__AnotherCall__", value="`" +
+            embed.add_field(name="__別の呼び出し方__", value="`" +
                             "`, `".join(command.aliases) + "`", inline=False)
         if command.help:
-            embed.add_field(name="__HelpText__",
+            embed.add_field(name="__詳細__",
                             value=command.help, inline=False)
         await self.get_destination().send(embed=embed)
 

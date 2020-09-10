@@ -80,19 +80,20 @@ class MakeEmbed():
                 'inline': inline})
 
     async def sendEmbed(self, obj=None, nomal=str()):
-        self.embed = Embed()
-        self.embed = Embed.from_dict(self.config)
-        obj = (obj[0] if isinstance(obj, list) else obj)
-        if obj:
-            pass
-        elif self.target:
-            obj = self.target
-        elif self.ctx:
-            obj = self.ctx.channel
-        if obj:
-            ms = await obj.send(embed=self.embed, content=nomal)
-            await ms.add_reaction("⬅")
-            await ms.add_reaction("➡")
+        if self.config:
+            self.embed = Embed()
+            self.embed = Embed.from_dict(self.config)
+            obj = (obj[0] if isinstance(obj, list) else obj)
+            if obj:
+                pass
+            elif self.target:
+                obj = self.target
+            elif self.ctx:
+                obj = self.ctx.channel
+            if obj:
+                ms = await obj.send(embed=self.embed, content=nomal)
+                await ms.add_reaction("⬅")
+                await ms.add_reaction("➡")
         # if isinstance(self.description, list):
         #     i = 1
         #     self.db_ep.add(

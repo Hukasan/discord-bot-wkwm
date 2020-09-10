@@ -24,30 +24,41 @@ class Talk(commands.Cog):
             self.ctx.author
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def on_command_error(self, ctx: commands.Context, error):
         cmd = str()
+        mem = MakeEmbed(ctx)
         try:
             cmd = ((str(error)).split('"', maxsplit=2))[1]
             dubleq = str(error).split("\"")
             result = self.db_cmd.tbselect(cmd)
             if result:
                 await ctx.send(result[0].body)
-            elif dubleq:
-                if dubleq[0] == "Command " and dubleq[2] == " is not found":
-                    await ctx.send(f"こまんどに　\" {dubleq[1]} \"　はないみたいです")
-                else:
-                    await ctx.send(f"コマンドエラー:\r```{str(error)}```")
             else:
-                await ctx.send(f"コマンドエラー:\r```{str(error)}```")
+                await mem.default_embed(footer="On_Command_Error", title='コマンドエラー')
+                if dubleq:
+                    if dubleq[0] == "Command " and dubleq[2] == " is not found":
+                        mem.add(
+                            name="無効なコマンド",
+                            value=f"コマンドに \" {dubleq[1]} \" はありませんでした。\r？help コマンドで確認することができます")
+                    else:
+                        mem.add(name='予期せぬエラー', value=f":\r```{str(error)}```")
+                else:
+                    mem.add(name='予期せぬエラー', value=f":\r```{str(error)}```")
         except IndexError:
             if str(error) == "trigger is a required argument that is missing.":
-                await ctx.send("入力する値の数が足りてません")
+                await ctx.send("入力する値の数が足りてません\rヘルプを表示します")
+                if ctx.invoked_subcommand:
+                    await ctx.send_help(ctx.invoked_subcommand)
+                elif ctx.command:
+                    await ctx.send_help(ctx.command)
             else:
-                await ctx.send(f"内部エラー:on_message\r```{str(error)}```")
+                await mem.default_embed(footer="On_Command_Error", title='コマンドエラー')
+                mem.add(name='予期せぬエラー', value=f":\r```{str(error)}```")
+        await mem.sendEmbed()
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        print(f'ms->[{message.content}]')
+        # print(f'ms->[{message.content}]')
         if message.author.bot:
             return
         await dispand(message)  # もしもdiscord内のメッセージリンクだったばあいそれをプレビュ
@@ -78,9 +89,10 @@ class Talk(commands.Cog):
 
     @cmdsadd.error
     async def cmdsadd_error(self, ctx, error):
-        print(type(error))
+        mem = MakeEmbed(ctx)
         if isinstance(error, commands.BadArgument):
-            await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
+            await mem.default_embed(title="コマンドエラー", description=['入力が足りてません　例:\r$cat add くさ こいつ草とかいってます', '->「くさ」で「こいつ草とかいってます」'], footer=True)
+            await mem.sendEmbed()
 
     @cmds.command(aliases=["delete", "d", "削除", "さくじょ"],
                   description=("コマンド削除"))
@@ -92,20 +104,18 @@ class Talk(commands.Cog):
     @commands.group(aliases=["c", "ｃ", "ｃａｔ", "りあくしょん",
                              "リアクション", "キャッツ", "きゃっつ"], description="リアクション管理")
     async def cats(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await ctx.send("サブコマンドがいるよ 例:\r$cat view -> 一覧を表示")
+        pass
 
-    @cats.command(aliases=["add", "a", "ついか", "追加"], description=("リアクション追加"))
+    @cats.command(aliases=["add", "a", "ついか", "追加"],
+                  description=("リアクション追加コマンド"))
     async def catsadd(self, ctx, trigger, reaction):
+        """
+        リアクションを追加します
+            trigger 　: トリガー
+            reaction　: リアクション
+        """
         self.db_cat.add(id=trigger, body=reaction)
         await ctx.send("さくせす")
-
-    @catsadd.error
-    async def catsadd_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.send('入力する値の数が足りてません　例:\r$cat add くさ こいつ草とかいってます->「くさ」で「こいつ草とかいってます」')
-        else:
-            await ctx.send(f"なぞかきこみえらー : in cat add```python{error}```")
 
     @cats.command(aliases=["delete", "d", "削除", "さくじょ"],
                   description=("リアクション削除"))
