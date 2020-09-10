@@ -131,7 +131,7 @@ class Talk(commands.Cog):
     async def catview(self, ctx):
         """反応することば一覧を出力します
         """
-        self.opt.get_ctx(ctx)
+        self.opt.ctx = ctx
         await self.view_titles_toembed(t=self.db_cat,
                                        title="リアクション")
         await self.opt.sendEmbed()
