@@ -60,7 +60,7 @@ class Talk(commands.Cog):
         if ex_content:
             await message.channel.send(ex_content)
             return
-        collect()
+        # collect()
 
     @commands.is_owner()
     @commands.group(aliases=["cm", "コマンド", "こまんど"], description="コマンド管理")
