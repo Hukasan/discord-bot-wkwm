@@ -143,7 +143,7 @@ class Talk(commands.Cog):
             content += f"・{q.id}\n"
         if not(self.opt.embed):
             await self.opt.default_embed(footer=True)
-        self.opt.add(name=f"**{title}**", value=f"```{content}```")  # noqa
+        self.opt.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
 
 
 def setup(bot):
