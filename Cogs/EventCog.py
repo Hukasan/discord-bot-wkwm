@@ -48,7 +48,7 @@ class Event(Cog):
     @ Cog.listener()
     async def on_member_update(self, before, after):
         room = self.bot.get_channel(self.room_id)
-        opt = MakeEmbed().setTarget(target)
+        opt = MakeEmbed().setTarget(room)
         br = set(before.roles)
         ar = set(after.roles)
         dif = len(br) - len(ar)
