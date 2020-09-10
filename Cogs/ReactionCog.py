@@ -8,6 +8,11 @@ from web import table
 
 
 class ReactionEvent(Cog):
+    """
+    リアクションに対しての処理
+
+    """
+
     def __init__(self, bot: Bot):
         self.bot = bot
         self.db_ms = table.MsfRtb()

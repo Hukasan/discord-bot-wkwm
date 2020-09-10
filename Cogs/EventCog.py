@@ -30,9 +30,9 @@ class Event(Cog):
         await member.add_roles(role_member)
         welcome_room = self.bot.get_channel(self.welcome_room_id)
         opt = MakeEmbed(target=welcome_room)
-        desc = ["ようこそ猿sのばなな農園へ🍌🐵", f"{member.name}さん"]
+        desc = [f"{member.name}さん", "ようこそ猿sのばなな農園へ🍌🐵", ]
         desc.extend(self.welcome_message)
-        await opt.default_embed(description=desc, header="🗑このチャットはあなたがリアクションをつけると消去されます")
+        await opt.default_embed(description=desc, header="*このチャットはあなたがリアクションをつけると消去されます*")
         ms = await opt.sendEmbed(nomal=member.mention)
         self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed='w')
 
