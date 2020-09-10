@@ -8,5 +8,4 @@ tempCodeRunnerFile.py
 log/
 test.py
 main_test.py
-jsons/cats.csv
-jsons/cmds.csv
+jsons/
