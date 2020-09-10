@@ -47,12 +47,12 @@ class Event(Cog):
 
     @ Cog.listener()
     async def on_member_update(self, before, after):
-        room = self.bot.get_channel(self.room_id)
-        opt = MakeEmbed().setTarget(room)
         br = set(before.roles)
         ar = set(after.roles)
         dif = len(br) - len(ar)
         if dif != 0:
+            room = self.bot.get_channel(self.room_id)
+            opt = MakeEmbed().setTarget(room)
             conf = list((br - ar) if len(br) > len(ar) else (ar - br))
             async for entry in after.guild.audit_logs(action=AuditLogAction.member_role_update, oldest_first=False):
                 if entry.created_at > self.lastchecktime.replace(tzinfo=None):
