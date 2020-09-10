@@ -1,7 +1,7 @@
 from discord import Message
 from discord.ext.commands import Cog, Bot, Context
 import re
-from Cogs.app.OptionalSetting import Option
+from Cogs.app.MakeEmbed import MakeEmbed
 
 # このプログラムはon_massage内で呼び出されることを前提としている
 
@@ -15,7 +15,7 @@ class Team():
         self.bot = bot
         self.ctx = Context
         self.size = int()
-        self.opt = Option()
+        self.opt = MakeEmbed()
         self.cid = int()
 
     async def scan_message(self, message: Message, channel_id: int):
