@@ -47,7 +47,7 @@ class Talk(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        print(message.content)
+        print(f'ms->[{message.content}]')
         if message.author.bot:
             return
         await dispand(message)  # もしもdiscord内のメッセージリンクだったばあいそれをプレビュ
