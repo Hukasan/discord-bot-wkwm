@@ -17,6 +17,18 @@ class MakeEmbed():
         self.config = {}
         self.bot_info = None
 
+    def setTarget(self, target):
+        self.target = target
+        return self
+
+    def setCtx(self, ctx):
+        self.ctx = ctx
+        return self
+
+    def setBot(self, bot):
+        self.bot = bot
+        return self
+
     def cut(self, obj: str):
         point = 50
         if isinstance(obj, str):
