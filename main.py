@@ -10,7 +10,7 @@ config = {
             "入隊希望などその他申請は各チャンネルへお願いします。",
             "各受付チャンネルのピン留めに詳細が有ります。"]}}
 
-p = '/home/hukasan/discord-bot-id/Cogs'
+p = 'Cogs'
 files = listdir(p)
 extensions = [path.splitext(f)[0]
               for f in files if path.isfile(path.join(p, f))]
