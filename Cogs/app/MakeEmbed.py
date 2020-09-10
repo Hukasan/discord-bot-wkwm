@@ -1,14 +1,15 @@
 from discord import Embed, TextChannel
+from discord.ext.commands import Cog, Bot, Context
 from web import table
 from os import linesep
 # from copy import copy
 
 
 class MakeEmbed():
-    def __init__(self, ctx=None, bot=None, target=None):
+    def __init__(self, ctx=None):
         self.ctx = ctx
-        self.bot = ctx.bot if ctx else bot
-        self.target = target
+        self.bot = ctx.bot if ctx else None
+        self.target = ctx.channel if ctx else None
         self.embed = None
         self.db_ep = table.EmbedPages()
         self.descriptions = list()
@@ -70,9 +71,11 @@ class MakeEmbed():
         self.embed = Embed()
         self.embed = Embed.from_dict(self.config)
         obj = (obj[0] if isinstance(obj, list) else obj)
-        if self.target:
+        if obj:
+            pass
+        elif self.target:
             obj = self.target
-        elif not(obj):
+        elif self.ctx:
             obj = self.ctx.channel
         if obj:
             ms = await obj.send(embed=self.embed, content=nomal)

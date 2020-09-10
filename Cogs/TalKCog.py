@@ -23,27 +23,27 @@ class Talk(commands.Cog):
         def predicate(ctx: commands.Context):
             self.ctx.author
 
-    # @commands.Cog.listener()
-    # async def on_command_error(self, ctx, error):
-    #     cmd = str()
-    #     try:
-    #         cmd = ((str(error)).split('"', maxsplit=2))[1]
-    #         dubleq = str(error).split("\"")
-    #         result = self.db_cmd.tbselect(cmd)
-    #         if result:
-    #             await ctx.send(result[0].body)
-    #         elif dubleq:
-    #             if dubleq[0] == "Command " and dubleq[2] == " is not found":
-    #                 await ctx.send(f"こまんどに　\" {dubleq[1]} \"　はないみたいです")
-    #             else:
-    #                 await ctx.send(f"コマンドエラー:\r```{str(error)}```")
-    #         else:
-    #             await ctx.send(f"コマンドエラー:\r```{str(error)}```")
-    #     except IndexError:
-    #         if str(error) == "trigger is a required argument that is missing.":
-    #             await ctx.send("入力する値の数が足りてません")
-    #         else:
-    #             await ctx.send(f"内部エラー:on_message\r```{str(error)}```")
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        cmd = str()
+        try:
+            cmd = ((str(error)).split('"', maxsplit=2))[1]
+            dubleq = str(error).split("\"")
+            result = self.db_cmd.tbselect(cmd)
+            if result:
+                await ctx.send(result[0].body)
+            elif dubleq:
+                if dubleq[0] == "Command " and dubleq[2] == " is not found":
+                    await ctx.send(f"こまんどに　\" {dubleq[1]} \"　はないみたいです")
+                else:
+                    await ctx.send(f"コマンドエラー:\r```{str(error)}```")
+            else:
+                await ctx.send(f"コマンドエラー:\r```{str(error)}```")
+        except IndexError:
+            if str(error) == "trigger is a required argument that is missing.":
+                await ctx.send("入力する値の数が足りてません")
+            else:
+                await ctx.send(f"内部エラー:on_message\r```{str(error)}```")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -120,30 +120,31 @@ class Talk(commands.Cog):
                               "びゅー",
                               "一覧",
                               "いちらん"], description="コマンド、リアクション一覧")
-    async def view(self, ctx):  # noqa
-        self.opt.ctx = ctx
-        await self.view_titles_toembed(t=self.db_cat, title="リアクション")
-        await self.view_titles_toembed(t=self.db_cmd, title="コマンド")
-        await self.opt.sendEmbed(None)
+    async def view(self, ctx):
+        if ctx.invoked_subcommand is None:
+            mem = MakeEmbed(ctx)
+            await self.view_titles_toembed(mem, t=self.db_cat, title="リアクション")
+            await self.view_titles_toembed(mem, t=self.db_cmd, title="コマンド")
+            await mem.sendEmbed()
 
-    @ view.command(aliases=["リアクション", "り", "りあくしょん", "reaction", "react"],
+    @ view.command(aliases=["リアクション", "り", "りあくしょん", "reaction", "react", "r"],
                    description="追加されたリアクションを表示")
     async def catview(self, ctx):
         """反応することば一覧を出力します
         """
-        self.opt.ctx = ctx
-        await self.view_titles_toembed(t=self.db_cat,
+        mem = MakeEmbed(ctx)
+        await self.view_titles_toembed(mem, t=self.db_cat,
                                        title="リアクション")
-        await self.opt.sendEmbed()
+        await mem.sendEmbed()
 
-    async def view_titles_toembed(self, t, title=str()):
+    async def view_titles_toembed(self, mem: MakeEmbed, t, title=str()):
         content = str()
         qlist = t.tbselect()
         for q in qlist:
             content += f"・{q.id}\n"
-        if not(self.opt.embed):
-            await self.opt.default_embed(footer=True)
-        self.opt.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
+        if not(mem.config):
+            await mem.default_embed(footer=True)
+        mem.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
 
 
 def setup(bot):
