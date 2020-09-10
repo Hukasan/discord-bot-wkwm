@@ -1,66 +1,60 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
-from werkzeug.datastructures import ImmutableDict
-from hamlish_jinja import HamlishExtension
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.schema import Column
+from sqlalchemy.types import Integer, String, Boolean
 from os import environ as getpath
 # from logging import getLogger
 # logger = getLogger(__name__)
 
 
-class FlaskwithHamlish(Flask):
-    jinja_options = ImmutableDict(
-        extensions=[HamlishExtension]
-    )
-
-
-app = FlaskwithHamlish(__name__)
-
 db_uri = str(getpath['DATABASE_URL'])
 # db_uri = "postgresql://wkwm:kkkk@localhost/wkwm"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+engine = create_engine(db_uri)
+Model = declarative_base()
 
-
-db = SQLAlchemy(app)
+SessionClass = sessionmaker(engine)  # セッションを作るクラスを作成
+session = SessionClass()
 
 
 class DBIO():
     def __init__(self):
-        self.table = db.Model
+        self.table = Model
 
     def tbview(self):
-        print(self.table.query.all())
+        print(session.query(self.table).all())
 
     def tbselect(self, id=str()):
         # try:
         result = self.table
         if id:
-            result = self.table.query. \
+            result = session.query(self.table). \
                 filter(self.table.id == id). \
                 all()
             return result
         else:
-            results = self.table.query.all()
+            results = session.query(self.table).all()
             return results
         # except BaseExceptio
 
     def tbdelete(self, id=str()):
         if id:
-            self.table.query. \
+            session.query(self.table). \
                 filter(self.table.id == id). \
                 delete()
-            db.session.commit()
-        db.session.close()
+            session.commit()
+        session.close()
 
 
 class Cmdtb(DBIO):
     def __init__(self):
         self.table = self.Cmd
 
-    class Cmd(db.Model):
+    class Cmd(Model):
         __tablename__ = "cmds"
-        id = db.Column(db.String(), nullable=False, primary_key=True)
-        body = db.Column(db.String(), nullable=False)
+        id = Column(String(), nullable=False, primary_key=True)
+        body = Column(String(), nullable=False)
 
     def add(self, id: str, body: str):
         """
@@ -74,24 +68,24 @@ class Cmdtb(DBIO):
         if not(self.tbdelete(id=id)):
             t.id = id
             t.body = body
-            db.session.add(t)
+            session.add(t)
         else:
             t.query. \
                 filter(t.id == id). \
                 first()
             t.body = body
-        db.session.commit()
-        db.session.close()
+        session.commit()
+        session.close()
 
 
 class Cattb(DBIO):
     def __init__(self):
         self.table = self.Cat
 
-    class Cat(db.Model):
+    class Cat(Model):
         __tablename__ = "cats"
-        id = db.Column(db.String(), nullable=False, primary_key=True)
-        body = db.Column(db.String(), nullable=False)
+        id = Column(String(), nullable=False, primary_key=True)
+        body = Column(String(), nullable=False)
 
     def add(self, id: str, body: str):
         """
@@ -105,25 +99,25 @@ class Cattb(DBIO):
         if not(self.tbdelete(id=id)):
             t.id = id
             t.body = body
-            db.session.add(t)
+            session.add(t)
         else:
             t.query. \
                 filter(t.id == id). \
                 first()
             t.body = body
-        db.session.commit()
-        db.session.close()
+        session.commit()
+        session.close()
 
 
 class MsfRtb(DBIO):
     def __init__(self):
         self.table = self.MsforReact
 
-    class MsforReact(db.Model):
+    class MsforReact(Model):
         __tablename__ = "msforreact"
-        id = db.Column(db.String(), nullable=False, primary_key=True)
-        cid = db.Column(db.String(), nullable=False)
-        seed = db.Column(db.String(), nullable=True)
+        id = Column(String(), nullable=False, primary_key=True)
+        cid = Column(String(), nullable=False)
+        seed = Column(String(), nullable=True)
 
     def add(self, id: str, cid: str, seed: str):
         t = self.table()
@@ -131,21 +125,21 @@ class MsfRtb(DBIO):
             t.id = id
             t.cid = cid
             t.seed = seed
-            db.session.add(t)
-        db.session.commit()
-        db.session.close()
+            session.add(t)
+        session.commit()
+        session.close()
 
 
 class EmbedPages(DBIO):
     def __init__(self):
         self.table = self.Page
 
-    class Page(db.Model):
+    class Page(Model):
         __tablename__ = "embedpages"
-        id = db.Column(db.String(), nullable=False, primary_key=True)
-        number = db.Column(db.Integer, nullable=False)
-        content = db.Column(db.String(), nullable=False)
-        isnow = db.Column(db.Boolean(), nullable=False)
+        id = Column(String(), nullable=False, primary_key=True)
+        number = Column(Integer, nullable=False)
+        content = Column(String(), nullable=False)
+        isnow = Column(Boolean(), nullable=False)
 
     def add(self, id: str, number: int, content: str, isnow: bool):
         t = self.table()
@@ -154,6 +148,6 @@ class EmbedPages(DBIO):
             t.number = number
             t.content = content
             t.isnow = isnow
-            db.session.add(t)
-        db.session.commit()
-        db.session.close()
+            session.add(t)
+        session.commit()
+        session.close()

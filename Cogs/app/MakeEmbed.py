@@ -59,7 +59,7 @@ class MakeEmbed():
                         line = 0
         return ex
 
-    def add(self, name: str, value: str, inline: bool) -> None:
+    def add(self, name: str, value: str, inline=False) -> None:
         if self.config:
             self.config['fields'].append({
                 'name': name,

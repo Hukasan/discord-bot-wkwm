@@ -75,5 +75,5 @@ class Event(Cog):
         self.lastchecktime = (datetime.now(utc))
 
 
-def setup(bot):
+def setup(bot: Bot):
     return bot.add_cog(Event(bot))

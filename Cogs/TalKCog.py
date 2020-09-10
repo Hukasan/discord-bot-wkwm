@@ -121,7 +121,7 @@ class Talk(commands.Cog):
                               "一覧",
                               "いちらん"], description="コマンド、リアクション一覧")
     async def view(self, ctx):  # noqa
-        self.opt.get_ctx(ctx)
+        self.opt.ctx = ctx
         await self.view_titles_toembed(t=self.db_cat, title="リアクション")
         await self.view_titles_toembed(t=self.db_cmd, title="コマンド")
         await self.opt.sendEmbed(None)
