@@ -107,7 +107,7 @@ class MakeEmbed():
         else:
             pass
 
-    async def default_embed(self, title=None, description=None, thumbnail=False, header=None, header_icon=None, footer=None, footer_url=None):
+    async def default_embed(self, title=None, description=None, thumbnail=False, header=None, header_icon=None, footer=True, footer_url=None):
         config = {
             'title': title,
             'color': 0x00ff00,

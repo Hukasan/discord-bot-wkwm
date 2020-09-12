@@ -1,11 +1,11 @@
 import discord
-from discord.ext import commands
+from discord.ext.commands import Cog, Bot, Context, HelpCommand, command, is_owner, Group, Command
 from Cogs.app.MakeEmbed import MakeEmbed
 
 
-@commands.is_owner()
-@commands.command(aliases=["re", "r", "l", "ｒ"], description="プログラムを再読み込み")
-async def load(ctx: commands.Context):
+@is_owner()
+@command(aliases=["re", "lode", "l"], description="プログラムを再読み込み")
+async def load(ctx: Context):
     bot = ctx.bot
     for extension in list(bot.extensions):
         print(f"{extension}　is　reloted")
@@ -14,13 +14,13 @@ async def load(ctx: commands.Context):
     await ctx.message.add_reaction("☑")
 
 
-class Help(commands.HelpCommand):
+class Help(HelpCommand):
     def __init__(self):
         super().__init__()
         self.no_category = "Main"
         self.command_attrs["description"] = "このメッセージを表示"
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
-        self.command_attrs["aliases"] = ["ヘルプ", "へるぷ"]
+        self.command_attrs["aliases"] = ["ヘルプ", "へるぷ", 'h', 'ｈ']
 
     async def create_category_tree_method(self, cmd, index=0) -> str:
         """
@@ -33,62 +33,25 @@ class Help(commands.HelpCommand):
             return''
         content = str()
         temp = str()
-        if 0 == index:
-            content = f"${cmd.name}:{cmd.description}\n"
+        underber_p = int()
+        name = str()
+        if 0 >= index:
+            pass
         else:
-            indent = (index + 1) * "\t"
-            content = f"{indent}- {cmd.name}:{cmd.description}\n"
-        if isinstance(cmd, commands.Group):
+            indent = (index) * "\t"
+            underber_p = cmd.name.rfind('_')
+            if underber_p:
+                name = cmd.name[underber_p + 1:]
+            content = f"{indent}**{name}** : {cmd.description}\n"
+        if isinstance(cmd, Group):
             for subcmd in cmd.walk_commands():
                 if not(subcmd.name == temp):
                     content += await self.create_category_tree_method(
                         cmd=subcmd, index=(index + 1))
                 temp = subcmd.name
             return content
-        elif isinstance(cmd, commands.Command):
+        elif isinstance(cmd, Command):
             return content
-
-    async def create_category_tree(self, category, enclosure):
-        """
-        コマンドの集まり（Group、Cog）から木の枝状のコマンドリスト文字列を生成する。
-        生成した文字列は enlosure 引数に渡された文字列で囲われる。
-        """
-        content = ''
-        if isinstance(category, commands.Cog):
-            for cmd in list(category.walk_commands()):
-                if not(cmd.root_parent):
-                    content += await self.create_category_tree_method(cmd=cmd)
-        elif isinstance(category, commands.Group):
-            for cmd in list(category.walk_commands()):
-                content = await self.create_category_tree_method(cmd=cmd)
-
-        min_level = float("inf")
-        adjusted_content = ""
-
-        for line in content.split("\n"):
-            # 各行のインデントを、最も浅いレベルまで削る
-            if not line:
-                # 空行は削る必要がないので、無視
-                continue
-            level = 0  # その行のインデントレベル
-            for char in line:
-                if char == "\t":
-                    level += 1
-                else:
-                    break
-            if level < min_level:
-                min_level = level
-        if min_level == 0:
-            # 無駄なインデントは無かったので、削る必要もない
-            adjusted_content = content
-        else:
-            for line in content.split("\n"):
-                if not line.startswith("\t"):
-                    adjusted_content += line + "\n"
-                    continue
-                adjusted_content += "".join(line.split("\t" *
-                                                       min_level)[1:]) + "\n"
-        return enclosure + adjusted_content + enclosure
 
     async def send_bot_help(self, mapping):
         opt = MakeEmbed(self.context)
@@ -111,25 +74,30 @@ class Help(commands.HelpCommand):
                         inline=False)
         await opt.sendEmbed()
 
-    async def send_cog_help(self, cog):
-        embed = discord.Embed(title=f"{cog.qualified_name}カテゴリ",
-                              description=f"{cog.description}", color=0x00ff00)
-        embed.add_field(name="__CommandList__", value=await self.create_category_tree(cog, "```"))
-        await self.get_destination().send(embed=embed)
+    async def send_cog_help(self, cog: Cog):
+        mem = MakeEmbed(self.context)
+        temp = str()
+        await mem.default_embed(title=f"{cog.qualified_name}カテゴリ",
+                                description=f"{cog.description}", footer=True)
+        for cmd in cog.walk_commands():
+            if (temp != cmd.name) & (not (cmd.root_parent)):
+                temp = cmd.name
+                mem.add(name=f"> ${cmd.name}", value=f"{cmd.description}\r{await self.create_category_tree_method(cmd=cmd)}")
+        await mem.sendEmbed()
 
     async def send_group_help(self, group):
-        embed = discord.Embed(
+        mem = MakeEmbed(self.context)
+        await mem.default_embed(
             title=f"{self.context.prefix}{group.qualified_name}",
-            description=group.description,
-            color=0x00ff00)
+            description=group.description, footer=True)
         if group.aliases:
-            embed.add_field(name="__AnotherCall__", value="`" +
-                            "`, `".join(group.aliases) + "`", inline=False)
+            mem.add(name="__別の呼び出し方__", value="`" +
+                    "`, `".join(group.aliases) + "`", inline=False)
         if group.help:
-            embed.add_field(name="概要",
-                            value=group.help, inline=False)
-        embed.add_field(name="*サブコマンド:*", value=await self.create_category_tree(group, "```"), inline=False)
-        await self.get_destination().send(embed=embed)
+            mem.add(name="__詳細__",
+                    value=group.help, inline=False)
+        mem.add(name="> サブコマンド :", value=await self.create_category_tree(group, "```"), inline=False)
+        await mem.sendEmbed()
 
     async def send_command_help(self, command):
         params = "} {".join(command.clean_params.keys())
@@ -156,13 +124,13 @@ class Help(commands.HelpCommand):
 
     def subcommand_not_found(self, command, string):
         if isinstance(
-                command, commands.Group) and len(
+                command, Group) and len(
                 command.all_commands) > 0:
             # もし、そのコマンドにサブコマンドが存在しているなら
             return f"{command.qualified_name} に {string} というサブコマンドは登録されていません。"
         return f"{command.qualified_name} にサブコマンドは登録されていません。"
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Bot):
     bot.help_command = Help()
     bot.add_command(load)

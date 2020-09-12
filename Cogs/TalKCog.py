@@ -45,7 +45,7 @@ class Talk(commands.Cog):
                 else:
                     mem.add(name='予期せぬエラー', value=f":\r```{str(error)}```")
         except IndexError:
-            if str(error) == "trigger is a required argument that is missing.":
+            if "trigger is a required argument that is missing." in str(error):
                 await ctx.send("入力する値の数が足りてません\rヘルプを表示します")
                 if ctx.invoked_subcommand:
                     await ctx.send_help(ctx.invoked_subcommand)
@@ -74,41 +74,44 @@ class Talk(commands.Cog):
         # collect()
 
     @commands.is_owner()
-    @commands.group(aliases=["cm", "コマンド", "こまんど"], description="コマンド管理")
-    async def cmds(self, ctx):
+    @commands.group(aliases=["c", "ｃ", "コマンド", "こまんど",
+                             "command"], description="コマンド管理")
+    async def cmd(self, ctx):
         """[※管理者のみ]
         """
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンド追加")
 
     @commands.is_owner()
-    @cmds.command(aliases=["a", "ついか", "追加"], description="コマンド追加")
-    async def cmdsadd(self, ctx, key, reaction):
+    @cmd.command(aliases=["a", "ついか", "追加"], description="追加")
+    async def cmd_add(self, ctx, key, reaction):
         self.db_cmd.add(id=key, body=reaction)
         await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
 
-    @cmdsadd.error
-    async def cmdsadd_error(self, ctx, error):
-        mem = MakeEmbed(ctx)
-        if isinstance(error, commands.BadArgument):
-            await mem.default_embed(title="コマンドエラー", description=['入力が足りてません　例:\r$cat add くさ こいつ草とかいってます', '->「くさ」で「こいつ草とかいってます」'], footer=True)
-            await mem.sendEmbed()
-
-    @cmds.command(aliases=["delete", "d", "削除", "さくじょ"],
-                  description=("コマンド削除"))
-    async def cmdsdelete(self, ctx, key):
+    @cmd.command(aliases=["delete", "d", "削除", "さくじょ"],
+                 description=("削除"))
+    async def cmd_delete(self, ctx, key):
         self.db_cmd.tbdelete(id=str(key))
         await ctx.send(f"さくせす {key} の削除に成功しましたぁ")
 
     @commands.is_owner()
-    @commands.group(aliases=["c", "ｃ", "ｃａｔ", "りあくしょん",
-                             "リアクション", "キャッツ", "きゃっつ"], description="リアクション管理")
-    async def cats(self, ctx):
-        pass
+    @commands.group(
+        aliases=["r",
+                 "ｒ",
+                 "react",
+                 "reaction",
+                 "りあくしょん",
+                 "リアクション"],
+        description="リアクション管理")
+    async def cat(self, ctx):
+        """
+        ※このコマンドは親コマンドです、サブコマンドを指定してください。
+        """
+        raise Exception('trigger is a required argument that is missing.')
 
-    @cats.command(aliases=["add", "a", "ついか", "追加"],
-                  description=("リアクション追加コマンド"))
-    async def catsadd(self, ctx, trigger, reaction):
+    @cat.command(aliases=["add", "a", "ついか", "追加"],
+                 description=("追加"))
+    async def cat_add(self, ctx, trigger, reaction):
         """
         リアクションを追加します
             trigger 　: トリガー
@@ -117,9 +120,9 @@ class Talk(commands.Cog):
         self.db_cat.add(id=trigger, body=reaction)
         await ctx.send("さくせす")
 
-    @cats.command(aliases=["delete", "d", "削除", "さくじょ"],
-                  description=("リアクション削除"))
-    async def catsdelete(self, ctx, key):
+    @cat.command(aliases=["delete", "d", "削除", "さくじょ"],
+                 description=("削除"))
+    async def cat_delete(self, ctx, key):
         self.db_cat.tbdelete(id=str(key))
         await ctx.send(f"さくせす {key} の削除に成功しました💩")
 
@@ -129,7 +132,7 @@ class Talk(commands.Cog):
                               "ビュー",
                               "びゅー",
                               "一覧",
-                              "いちらん"], description="コマンド、リアクション一覧")
+                              "いちらん"], description="一覧表示")
     async def view(self, ctx):
         if ctx.invoked_subcommand is None:
             mem = MakeEmbed(ctx)
@@ -137,14 +140,23 @@ class Talk(commands.Cog):
             await self.view_titles_toembed(mem, t=self.db_cmd, title="コマンド")
             await mem.sendEmbed()
 
-    @ view.command(aliases=["リアクション", "り", "りあくしょん", "reaction", "react", "r"],
-                   description="追加されたリアクションを表示")
-    async def catview(self, ctx):
-        """反応することば一覧を出力します
-        """
+    @ view.command(aliases=["リアクション", "りあくしょん", "reaction", "react", "r"],
+                   description="リアクション一覧")
+    async def view_cat(self, ctx):
         mem = MakeEmbed(ctx)
         await self.view_titles_toembed(mem, t=self.db_cat,
                                        title="リアクション")
+        await mem.sendEmbed()
+
+    @view.command(aliases=["コマンド", "こまんど", "cmd",
+                           "command", "c"], description="コマンド一覧")
+    async def view_cmd(self, ctx):
+        """
+
+        """
+        mem = MakeEmbed(ctx)
+        await self.view_titles_toembed(mem, t=self.db_cmd,
+                                       title="コマンド")
         await mem.sendEmbed()
 
     async def view_titles_toembed(self, mem: MakeEmbed, t, title=str()):
