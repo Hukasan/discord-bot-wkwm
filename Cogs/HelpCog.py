@@ -1,5 +1,5 @@
 import discord
-from discord.ext.commands import Cog, Bot, Context, HelpCommand, command, is_owner, Group, Command
+from discord.ext.commands import Cog, Bot, Context, HelpCommand, is_owner, Group, Command
 from Cogs.app.MakeEmbed import MakeEmbed
 
 

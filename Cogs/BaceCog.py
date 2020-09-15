@@ -54,3 +54,7 @@ class Bace(Cog):
                 mem.add(name='予期せぬエラー', value=f"```{str(error)}```")
                 mem.greeting = f"{self.owner.mention}エラーってるんですけどぉ"
         await mem.sendEmbed()
+
+
+def setup(bot):
+    return Bace(bot)
