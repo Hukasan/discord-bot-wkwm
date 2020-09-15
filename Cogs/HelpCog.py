@@ -3,21 +3,10 @@ from discord.ext.commands import Cog, Bot, Context, HelpCommand, command, is_own
 from Cogs.app.MakeEmbed import MakeEmbed
 
 
-@is_owner()
-@command(aliases=["re", "lode", "l"], description="プログラムを再読み込み")
-async def load(ctx: Context):
-    bot = ctx.bot
-    for extension in list(bot.extensions):
-        print(f"{extension}　is　reloted")
-        bot.reload_extension(f"{extension}")
-    print("再読み込み完了")
-    await ctx.message.add_reaction("☑")
-
-
 class Help(HelpCommand):
     def __init__(self):
         super().__init__()
-        self.no_category = "Main"
+        self.no_category_name = ""  # カテゴリが見つからなかった場合のカテゴリ
         self.command_attrs["description"] = "このメッセージを表示"
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
         self.command_attrs["aliases"] = ["ヘルプ", "へるぷ", 'h', 'ｈ']
@@ -133,4 +122,3 @@ class Help(HelpCommand):
 
 def setup(bot: Bot):
     bot.help_command = Help()
-    bot.add_command(load)

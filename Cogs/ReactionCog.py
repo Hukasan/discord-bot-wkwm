@@ -16,22 +16,18 @@ class ReactionEvent(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.db_ms = table.MsfRtb()
-        self.funcs = {"w": self.ar_welcome}
+        self.funcs = {"w": self.ear_welcome}
 
-    async def action_react(self, usr_id: int, ms: Message, react: Emoji) -> bool:
-        # try:
-        result = self.db_ms.table
+    async def embed_react_action(self, usr_id: int, ms: Message, react: Emoji) -> bool:
         result = self.db_ms.tbselect(id=str(ms.id))
         if result:
             func = self.funcs.get(result[0].seed)
             if func:
                 return await func(usr_id, ms, react)
             else:
-                return False
-        # except BaseException:
-        # return False
+                pass
 
-    async def ar_welcome(self, usr_id: int, ms: Message, react: Emoji):
+    async def ear_welcome(self, usr_id: int, ms: Message, react: Emoji):
         self.db_ms.tbdelete(id=str(ms.id))
         if ms.author.id == usr_id:
             await ms.delete()
@@ -50,7 +46,10 @@ class ReactionEvent(Cog):
                     return
                 message = Message
                 message = await channel.fetch_message(rrae.message_id)
-                await self.action_react(rrae.user_id, message, emoji)
+                if message.embeds:
+                    await self.action_react(rrae.user_id, message, emoji)
+                else:
+                    pass
 
 
 def setup(bot):

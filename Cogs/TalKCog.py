@@ -24,39 +24,6 @@ class Talk(commands.Cog):
             self.ctx.author
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error):
-        cmd = str()
-        mem = MakeEmbed(ctx)
-        try:
-            cmd = ((str(error)).split('"', maxsplit=2))[1]
-            dubleq = str(error).split("\"")
-            result = self.db_cmd.tbselect(cmd)
-            if result:
-                await ctx.send(result[0].body)
-            else:
-                await mem.default_embed(footer="On_Command_Error", title='コマンドエラー')
-                if dubleq:
-                    if dubleq[0] == "Command " and dubleq[2] == " is not found":
-                        mem.add(
-                            name="無効なコマンド",
-                            value=f"コマンドに \" {dubleq[1]} \" はありませんでした。\r？help コマンドで確認することができます")
-                    else:
-                        mem.add(name='予期せぬエラー', value=f":\r```{str(error)}```")
-                else:
-                    mem.add(name='予期せぬエラー', value=f":\r```{str(error)}```")
-        except IndexError:
-            if "trigger is a required argument that is missing." in str(error):
-                await ctx.send("入力する値の数が足りてません\rヘルプを表示します")
-                if ctx.invoked_subcommand:
-                    await ctx.send_help(ctx.invoked_subcommand)
-                elif ctx.command:
-                    await ctx.send_help(ctx.command)
-            else:
-                await mem.default_embed(footer="On_Command_Error", title='コマンドエラー')
-                mem.add(name='予期せぬエラー', value=f":\r```{str(error)}```")
-        await mem.sendEmbed()
-
-    @commands.Cog.listener()
     async def on_message(self, message):
         # print(f'ms->[{message.content}]')
         if message.author.bot:

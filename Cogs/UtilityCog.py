@@ -16,7 +16,6 @@ class Utility(Cog):
     @command(aliases=["ロールメンバー", "ろーるめんばー",
                       "rm"], description="ロールメンバ表示")
     async def rolemember(self, ctx: Context, name: str):
-        g = Guild
         g = ctx.guild
         opt = MakeEmbed(ctx)
         await opt.default_embed(title=f"SerchRole\"{name}\"")

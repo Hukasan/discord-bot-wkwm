@@ -16,6 +16,7 @@ class MakeEmbed():
         self.line_number = int(0)
         self.config = {}
         self.bot_info = None
+        self.greeting = str()
 
     def setTarget(self, target):
         self.target = target
@@ -79,8 +80,9 @@ class MakeEmbed():
                 'value': value,
                 'inline': inline})
 
-    async def sendEmbed(self, obj=None, nomal=str()):
+    async def sendEmbed(self, obj=None, greeting=str()):
         if self.config:
+            self.greeting = greeting
             self.embed = Embed()
             self.embed = Embed.from_dict(self.config)
             obj = (obj[0] if isinstance(obj, list) else obj)
@@ -91,7 +93,7 @@ class MakeEmbed():
             elif self.ctx:
                 obj = self.ctx.channel
             if obj:
-                ms = await obj.send(embed=self.embed, content=nomal)
+                ms = await obj.send(embed=self.embed, content=self.greeting)
                 await ms.add_reaction("⬅")
                 await ms.add_reaction("➡")
         # if isinstance(self.description, list):
