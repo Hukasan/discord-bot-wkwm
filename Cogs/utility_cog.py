@@ -1,7 +1,7 @@
 from discord import Guild
 from discord.ext.commands import Cog, Bot, command, Context
 from dispander import dispand, compose_embed
-from Cogs.app.MakeEmbed import MakeEmbed
+from Cogs.app import table, make_embed as me
 
 
 class Utility(Cog):
@@ -17,7 +17,7 @@ class Utility(Cog):
                       "rm"], description="ロールメンバ表示")
     async def rolemember(self, ctx: Context, name: str):
         g = ctx.guild
-        opt = MakeEmbed(ctx)
+        opt = me.MyEmbed(ctx)
         await opt.default_embed(title=f"SerchRole\"{name}\"")
         i = 0
         context = str()

@@ -1,9 +1,7 @@
 from discord import Guild
 from discord.ext import commands
-from web import table
 from dispander import dispand, compose_embed
-from Cogs.app.MakeEmbed import MakeEmbed
-from Cogs.app.TeamManage import Team
+from Cogs.app import table, make_embed as me
 from gc import collect
 
 
@@ -15,8 +13,7 @@ class Talk(commands.Cog):
         self.bot = bot
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
-        self.opt = MakeEmbed()
-        self.team = Team(bot)
+        # self.team = Team(bot)
         self.room_id = int(self.bot.config['wkwm']['room_id'])
 
     def check_role_is_upper(self):
@@ -29,7 +26,7 @@ class Talk(commands.Cog):
         if message.author.bot:
             return
         await dispand(message)  # もしもdiscord内のメッセージリンクだったばあいそれをプレビュ
-        await self.team.scan_message(message, self.room_id)
+        # await self.team.scan_message(message, self.room_id)
         content = message.content
         ex_content = str()
         for query in self.db_cat.tbselect():
@@ -80,9 +77,11 @@ class Talk(commands.Cog):
                  description=("追加"))
     async def cat_add(self, ctx, trigger, reaction):
         """
-        リアクションを追加します
-            trigger 　: トリガー
+        リアクションを追加します。
+            trigger 　: 反応する言葉
             reaction　: リアクション
+        > ? cat add てすと うんち
+        で、会話内の「てすと」に対して「うんち」といいます
         """
         self.db_cat.add(id=trigger, body=reaction)
         await ctx.send("さくせす")
@@ -102,18 +101,18 @@ class Talk(commands.Cog):
                               "いちらん"], description="一覧表示")
     async def view(self, ctx):
         if ctx.invoked_subcommand is None:
-            mem = MakeEmbed(ctx)
-            await self.view_titles_toembed(mem, t=self.db_cat, title="リアクション")
-            await self.view_titles_toembed(mem, t=self.db_cmd, title="コマンド")
-            await mem.sendEmbed()
+            embed = me.MyEmbed(ctx)
+            await self.view_titles_toembed(embed, t=self.db_cat, title="リアクション")
+            await self.view_titles_toembed(embed, t=self.db_cmd, title="コマンド")
+            await embed.sendEmbed()
 
     @ view.command(aliases=["リアクション", "りあくしょん", "reaction", "react", "r"],
                    description="リアクション一覧")
     async def view_cat(self, ctx):
-        mem = MakeEmbed(ctx)
-        await self.view_titles_toembed(mem, t=self.db_cat,
+        embed = me.MyEmbed(ctx)
+        await self.view_titles_toembed(embed, t=self.db_cat,
                                        title="リアクション")
-        await mem.sendEmbed()
+        await embed.sendEmbed()
 
     @view.command(aliases=["コマンド", "こまんど", "cmd",
                            "command", "c"], description="コマンド一覧")
@@ -121,19 +120,19 @@ class Talk(commands.Cog):
         """
 
         """
-        mem = MakeEmbed(ctx)
-        await self.view_titles_toembed(mem, t=self.db_cmd,
+        embed = me.MyEmbed(ctx)
+        await self.view_titles_toembed(embed, t=self.db_cmd,
                                        title="コマンド")
-        await mem.sendEmbed()
+        await embed.sendEmbed()
 
-    async def view_titles_toembed(self, mem: MakeEmbed, t, title=str()):
+    async def view_titles_toembed(self, embed: me.MyEmbed, t, title=str()):
         content = str()
         qlist = t.tbselect()
         for q in qlist:
             content += f"・{q.id}\n"
-        if not(mem.config):
-            await mem.default_embed(footer=True)
-        mem.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
+        if not(embed.config):
+            await embed.default_embed(footer=True)
+        embed.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
 
 
 def setup(bot):

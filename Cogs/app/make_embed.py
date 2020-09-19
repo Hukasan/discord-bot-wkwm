@@ -1,11 +1,11 @@
 from discord import Embed, TextChannel
 from discord.ext.commands import Cog, Bot, Context
-from web import table
+from Cogs.app import table
 from os import linesep
 # from copy import copy
 
 
-class MakeEmbed():
+class MyEmbed():
     def __init__(self, ctx=None):
         self.ctx = ctx
         self.bot = ctx.bot if ctx else None
@@ -30,7 +30,7 @@ class MakeEmbed():
         self.bot = bot
         return self
 
-    def cut(self, obj: str):
+    def __cut(self, obj: str):
         point = 50
         if isinstance(obj, str):
             if len(obj) > point:
@@ -42,7 +42,7 @@ class MakeEmbed():
             ex = 'TextError'
         return ex
 
-    def export_complist(self, obj):
+    def __export_complist(self, obj):
         ex = list()
         lines = 0
         if isinstance(obj, str):
@@ -53,7 +53,7 @@ class MakeEmbed():
                 temp.extend(o.splitlines())
             obj = temp
             for o in obj:
-                content = self.cut(o)
+                content = self.__cut(o)
                 line = len(content)
                 # print(f"{o},{line}")
                 while(line > 0):
@@ -73,7 +73,9 @@ class MakeEmbed():
                         line = 0
         return ex
 
-    def add(self, name: str, value: str, inline=False) -> None:
+    def add(self, name: str, value: str, inline=False, greeting=str()) -> None:
+        if greeting:
+            self.greeting = greeting
         if self.config:
             self.config['fields'].append({
                 'name': name,
@@ -82,7 +84,8 @@ class MakeEmbed():
 
     async def sendEmbed(self, obj=None, greeting=str()):
         if self.config:
-            self.greeting = greeting
+            if greeting:
+                self.greeting = greeting
             self.embed = Embed()
             self.embed = Embed.from_dict(self.config)
             obj = (obj[0] if isinstance(obj, list) else obj)
@@ -94,20 +97,13 @@ class MakeEmbed():
                 obj = self.ctx.channel
             if obj:
                 ms = await obj.send(embed=self.embed, content=self.greeting)
-                await ms.add_reaction("⬅")
-                await ms.add_reaction("➡")
-        # if isinstance(self.description, list):
-        #     i = 1
-        #     self.db_ep.add(
-        #         id=ms.id,
-        #         number=i,
-        #         content=self.description.pop(0),
-        #         isnow=True)
-        #     for desc in self.description:
-        # self.db_ep.add(id=ms.id, number=++i, content=desc, isnow=False)
+                if self.descriptions:
+                    self.db_ms.add(
+                        id=ms.id, content=self.descriptions, isnow=1)
+                    await ms.add_reaction("➡")
             return ms
         else:
-            pass
+            return None
 
     async def default_embed(self, title=None, description=None, thumbnail=False, header=None, header_icon=None, footer=True, footer_url=None):
         config = {
@@ -116,8 +112,8 @@ class MakeEmbed():
             'fields': []
         }
         if description:
-            self.descriptions = self.export_complist(obj=description)
-            config['description'] = self.descriptions[0]
+            self.descriptions = self.__export_complist(obj=description)
+            config['description'] = self.descriptions.pop(0)
         if self.bot:
             self.bot_info = await self.bot.application_info()
             if thumbnail:

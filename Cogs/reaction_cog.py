@@ -1,7 +1,7 @@
 from discord import Embed, Member, Reaction, RawReactionActionEvent, TextChannel, Message, Emoji
 from discord.ext.commands import Cog, Bot
 from discord.abc import GuildChannel, PrivateChannel
-from web import table
+from Cogs.app import table
 # from datetime import datetime
 # from pytz import utc
 # from Cogs.app.MakeEmbed import MakeEmbed
