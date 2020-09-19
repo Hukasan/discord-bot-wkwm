@@ -9,7 +9,7 @@ class OutputError(Cog):
         self.owner = None
         self.db_cmd = table.Cmdtb()
         self.__error_title = 'コマンドエラー'
-        self.__error_fotter = "On_Command_Error"
+        self.__error_fotter = ""
         self.__undefine_error_title = '予期せぬエラー'
         self.__notice_owner_message = "おぉん　エラーってるんですけどぉ↓↓"
         self.__missing_arg_message = "そのコマンドに必要な要素指定が足りていません\r"\
