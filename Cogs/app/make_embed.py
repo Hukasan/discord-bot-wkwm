@@ -22,6 +22,10 @@ class MyEmbed():
         self.target = target
         return self
 
+    def change_description(self, desc):
+        if self.config:
+            self.config['description'] = desc
+
     def setCtx(self, ctx):
         self.ctx = ctx
         return self
