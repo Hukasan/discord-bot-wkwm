@@ -8,7 +8,6 @@ class OutputError(Cog):
         self.bot = bot
         self.owner = None
         self.db_cmd = table.Cmdtb()
-
         self.__error_title = 'コマンドエラー'
         self.__error_fotter = "On_Command_Error"
         self.__undefine_error_title = '予期せぬエラー'
@@ -20,7 +19,8 @@ class OutputError(Cog):
     async def on_command_error(self, ctx: Context, error):
         if not(self.owner):
             self.owner = self.bot.get_user(self.bot.owner_id)
-        self.__notice_owner_message = self.owner.mention + self.__notice_owner_message
+        if self.owner:
+            self.__notice_owner_message = self.owner.mention + self.__notice_owner_message
         cmd = str()
         embed = me.MyEmbed(ctx)
         try:
