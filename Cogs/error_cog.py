@@ -52,7 +52,7 @@ class OutputError(Cog):
                     )
         except IndexError:
             await embed.default_embed(footer=self.__error_fotter, title=self.__error_title)
-            if "trigger is a required argument that is missing." in str(
+            if "required argument that is missing." in str(
                     error):
                 embed.change_description(self.__missing_arg_message)
                 if ctx.invoked_subcommand:
