@@ -5,15 +5,16 @@ from pytz import utc
 from Cogs.app import table, make_embed as me
 
 
-class Event(Cog):
+class UserEvent(Cog):
     """
-    特殊なイベントでの処理です
+    ユーザ情報の改定を検知したときの処理
     """
 
     def __init__(self, bot: Bot):
         self.bot = bot
         self.db_ms = table.MsfRtb()
         self.lastchecktime = (datetime.now(utc))
+        self.role_nozoki_id = int(self.bot.config['wkwm']['nozoki_role_id'])
         self.room_id = int(self.bot.config['wkwm']['room_id'])
         self.leave_notice_room_id = int(
             self.bot.config['wkwm']['leave_notice_room_id'])
@@ -23,7 +24,7 @@ class Event(Cog):
         if member.bot:
             return
         leave_notice_room = self.bot.get_channel(self.leave_notice_room_id)
-        opt = me.MykeEmbed(target=leave_notice_room)
+        opt = me.MyEmbed().setTarget(target=leave_notice_room)
         await opt.default_embed(description=[f"　**{member.name}**　が脱退しました", f"UserID: {member.mention}"])
         await opt.sendEmbed()
 
@@ -58,4 +59,4 @@ class Event(Cog):
 
 
 def setup(bot: Bot):
-    return bot.add_cog(Event(bot))
+    return bot.add_cog(UserEvent(bot))

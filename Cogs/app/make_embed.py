@@ -129,11 +129,12 @@ class MyEmbed():
             else:
                 config['author'] = {"name": header}
         if footer:
-            if isinstance(footer, bool) & bool(self.ctx):
-                string = f"{self.ctx.prefix} {self.ctx.command}"
-                if self.ctx.invoked_subcommand:
-                    string += f" {(self.ctx.invoked_subcommand).name}"
-                config['footer'] = {'text': string}
+            if isinstance(footer, bool):
+                if bool(self.ctx):
+                    string = f"{self.ctx.prefix} {self.ctx.command}"
+                    if self.ctx.invoked_subcommand:
+                        string += f" {(self.ctx.invoked_subcommand).name}"
+                    config['footer'] = {'text': string}
             elif footer_url:
                 config['footer'] = {
                     'text': footer, 'icon_url': str(footer_url)}

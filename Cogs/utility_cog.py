@@ -5,13 +5,23 @@ from Cogs.app import table, make_embed as me
 
 
 class Utility(Cog):
+    """
+    ちょっとした便利機能
+    """
+
     def __init__(self, bot: Bot):
         self.bot = bot
 
     @command(aliases=["ピン留め", "ピン", "ぴんどめ"], description="ぴんどめ表示")
     async def pins(self, ctx: Context):
-        for ms in await ctx.channel.pins():
-            await ctx.send(embed=(compose_embed(ms)))
+        pins = await ctx.channel.pins()
+        if pins:
+            for ms in pins:
+                await ctx.send(embed=(compose_embed(ms)))
+        else:
+            myembed = me.MyEmbed(ctx)
+            myembed.default_embed(title='ピン留め表示',
+                                  description="**このチャンネルにピン留めは無い様(*ﾟ∀ﾟ)ゞﾃﾞｼ**")
 
     @command(aliases=["ロールメンバー", "ろーるめんばー",
                       "rm"], description="ロールメンバ表示")

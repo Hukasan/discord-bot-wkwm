@@ -6,7 +6,7 @@ from gc import collect
 
 
 class Talk(commands.Cog):
-    """会話系のコマンド群です
+    """会話系のコマンド群
     """
 
     def __init__(self, bot: commands.Bot):

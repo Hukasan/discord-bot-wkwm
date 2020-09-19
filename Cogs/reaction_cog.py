@@ -9,8 +9,7 @@ from Cogs.app import table
 
 class ReactionEvent(Cog):
     """
-    リアクションに対しての処理
-
+    リアクションに対しての処理(ページ遷移を除く)
     """
 
     def __init__(self, bot: Bot):

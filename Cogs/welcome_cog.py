@@ -14,6 +14,7 @@ class Welcome(Cog):
         self.welcome_room_id = int(self.bot.config['wkwm']['welcome_room_id'])
         self.welcome_message = (self.bot.config['wkwm']['welcome_message'])
         self.header = "*このチャットはあなたがリアクションをつけると消去されます*"
+        self.db_ms = table.MsfRtb()
 
     @ Cog.listener()
     async def on_member_join(self, member: Member):
@@ -27,9 +28,9 @@ class Welcome(Cog):
         if nozoki_role:
             if welcome_room:
                 await member.add_roles(nozoki_role)
-                opt = me.MyEmbed(target=welcome_room)
+                opt = me.MyEmbed().setTarget(target=welcome_room)
                 await opt.default_embed(description=desc, header=self.header)
-                ms = await opt.sendEmbed(nomal=member.mention)
+                ms = await opt.sendEmbed(greeting=member.mention)
                 self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed='w')
             else:
                 raise GetDatafromDiscordError(
