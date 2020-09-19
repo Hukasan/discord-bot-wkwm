@@ -71,7 +71,8 @@ class Talk(commands.Cog):
         """
         ※このコマンドは親コマンドです、サブコマンドを指定してください。
         """
-        raise Exception('trigger is a required argument that is missing.')
+        if ctx.invoked_subcommand is None:
+            raise Exception('trigger is a required argument that is missing.')
 
     @cat.command(aliases=["add", "a", "ついか", "追加"],
                  description=("追加"))
