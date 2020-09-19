@@ -32,7 +32,7 @@ class OutputError(Cog):
                 return
             else:
                 dubleq = str(error).split("\"")
-                await embed.default_embed(footer="On_Command_Error", title=self.__error_title)
+                await embed.default_embed(footer=self.__error_fotter, title=self.__error_title)
                 if dubleq:
                     if dubleq[0] == "Command " and dubleq[2] == " is not found":
                         embed.add(
