@@ -14,6 +14,7 @@ class OutputError(Cog):
         self.__notice_owner_message = "おぉん　エラーってるんですけどぉ↓↓"
         self.__missing_arg_message = "そのコマンドに必要な要素指定が足りていません\r"\
             "コマンドの詳細を表示しますか？"
+        self.__permission_message = "指定されたコマンドは管理者のみ実行することができます。"
 
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error):
@@ -61,6 +62,11 @@ class OutputError(Cog):
                     await ctx.send_help(ctx.invoked_subcommand)
                 elif ctx.command:
                     await ctx.send_help(ctx.command)
+            elif "You do not own this bot." in str(error):
+                embed.add(
+                    name=self.__error_title,
+                    value=self.__permission_message
+                )
             else:
                 embed.add(
                     name=self.__undefine_error_title,
