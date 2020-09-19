@@ -73,10 +73,19 @@ class MyEmbed():
                         line = 0
         return ex
 
-    def add(self, name: str, value: str, inline=False, greeting=str()) -> None:
+    def add(
+        self,
+        name: str,
+        value: str,
+        inline=False,
+        greeting=str(),
+        description=str()
+    ) -> None:
         if greeting:
             self.greeting = greeting
         if self.config:
+            if description:
+                self.config['description'] = description
             self.config['fields'].append({
                 'name': name,
                 'value': value,
