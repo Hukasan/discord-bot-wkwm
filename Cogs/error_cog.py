@@ -54,19 +54,13 @@ class OutputError(Cog):
             await embed.default_embed(footer=self.__error_fotter, title=self.__error_title)
             if "trigger is a required argument that is missing." in str(
                     error):
-                embed.add(
-                    name=self.__error_title,
-                    value=self.__missing_arg_message
-                )
+                embed.change_description(self.__missing_arg_message)
                 if ctx.invoked_subcommand:
                     await ctx.send_help(ctx.invoked_subcommand)
                 elif ctx.command:
                     await ctx.send_help(ctx.command)
             elif "You do not own this bot." in str(error):
-                embed.add(
-                    name=self.__error_title,
-                    value=self.__permission_message
-                )
+                embed.change_description(self.__permission_message)
             else:
                 embed.add(
                     name=self.__undefine_error_title,
