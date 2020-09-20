@@ -1,10 +1,6 @@
 from discord import Embed, Member, AuditLogAction, User, Message
 from discord.ext.commands import Cog, Bot
-from Cogs.app import table, make_embed as me
-
-
-class GetDatafromDiscordError(Exception):
-    pass
+from Cogs.app import table, make_embed as me, extentions
 
 
 class Welcome(Cog):
@@ -33,10 +29,10 @@ class Welcome(Cog):
                 ms = await opt.sendEmbed(greeting=member.mention)
                 self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed='w')
             else:
-                raise GetDatafromDiscordError(
+                raise extentions.GetDatafromDiscordError(
                     f"Welcomeチャンネルオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.welcome_room_id})")
         else:
-            raise GetDatafromDiscordError(
+            raise extentions.GetDatafromDiscordError(
                 f"Nozokiロールオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.role_nozoki_id})")
 
 

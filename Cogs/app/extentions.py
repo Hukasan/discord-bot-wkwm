@@ -1,0 +1,2 @@
+class GetDatafromDiscordError(Exception):
+    pass
