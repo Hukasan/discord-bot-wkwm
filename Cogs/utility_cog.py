@@ -23,9 +23,9 @@ class Utility(Cog):
             myembed.default_embed(title='ピン留め表示',
                                   description="**このチャンネルにピン留めは無い様(*ﾟ∀ﾟ)ゞﾃﾞｼ**")
 
-    @command(aliases=["ロールメンバー", "ろーるめんばー",
-                      "rm"], description="ロールメンバ表示")
-    async def rolemember(self, ctx: Context, name: str):
+    @command(aliases=["s", "さーち", 'サーチ',
+                      "ロール検索"], description="ロールメンバ表示")
+    async def serch(self, ctx: Context, name: str):
         g = ctx.guild
         opt = me.MyEmbed(ctx)
         await opt.default_embed(title=f"SerchRole\"{name}\"")
