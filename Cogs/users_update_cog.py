@@ -25,7 +25,7 @@ class UserEvent(Cog):
             return
         leave_notice_room = self.bot.get_channel(self.leave_notice_room_id)
         opt = me.MyEmbed().setTarget(target=leave_notice_room)
-        await opt.default_embed(description=[f"　**{member.name}**　が脱退しました", f"UserID: {member.mention}"])
+        await opt.default_embed(header_icon=member.avatar_url, header=f"{member.name}", description=["が脱退しました。", f"UserID: {member.mention}"])
         await opt.sendEmbed()
 
     @ Cog.listener()
