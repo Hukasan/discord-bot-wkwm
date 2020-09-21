@@ -25,7 +25,7 @@ class UserEvent(Cog):
             return
         leave_notice_room = self.bot.get_channel(self.leave_notice_room_id)
         opt = me.MyEmbed().setTarget(target=leave_notice_room)
-        await opt.default_embed(header_icon=member.avatar_url, header=f"{member.name}", description=["が脱退しました。", f"UserID: {member.mention}"])
+        await opt.default_embed(footer="サーバー脱退通知", header_icon=member.avatar_url, header=f"{member.name}", description=["が脱退しました。", f"UserID: {member.mention}"])
         await opt.sendEmbed()
 
     @ Cog.listener()
@@ -44,15 +44,20 @@ class UserEvent(Cog):
                             Member) | isinstance(
                             entry.target,
                             User):
+                        await opt.default_embed(footer="ロール変更通知", header=f"{entry.user.name}により", header_icon=entry.user.avatar_url)
                         nozoki = room.guild.get_role(self.role_nozoki_id)
                         if dif > 0:
                             conf = list(br - ar)
                             if conf[0] != nozoki:
-                                await opt.default_embed(description=[f"管理者{entry.user.mention} があなたから", f"<**{conf[0].name}**>のロールを抜きましたどんまい"])
+                                opt.change_description(
+                                    f"<**{conf[0].name}**>のロールから除外されました🥀"
+                                )
                         elif dif < 0:
                             conf = list(ar - br)
                             if conf[0] != nozoki:
-                                await opt.default_embed(description=[f"管理者{entry.user.mention} があなたに", f"<**{conf[0].name}**>のロールを与えました🎉"])
+                                opt.change_description(
+                                    f"<**{conf[0].name}**>のロールが与えられました👏"
+                                )
                         if opt.config:
                             await opt.sendEmbed(greeting=f"{after.mention}")
         self.lastchecktime = (datetime.now(utc))
