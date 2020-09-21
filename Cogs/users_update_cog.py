@@ -46,20 +46,19 @@ class UserEvent(Cog):
                             User):
                         await opt.default_embed(footer="ロール変更通知", header=f"{entry.user.name}により", header_icon=entry.user.avatar_url)
                         nozoki = room.guild.get_role(self.role_nozoki_id)
-                        if dif > 0:
-                            conf = list(br - ar)
-                            if conf[0] != nozoki:
+                        if conf[0] != nozoki:
+                            if dif > 0:
+                                conf = list(br - ar)
                                 opt.change_description(
                                     f"<**{conf[0].name}**>のロールから除外されました🥀"
                                 )
-                        elif dif < 0:
-                            conf = list(ar - br)
-                            if conf[0] != nozoki:
+                            elif dif < 0:
+                                conf = list(ar - br)
                                 opt.change_description(
                                     f"<**{conf[0].name}**>のロールが与えられました👏"
                                 )
-                        if opt.config:
-                            await opt.sendEmbed(greeting=f"{after.mention}")
+                            if opt.config:
+                                await opt.sendEmbed(greeting=f"{after.mention}")
         self.lastchecktime = (datetime.now(utc))
 
 
