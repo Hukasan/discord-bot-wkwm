@@ -54,7 +54,7 @@ class UserEvent(Cog):
                             if conf[0] != nozoki:
                                 await opt.default_embed(description=[f"管理者{entry.user.mention} があなたに", f"<**{conf[0].name}**>のロールを与えました🎉"])
                         if opt.config:
-                            await opt.sendEmbed(nomal=f"{after.mention}")
+                            await opt.sendEmbed(greeting=f"{after.mention}")
         self.lastchecktime = (datetime.now(utc))
 
 
