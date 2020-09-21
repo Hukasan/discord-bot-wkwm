@@ -7,7 +7,6 @@ class Welcome(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.welcome_room_id = int(self.bot.config['wkwm']['welcome_room_id'])
-        self.welcome_message = (self.bot.config['wkwm']['welcome_message'])
         self.header = ""
         self.db_ms = table.MsfRtb()
 

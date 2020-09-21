@@ -2,6 +2,7 @@ from discord import Embed, TextChannel
 from discord.ext.commands import Cog, Bot, Context
 from Cogs.app import table
 from os import linesep
+from datetime import datetime
 # from copy import copy
 
 
@@ -131,12 +132,13 @@ class MyEmbed():
         else:
             return None
 
-    async def default_embed(self, title=None, description=None, thumbnail=False, header=None, header_icon=None, footer=True, footer_url=None):
+    async def default_embed(self, title=None, description=None, thumbnail=False, header=None, header_icon=None, footer=True, footer_url=None, time=True):
         config = {
             'title': title,
             'color': 0x00ff00,
             'fields': []
         }
+        time_str = str()
         if description:
             self.descriptions = self.__export_complist(obj=description)
             config['description'] = self.descriptions.pop(0)
@@ -158,17 +160,21 @@ class MyEmbed():
                 config['author'] = {
                     "name": header
                 }
-
+        if time:
+            time_str = datetime.now().strftime('%m/%d %H:%M:%S')
+            config["footer"] = {'text': time_str}
         if footer:
             if isinstance(footer, bool):
                 if bool(self.ctx):
                     string = f"{self.ctx.prefix} {self.ctx.command}"
                     if self.ctx.invoked_subcommand:
                         string += f" {(self.ctx.invoked_subcommand).name}"
-                    config['footer'] = {'text': string}
+                    config['footer'] = {'text': f"{string}　[{time_str}]"}
             elif footer_url:
                 config['footer'] = {
-                    'text': footer, 'icon_url': str(footer_url)}
+                    'text': f"{string}　[{time_str}]",
+                    'icon_url': str(footer_url)}
             else:
-                config['footer'] = {'text': footer}
+                config['footer'] = {'text': f"{string}　[{time_str}]"}
+
         self.config = config
