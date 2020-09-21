@@ -12,11 +12,13 @@ class MyEmbed():
         self.target = ctx.channel if ctx else None
         self.embed = None
         self.db_ep = table.EmbedPages()
+        self.db_ms = table.MsfRtb()
         self.descriptions = list()
         self.line_number = int(0)
         self.config = {}
         self.bot_info = None
         self.greeting = str()
+        self.files = list()
 
     def setTarget(self, target):
         self.target = target
@@ -95,8 +97,10 @@ class MyEmbed():
                 'value': value,
                 'inline': inline})
 
-    async def sendEmbed(self, obj=None, greeting=str()):
+    async def sendEmbed(self, obj=None, greeting=str(), seed=None, bottums=list(), files=list()):
         if self.config:
+            if files:
+                self.config['files'] = files
             if greeting:
                 self.greeting = greeting
             self.embed = Embed()
@@ -114,6 +118,15 @@ class MyEmbed():
                     self.db_ms.add(
                         id=ms.id, content=self.descriptions, isnow=1)
                     await ms.add_reaction("➡")
+                if seed:
+                    self.db_ms.add(
+                        id=str(
+                            ms.id), cid=str(
+                            ms.channel.id), seed='w')
+                if bottums:
+                    for b in bottums:
+                        if isinstance(b, str):
+                            await ms.add_reaction(b)
             return ms
         else:
             return None
@@ -132,15 +145,20 @@ class MyEmbed():
             if thumbnail:
                 config['thumnail'] = {'url': str(self.bot_info.icon_url)}
         if header:
-            if isinstance(footer, bool) & bool(self.bot_info):
+            if isinstance(header_icon, bool) & bool(self.bot_info):
                 config['author'] = {
                     "name": header,
-                    "icon_url": str(self.bot_info.icon_url)}
+                    "icon_url": str(self.bot_info.icon_url)
+                }
             elif header_icon:
                 config['author'] = {
-                    "name": header, "icon_url": str(header_icon)}
+                    "name": header, "icon_url": str(header_icon)
+                }
             else:
-                config['author'] = {"name": header}
+                config['author'] = {
+                    "name": header
+                }
+
         if footer:
             if isinstance(footer, bool):
                 if bool(self.ctx):
