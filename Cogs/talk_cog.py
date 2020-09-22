@@ -1,8 +1,9 @@
-from discord import Guild
+from discord import Guild, Message
 from discord.ext import commands
 from dispander import dispand, compose_embed
-from Cogs.app import table, make_embed as me
+from Cogs.app import table, make_embed as me, extentions
 from gc import collect
+from emoji import UNICODE_EMOJI
 
 
 class Talk(commands.Cog):
@@ -20,7 +21,7 @@ class Talk(commands.Cog):
             self.ctx.author
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: Message):
         # print(f'ms->[{message.content}]')
         if message.author.bot:
             return
@@ -30,7 +31,11 @@ class Talk(commands.Cog):
         ex_content = str()
         for query in self.db_cat.tbselect():
             if query.id in content:
-                ex_content += query.body
+                if query.isreact:
+                    await message.add_reaction(query.body)
+                else:
+                    ex_content += query.body
+
         if ex_content:
             await message.channel.send(ex_content)
             return
@@ -66,7 +71,7 @@ class Talk(commands.Cog):
         if ctx.invoked_subcommand is None:
             raise Exception("trigger is a required argument that is missing.")
 
-    @cat.group(aliases=["add", "a", "ついか", "追加"], description=("追加"))
+    @cat.command(aliases=["add", "a", "ついか", "追加"], description=("追加"))
     async def cat_add(self, ctx, trigger, reaction):
         """
         リアクションを追加します。
@@ -79,10 +84,13 @@ class Talk(commands.Cog):
             self.db_cat.add(id=trigger, body=reaction)
             await ctx.send("さくせす")
 
-    @cat_add.command(aliases=["r", "react", "ｒ"])
-    async def cat_add_react(self, ctx, _, trigger, reaction):
-        self.db_cat.add(id=trigger, body=reaction, isreact=True)
-        await ctx.send("さくせすx")
+    @cat.command(aliases=["r", "react", "ｒ"])
+    async def cat_add_react(self, ctx, trigger, reaction):
+        if reaction in UNICODE_EMOJI:
+            self.db_cat.add(id=trigger, body=reaction, isreact=True)
+            await ctx.send("さくせす")
+        else:
+            raise extentions.InputError("リアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩")
 
     @cat.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cat_delete(self, ctx, key):
