@@ -5,11 +5,11 @@ from Cogs.app.MakeEmbed import MakeEmbed
 
 # このプログラムはon_massage内で呼び出されることを前提としている
 
-pattern = r'.*?@(\d+)'
+pattern = r".*?@(\d+)"
 repatter = re.compile(pattern=pattern)
 
 
-class Team():
+class Team:
     def __init__(self, bot: Bot):
         self.teams = {}
         self.bot = bot
@@ -38,12 +38,15 @@ class Team():
 
     async def view_team(self, name: str) -> None:
         if self.teams[name]:
-            content = ''.join([(f"{d[1].get('id')}: {d[1].get('name')}  {d[1].get('profile')}\r")
-                               for d in self.teams[name].items()])
+            content = "".join(
+                [
+                    (f"{d[1].get('id')}: {d[1].get('name')}  {d[1].get('profile')}\r")
+                    for d in self.teams[name].items()
+                ]
+            )
             embed = await self.opt.default_embed(
-                title=name,
-                footer="TeamManager",
-                description=content)
+                title=name, footer="TeamManager", description=content
+            )
             print(embed)
             await self.bot.get_channel(self.cid).send(embed=embed)
         pass

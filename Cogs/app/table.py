@@ -4,11 +4,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer, String, Boolean
 from os import environ as getpath
+
 # from logging import getLogger
 # logger = getLogger(__name__)
 
 
-db_uri = str(getpath['DATABASE_URL'])
+db_uri = str(getpath["DATABASE_URL"])
 # db_uri = "postgresql://wkwm:kkkk@localhost/wkwm"
 
 engine = create_engine(db_uri)
@@ -18,7 +19,7 @@ SessionClass = sessionmaker(engine)  # セッションを作るクラスを作�
 session = SessionClass()
 
 
-class DBIO():
+class DBIO:
     def __init__(self):
         self.table = Model
 
@@ -29,9 +30,7 @@ class DBIO():
         # try:
         result = self.table
         if id:
-            result = session.query(self.table). \
-                filter(self.table.id == id). \
-                all()
+            result = session.query(self.table).filter(self.table.id == id).all()
             return result
         else:
             results = session.query(self.table).all()
@@ -40,9 +39,7 @@ class DBIO():
 
     def tbdelete(self, id=str()):
         if id:
-            session.query(self.table). \
-                filter(self.table.id == id). \
-                delete()
+            session.query(self.table).filter(self.table.id == id).delete()
             session.commit()
         session.close()
 
@@ -65,14 +62,12 @@ class Cmdtb(DBIO):
             body (str): 返答
         """
         t = self.table()
-        if not(self.tbdelete(id=id)):
+        if not (self.tbdelete(id=id)):
             t.id = id
             t.body = body
             session.add(t)
         else:
-            t.query. \
-                filter(t.id == id). \
-                first()
+            t.query.filter(t.id == id).first()
             t.body = body
         session.commit()
         session.close()
@@ -96,14 +91,12 @@ class Cattb(DBIO):
             body (str): 返答
         """
         t = self.table()
-        if not(self.tbdelete(id=id)):
+        if not (self.tbdelete(id=id)):
             t.id = id
             t.body = body
             session.add(t)
         else:
-            t.query. \
-                filter(t.id == id). \
-                first()
+            t.query.filter(t.id == id).first()
             t.body = body
         session.commit()
         session.close()
@@ -121,7 +114,7 @@ class MsfRtb(DBIO):
 
     def add(self, id: str, cid: str, seed: str):
         t = self.table()
-        if not(self.tbdelete(id=id)):
+        if not (self.tbdelete(id=id)):
             t.id = id
             t.cid = cid
             t.seed = seed
@@ -143,7 +136,7 @@ class EmbedPages(DBIO):
 
     def add(self, id: str, number: int, content: str, isnow: bool):
         t = self.table()
-        if not(self.tbdelete(id=id)):
+        if not (self.tbdelete(id=id)):
             t.id = id
             t.number = number
             t.content = content

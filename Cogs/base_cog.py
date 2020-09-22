@@ -1,5 +1,14 @@
 import discord
-from discord.ext.commands import Cog, Bot, Context, HelpCommand, command, is_owner, Group, Command
+from discord.ext.commands import (
+    Cog,
+    Bot,
+    Context,
+    HelpCommand,
+    command,
+    is_owner,
+    Group,
+    Command,
+)
 from Cogs.app import table, make_embed as me
 
 

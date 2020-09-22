@@ -6,15 +6,14 @@ from gc import collect
 
 
 class Talk(commands.Cog):
-    """会話系のコマンド群
-    """
+    """会話系のコマンド群"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
         # self.team = Team(bot)
-        self.room_id = int(self.bot.config['wkwm']['room_id'])
+        self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
     def check_role_is_upper(self):
         def predicate(ctx: commands.Context):
@@ -38,11 +37,9 @@ class Talk(commands.Cog):
         # collect()
 
     @commands.is_owner()
-    @commands.group(aliases=["c", "ｃ", "コマンド", "こまんど",
-                             "command"], description="コマンド管理")
+    @commands.group(aliases=["c", "ｃ", "コマンド", "こまんど", "command"], description="コマンド管理")
     async def cmd(self, ctx):
-        """[※管理者のみ]
-        """
+        """[※管理者のみ]"""
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンド追加")
 
@@ -52,30 +49,24 @@ class Talk(commands.Cog):
         self.db_cmd.add(id=key, body=reaction)
         await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
 
-    @cmd.command(aliases=["delete", "d", "削除", "さくじょ"],
-                 description=("削除"))
+    @cmd.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cmd_delete(self, ctx, key):
         self.db_cmd.tbdelete(id=str(key))
         await ctx.send(f"さくせす {key} の削除に成功しましたぁ")
 
     @commands.is_owner()
     @commands.group(
-        aliases=["r",
-                 "ｒ",
-                 "react",
-                 "reaction",
-                 "りあくしょん",
-                 "リアクション"],
-        description="リアクション管理")
+        aliases=["r", "ｒ", "react", "reaction", "りあくしょん", "リアクション"],
+        description="リアクション管理",
+    )
     async def cat(self, ctx):
         """
         ※このコマンドは親コマンドです、サブコマンドを指定してください。
         """
         if ctx.invoked_subcommand is None:
-            raise Exception('trigger is a required argument that is missing.')
+            raise Exception("trigger is a required argument that is missing.")
 
-    @cat.command(aliases=["add", "a", "ついか", "追加"],
-                 description=("追加"))
+    @cat.command(aliases=["add", "a", "ついか", "追加"], description=("追加"))
     async def cat_add(self, ctx, trigger, reaction):
         """
         リアクションを追加します。
@@ -87,19 +78,14 @@ class Talk(commands.Cog):
         self.db_cat.add(id=trigger, body=reaction)
         await ctx.send("さくせす")
 
-    @cat.command(aliases=["delete", "d", "削除", "さくじょ"],
-                 description=("削除"))
+    @cat.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cat_delete(self, ctx, key):
         self.db_cat.tbdelete(id=str(key))
         await ctx.send(f"さくせす {key} の削除に成功しました💩")
 
-    @ commands.group(aliases=["v",
-                              "ｖｉｅｗ",
-                              "ｖ",
-                              "ビュー",
-                              "びゅー",
-                              "一覧",
-                              "いちらん"], description="一覧表示")
+    @commands.group(
+        aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示"
+    )
     async def view(self, ctx):
         if ctx.invoked_subcommand is None:
             embed = me.MyEmbed(ctx)
@@ -107,23 +93,19 @@ class Talk(commands.Cog):
             await self.view_titles_toembed(embed, t=self.db_cmd, title="コマンド")
             await embed.sendEmbed()
 
-    @ view.command(aliases=["リアクション", "りあくしょん", "reaction", "react", "r"],
-                   description="リアクション一覧")
+    @view.command(
+        aliases=["リアクション", "りあくしょん", "reaction", "react", "r"], description="リアクション一覧"
+    )
     async def view_cat(self, ctx):
         embed = me.MyEmbed(ctx)
-        await self.view_titles_toembed(embed, t=self.db_cat,
-                                       title="リアクション")
+        await self.view_titles_toembed(embed, t=self.db_cat, title="リアクション")
         await embed.sendEmbed()
 
-    @view.command(aliases=["コマンド", "こまんど", "cmd",
-                           "command", "c"], description="コマンド一覧")
+    @view.command(aliases=["コマンド", "こまんど", "cmd", "command", "c"], description="コマンド一覧")
     async def view_cmd(self, ctx):
-        """
-
-        """
+        """"""
         embed = me.MyEmbed(ctx)
-        await self.view_titles_toembed(embed, t=self.db_cmd,
-                                       title="コマンド")
+        await self.view_titles_toembed(embed, t=self.db_cmd, title="コマンド")
         await embed.sendEmbed()
 
     async def view_titles_toembed(self, embed: me.MyEmbed, t, title=str()):
@@ -131,7 +113,7 @@ class Talk(commands.Cog):
         qlist = t.tbselect()
         for q in qlist:
             content += f"・{q.id}\n"
-        if not(embed.config):
+        if not (embed.config):
             await embed.default_embed(footer=True)
         embed.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
 

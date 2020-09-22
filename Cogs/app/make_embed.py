@@ -3,10 +3,11 @@ from discord.ext.commands import Cog, Bot, Context
 from Cogs.app import table
 from os import linesep
 from datetime import datetime
+
 # from copy import copy
 
 
-class MyEmbed():
+class MyEmbed:
     def __init__(self, ctx=None):
         self.ctx = ctx
         self.bot = ctx.bot if ctx else None
@@ -27,7 +28,7 @@ class MyEmbed():
 
     def change_description(self, desc):
         if self.config:
-            self.config['description'] = desc
+            self.config["description"] = desc
 
     def setCtx(self, ctx):
         self.ctx = ctx
@@ -41,12 +42,12 @@ class MyEmbed():
         point = 50
         if isinstance(obj, str):
             if len(obj) > point:
-                ex = (f'{obj[:point+1]}\n')
-                ex = ex + (self.cut(obj[point + 1:]))
+                ex = f"{obj[:point+1]}\n"
+                ex = ex + (self.cut(obj[point + 1 :]))
             else:
-                ex = (f'{obj}\n')
+                ex = f"{obj}\n"
         else:
-            ex = 'TextError'
+            ex = "TextError"
         return ex
 
     def __export_complist(self, obj):
@@ -63,13 +64,13 @@ class MyEmbed():
                 content = self.__cut(o)
                 line = len(content)
                 # print(f"{o},{line}")
-                while(line > 0):
+                while line > 0:
                     if (line + lines) > 10:
                         if ex:
                             ex[-1] = ex[-1] + content[: 15 - lines + 1]
                         else:
                             ex.append(content[: 15 - lines + 1])
-                        content = content[15 - lines + 1:]
+                        content = content[15 - lines + 1 :]
                         lines = 0
                         line = line - 15 + lines - 1
                     else:
@@ -81,32 +82,28 @@ class MyEmbed():
         return ex
 
     def add(
-        self,
-        name: str,
-        value: str,
-        inline=False,
-        greeting=str(),
-        description=str()
+        self, name: str, value: str, inline=False, greeting=str(), description=str()
     ) -> None:
         if greeting:
             self.greeting = greeting
         if self.config:
             if description:
-                self.config['description'] = description
-            self.config['fields'].append({
-                'name': name,
-                'value': value,
-                'inline': inline})
+                self.config["description"] = description
+            self.config["fields"].append(
+                {"name": name, "value": value, "inline": inline}
+            )
 
-    async def sendEmbed(self, obj=None, greeting=str(), seed=None, bottums=list(), files=list()):
+    async def sendEmbed(
+        self, obj=None, greeting=str(), seed=None, bottums=list(), files=list()
+    ):
         if self.config:
             if files:
-                self.config['files'] = files
+                self.config["files"] = files
             if greeting:
                 self.greeting = greeting
             self.embed = Embed()
             self.embed = Embed.from_dict(self.config)
-            obj = (obj[0] if isinstance(obj, list) else obj)
+            obj = obj[0] if isinstance(obj, list) else obj
             if obj:
                 pass
             elif self.target:
@@ -116,14 +113,10 @@ class MyEmbed():
             if obj:
                 ms = await obj.send(embed=self.embed, content=self.greeting)
                 if self.descriptions:
-                    self.db_ms.add(
-                        id=ms.id, content=self.descriptions, isnow=1)
+                    self.db_ms.add(id=ms.id, content=self.descriptions, isnow=1)
                     await ms.add_reaction("➡")
                 if seed:
-                    self.db_ms.add(
-                        id=str(
-                            ms.id), cid=str(
-                            ms.channel.id), seed='w')
+                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed="w")
                 if bottums:
                     for b in bottums:
                         if isinstance(b, str):
@@ -132,49 +125,52 @@ class MyEmbed():
         else:
             return None
 
-    async def default_embed(self, title=None, description=None, thumbnail=False, header=None, header_icon=None, footer=True, footer_url=None, time=True):
-        config = {
-            'title': title,
-            'color': 0x00ff00,
-            'fields': []
-        }
+    async def default_embed(
+        self,
+        title=None,
+        description=None,
+        thumbnail=False,
+        header=None,
+        header_icon=None,
+        footer=True,
+        footer_url=None,
+        time=True,
+    ):
+        config = {"title": title, "color": 0x00FF00, "fields": []}
         time_str = str()
         if description:
             self.descriptions = self.__export_complist(obj=description)
-            config['description'] = self.descriptions.pop(0)
+            config["description"] = self.descriptions.pop(0)
         if self.bot:
             self.bot_info = await self.bot.application_info()
             if thumbnail:
-                config['thumnail'] = {'url': str(self.bot_info.icon_url)}
+                config["thumnail"] = {"url": str(self.bot_info.icon_url)}
         if header:
             if isinstance(header_icon, bool) & bool(self.bot_info):
-                config['author'] = {
+                config["author"] = {
                     "name": header,
-                    "icon_url": str(self.bot_info.icon_url)
+                    "icon_url": str(self.bot_info.icon_url),
                 }
             elif header_icon:
-                config['author'] = {
-                    "name": header, "icon_url": str(header_icon)
-                }
+                config["author"] = {"name": header, "icon_url": str(header_icon)}
             else:
-                config['author'] = {
-                    "name": header
-                }
+                config["author"] = {"name": header}
         if time:
-            time_str = datetime.now().strftime('%m/%d %H:%M:%S')
-            config["footer"] = {'text': time_str}
+            time_str = datetime.now().strftime("%m/%d %H:%M:%S")
+            config["footer"] = {"text": time_str}
         if footer:
             if isinstance(footer, bool):
                 if bool(self.ctx):
                     string = f"{self.ctx.prefix} {self.ctx.command}"
                     if self.ctx.invoked_subcommand:
                         string += f" {(self.ctx.invoked_subcommand).name}"
-                    config['footer'] = {'text': f"{string}　[{time_str}]"}
+                    config["footer"] = {"text": f"{string}　[{time_str}]"}
             elif footer_url:
-                config['footer'] = {
-                    'text': f"{string}　[{time_str}]",
-                    'icon_url': str(footer_url)}
+                config["footer"] = {
+                    "text": f"{string}　[{time_str}]",
+                    "icon_url": str(footer_url),
+                }
             else:
-                config['footer'] = {'text': f"{string}　[{time_str}]"}
+                config["footer"] = {"text": f"{string}　[{time_str}]"}
 
         self.config = config

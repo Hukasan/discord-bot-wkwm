@@ -1,5 +1,14 @@
 import discord
-from discord.ext.commands import Cog, Bot, Context, HelpCommand, command, is_owner, Group, Command
+from discord.ext.commands import (
+    Cog,
+    Bot,
+    Context,
+    HelpCommand,
+    command,
+    is_owner,
+    Group,
+    Command,
+)
 from Cogs.app import table, make_embed as me
 
 
@@ -8,20 +17,21 @@ class OutputError(Cog):
         self.bot = bot
         self.owner = None
         self.db_cmd = table.Cmdtb()
-        self.__error_title = 'コマンドエラー'
+        self.__error_title = "コマンドエラー"
         self.__error_fotter = ""
-        self.__undefine_error_title = '予期せぬエラー'
+        self.__undefine_error_title = "予期せぬエラー"
         self.__notice_owner_message = "おぉん　エラーってるんですけどぉ↓↓"
-        self.__missing_arg_message = "そのコマンドに必要な要素指定が足りていません\r"\
-            "コマンドの詳細を表示しますか？"
+        self.__missing_arg_message = "そのコマンドに必要な要素指定が足りていません\r" "コマンドの詳細を表示しますか？"
         self.__permission_message = "指定されたコマンドは管理者のみ実行することができます。"
 
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error):
-        if not(self.owner):
+        if not (self.owner):
             self.owner = self.bot.get_user(self.bot.owner_id)
         if self.owner:
-            self.__notice_owner_message = self.owner.mention + self.__notice_owner_message
+            self.__notice_owner_message = (
+                self.owner.mention + self.__notice_owner_message
+            )
         cmd = str()
         embed = me.MyEmbed(ctx)
         try:
@@ -31,29 +41,33 @@ class OutputError(Cog):
                 await ctx.send(result[0].body)
                 return
             else:
-                dubleq = str(error).split("\"")
-                await embed.default_embed(footer=self.__error_fotter, title=self.__error_title)
+                dubleq = str(error).split('"')
+                await embed.default_embed(
+                    footer=self.__error_fotter, title=self.__error_title
+                )
                 if dubleq:
                     if dubleq[0] == "Command " and dubleq[2] == " is not found":
                         embed.add(
                             name="無効なコマンド",
-                            value=f"コマンドに \" {dubleq[1]} \" はありませんでした。\r？help コマンドで確認することができます")
+                            value=f'コマンドに " {dubleq[1]} " はありませんでした。\r？help コマンドで確認することができます',
+                        )
                     else:
                         embed.add(
                             name=self.__undefine_error_title,
                             value=f"```{str(error)}```",
-                            greeting=self.__notice_owner_message
+                            greeting=self.__notice_owner_message,
                         )
                 else:
                     embed.add(
                         name=self.__undefine_error_title,
                         value=f"```{str(error)}```",
-                        greeting=self.__notice_owner_message
+                        greeting=self.__notice_owner_message,
                     )
         except IndexError:
-            await embed.default_embed(footer=self.__error_fotter, title=self.__error_title)
-            if "required argument that is missing." in str(
-                    error):
+            await embed.default_embed(
+                footer=self.__error_fotter, title=self.__error_title
+            )
+            if "required argument that is missing." in str(error):
                 embed.change_description(self.__missing_arg_message)
                 if ctx.invoked_subcommand:
                     await ctx.send_help(ctx.invoked_subcommand)
@@ -65,7 +79,7 @@ class OutputError(Cog):
                 embed.add(
                     name=self.__undefine_error_title,
                     value=f"```{str(error)}```",
-                    greeting=self.__notice_owner_message
+                    greeting=self.__notice_owner_message,
                 )
         await embed.sendEmbed()
 

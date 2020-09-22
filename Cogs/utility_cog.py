@@ -20,15 +20,15 @@ class Utility(Cog):
                 await ctx.send(embed=(compose_embed(ms)))
         else:
             myembed = me.MyEmbed(ctx)
-            myembed.default_embed(title='ピン留め表示',
-                                  description="**このチャンネルにピン留めは無い様(*ﾟ∀ﾟ)ゞﾃﾞｼ**")
+            myembed.default_embed(
+                title="ピン留め表示", description="**このチャンネルにピン留めは無い様(*ﾟ∀ﾟ)ゞﾃﾞｼ**"
+            )
 
-    @command(aliases=["s", "さーち", 'サーチ',
-                      "ロール検索"], description="ロールメンバ表示")
+    @command(aliases=["s", "さーち", "サーチ", "ロール検索"], description="ロールメンバ表示")
     async def serch(self, ctx: Context, name: str):
         g = ctx.guild
         opt = me.MyEmbed(ctx)
-        await opt.default_embed(title=f"SerchRole\"{name}\"")
+        await opt.default_embed(title=f'SerchRole"{name}"')
         i = 0
         context = str()
         for role in await g.fetch_roles():
