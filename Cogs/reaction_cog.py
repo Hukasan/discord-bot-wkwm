@@ -9,7 +9,7 @@ from discord import (
 )
 from discord.ext.commands import Cog, Bot
 from discord.abc import GuildChannel, PrivateChannel
-from Cogs.app import table, extentions
+from Cogs.app import table, extentions, make_embed as me
 
 # from datetime import datetime
 # from pytz import utc
@@ -24,7 +24,7 @@ class ReactionEvent(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.db_ms = table.MsfRtb()
-        self.funcs = {"w": self.ear_welcome}
+        self.funcs = {"w1": self.ear_welcome1, "w2": self.ear_welcome2}
         self.role_nozoki_id = int(self.bot.config["wkwm"]["nozoki_role_id"])
 
     async def embed_react_action(self, usr_id: int, ms: Message, react: Emoji) -> bool:
@@ -36,15 +36,32 @@ class ReactionEvent(Cog):
             else:
                 pass
 
-    async def ear_welcome(self, usr_id: int, ms: Message, react: Emoji):
+    async def ear_welcome2(self, usr_id: int, ms: Message, react: Emoji):
+        self.db_ms.tbdelete(id=str(ms.id))
+        await ms.delete()
+
+    async def ear_welcome1(self, usr_id: int, ms: Message, react: Emoji):
         self.db_ms.tbdelete(id=str(ms.id))
         nozoki_role = ms.guild.get_role((self.role_nozoki_id))
         member = ms.guild.get_member(usr_id)
         usr = self.bot.get_user(usr_id)
+        print("きてます")
+        embed = me.MyEmbed().setTarget(target=ms.channel, bot=self.bot)
         if bool(nozoki_role) & bool(member):
             if usr in ms.mentions:
                 await member.add_roles(nozoki_role)
                 await ms.delete()
+                await embed.default_embed(
+                    header_icon=ms.guild.icon_url,
+                    header="公開チャンネルの説明です",
+                    footer="ウェルカムメッセージ",
+                    description="有難うございますd(ﾟДﾟ )\r公開チャンネルが見れるようになりました。",
+                )
+                embed.add(
+                    name="> 各チャンネルについて",
+                    value="各受付内容のチャンネルに要件があればお願いします。\r__チャンネルの詳細、試験内容などは各ピン留めに貼り付けてます__\r\r以上です🍌\rよろしければ☑を押してください",
+                )
+                await embed.sendEmbed(bottums=["☑"], seed="w2")
         else:
             raise extentions.GetDatafromDiscordError(
                 f"Nozokiロールオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.role_nozoki_id})"

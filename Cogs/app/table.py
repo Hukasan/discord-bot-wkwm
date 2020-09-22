@@ -81,8 +81,9 @@ class Cattb(DBIO):
         __tablename__ = "cats"
         id = Column(String(), nullable=False, primary_key=True)
         body = Column(String(), nullable=False)
+        isreact = Column(Boolean(), nullable=True)
 
-    def add(self, id: str, body: str):
+    def add(self, id: str, body: str, isreact=False):
         """
         リアクション追加
 
@@ -94,10 +95,12 @@ class Cattb(DBIO):
         if not (self.tbdelete(id=id)):
             t.id = id
             t.body = body
+            t.isreact = isreact
             session.add(t)
         else:
             t.query.filter(t.id == id).first()
             t.body = body
+            t.isreact = isreact
         session.commit()
         session.close()
 
@@ -144,3 +147,7 @@ class EmbedPages(DBIO):
             session.add(t)
         session.commit()
         session.close()
+
+
+if __name__ == "__main__":
+    Model.metadata.create_all(engine)

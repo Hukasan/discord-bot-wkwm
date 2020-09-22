@@ -66,7 +66,7 @@ class Talk(commands.Cog):
         if ctx.invoked_subcommand is None:
             raise Exception("trigger is a required argument that is missing.")
 
-    @cat.command(aliases=["add", "a", "ついか", "追加"], description=("追加"))
+    @cat.group(aliases=["add", "a", "ついか", "追加"], description=("追加"))
     async def cat_add(self, ctx, trigger, reaction):
         """
         リアクションを追加します。
@@ -75,8 +75,14 @@ class Talk(commands.Cog):
         > ? cat add てすと うんち
         で、会話内の「てすと」に対して「うんち」といいます
         """
-        self.db_cat.add(id=trigger, body=reaction)
-        await ctx.send("さくせす")
+        if ctx.invoked_subcommand is None:
+            self.db_cat.add(id=trigger, body=reaction)
+            await ctx.send("さくせす")
+
+    @cat_add.command(aliases=["r", "react", "ｒ"])
+    async def cat_add_react(self, ctx, _, trigger, reaction):
+        self.db_cat.add(id=trigger, body=reaction, isreact=True)
+        await ctx.send("さくせすx")
 
     @cat.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cat_delete(self, ctx, key):

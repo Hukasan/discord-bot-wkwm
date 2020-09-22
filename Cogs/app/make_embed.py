@@ -22,8 +22,10 @@ class MyEmbed:
         self.greeting = str()
         self.files = list()
 
-    def setTarget(self, target):
+    def setTarget(self, target, bot=None):
         self.target = target
+        if bot:
+            self.bot = bot
         return self
 
     def change_description(self, desc):
@@ -116,7 +118,7 @@ class MyEmbed:
                     self.db_ms.add(id=ms.id, content=self.descriptions, isnow=1)
                     await ms.add_reaction("➡")
                 if seed:
-                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed="w")
+                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed=seed)
                 if bottums:
                     for b in bottums:
                         if isinstance(b, str):
@@ -167,10 +169,10 @@ class MyEmbed:
                     config["footer"] = {"text": f"{string}　[{time_str}]"}
             elif footer_url:
                 config["footer"] = {
-                    "text": f"{string}　[{time_str}]",
+                    "text": f"{footer}　[{time_str}]",
                     "icon_url": str(footer_url),
                 }
             else:
-                config["footer"] = {"text": f"{string}　[{time_str}]"}
+                config["footer"] = {"text": f"{footer}　[{time_str}]"}
 
         self.config = config

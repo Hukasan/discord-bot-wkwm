@@ -19,7 +19,7 @@ class Help(HelpCommand):
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
         self.command_attrs["aliases"] = ["ヘルプ", "へるぷ", "h", "ｈ"]
 
-    async def create_category_tree(self, cmd, index=0) -> str:
+    async def create_category_tree(self, cmd, index=int(0)) -> str:
         """
         再帰関数。groupの最下層までを探索する
         """
@@ -107,7 +107,7 @@ class Help(HelpCommand):
             embed.add(name="__詳細__", value=group.help, inline=False)
         embed.add(
             name="> サブコマンド :",
-            value=await self.create_category_tree(group, "```"),
+            value=await self.create_category_tree(group),
             inline=False,
         )
         await embed.sendEmbed()
