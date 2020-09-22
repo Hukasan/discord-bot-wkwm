@@ -108,7 +108,8 @@ class Talk(commands.Cog):
             await embed.sendEmbed()
 
     @view.command(
-        aliases=["リアクション", "りあくしょん", "reaction", "react", "r"], description="リアクション一覧"
+        aliases=["リアクション", "りあくしょん", "reaction", "react", "r", "cat"],
+        description="リアクション一覧",
     )
     async def view_cat(self, ctx):
         embed = me.MyEmbed(ctx)
