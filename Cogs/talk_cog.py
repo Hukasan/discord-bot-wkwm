@@ -59,7 +59,6 @@ class Talk(commands.Cog):
         self.db_cmd.tbdelete(id=str(key))
         await ctx.send(f"さくせす {key} の削除に成功しましたぁ")
 
-    @commands.is_owner()
     @commands.group(
         aliases=["r", "ｒ", "react", "reaction", "りあくしょん", "リアクション"],
         description="リアクション管理",
