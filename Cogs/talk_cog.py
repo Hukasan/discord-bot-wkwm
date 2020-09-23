@@ -89,7 +89,9 @@ class Talk(commands.Cog):
             self.db_cat.add(id=trigger, body=reaction, isreact=True)
             await ctx.send("さくせす")
         else:
-            raise extentions.InputError("リアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩")
+            raise extentions.InputError(
+                "このコマンドは、絵文字リアクション追加です\rリアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩"
+            )
 
     @cat.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cat_delete(self, ctx, key):
