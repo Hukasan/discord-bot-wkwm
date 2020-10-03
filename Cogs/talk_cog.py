@@ -104,12 +104,12 @@ class Talk(commands.Cog):
     @commands.group(
         aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示"
     )
-    async def view(self, ctx):
+    async def view(self, ctx: Context):
         if ctx.invoked_subcommand is None:
             embed = me.MyEmbed(ctx)
             await self.view_titles_toembed(embed, t=self.db_cat, title="リアクション")
             await self.view_titles_toembed(embed, t=self.db_cmd, title="コマンド")
-            await embed.sendEmbed()
+            await embed.sendEmbed(greeting=ctx.author.mention)
 
     @view.command(
         aliases=["リアクション", "りあくしょん", "reaction", "react", "r", "cat"],
@@ -118,14 +118,14 @@ class Talk(commands.Cog):
     async def view_cat(self, ctx):
         embed = me.MyEmbed(ctx)
         await self.view_titles_toembed(embed, t=self.db_cat, title="リアクション")
-        await embed.sendEmbed()
+        await embed.sendEmbed(greeting=ctx.author.mention)
 
     @view.command(aliases=["コマンド", "こまんど", "cmd", "command", "c"], description="コマンド一覧")
     async def view_cmd(self, ctx):
         """"""
         embed = me.MyEmbed(ctx)
         await self.view_titles_toembed(embed, t=self.db_cmd, title="コマンド")
-        await embed.sendEmbed()
+        await embed.sendEmbed(greeting=ctx.author.mention)
 
     async def view_titles_toembed(self, embed: me.MyEmbed, t, title=str()):
         content = str()
