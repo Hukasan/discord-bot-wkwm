@@ -1,4 +1,5 @@
 from discord import Guild, Message
+from discord.ext.commands import Context
 from discord.ext import commands
 from dispander import dispand, compose_embed
 from Cogs.app import table, make_embed as me, extentions
@@ -71,7 +72,7 @@ class Talk(commands.Cog):
             raise Exception("trigger is a required argument that is missing.")
 
     @cat.command(aliases=["add", "a", "ついか", "追加"], description=("追加"))
-    async def cat_add(self, ctx, trigger, reaction):
+    async def cat_add(self, ctx: Context, trigger, reaction):
         """
         リアクションを追加します。
             trigger 　: 反応する言葉
@@ -81,12 +82,14 @@ class Talk(commands.Cog):
         """
         if ctx.invoked_subcommand is None:
             self.db_cat.add(id=trigger, body=reaction)
+            await ctx.message.add_reaction("💮")
             await ctx.send("さくせす")
 
-    @cat.command(aliases=["r", "react", "ｒ"])
-    async def cat_add_react(self, ctx, trigger, reaction):
+    @cat.command(aliases=["r", "react", "ｒ"], description=("追加※絵文字"))
+    async def cat_add_react(self, ctx: Context, trigger, reaction):
         if reaction in UNICODE_EMOJI:
             self.db_cat.add(id=trigger, body=reaction, isreact=True)
+            await ctx.message.add_reaction("💮")
             await ctx.send("さくせす")
         else:
             raise extentions.InputError(
