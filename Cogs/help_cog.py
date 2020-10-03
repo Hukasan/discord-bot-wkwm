@@ -91,7 +91,7 @@ class Help(HelpCommand):
                     name=f"> ${cmd.name}",
                     value=f"{cmd.description}\r{await self.create_category_tree(cmd=cmd)}",
                 )
-        await embed.sendEmbed()
+        await embed.sendEmbed(greeting=f"{self.context.author.mention}")
 
     async def send_group_help(self, group):
         embed = me.MyEmbed(self.context)
@@ -114,7 +114,7 @@ class Help(HelpCommand):
             value=await self.create_category_tree(group),
             inline=False,
         )
-        await embed.sendEmbed()
+        await embed.sendEmbed(greeting=f"{self.context.author.mention}")()
 
     async def send_command_help(self, command):
         params = "} {".join(command.clean_params.keys())
@@ -143,21 +143,25 @@ class Help(HelpCommand):
                 value="`" + "`, `".join(command.aliases) + "`",
                 inline=False,
             )
-        await embed.sendEmbed()
+        await embed.sendEmbed(greeting=f"{self.context.author.mention}")()
 
     async def send_error_message(self, error):
         embed = me.MyEmbed(self.context)
         embed.default_embed(
             header="ヘルプエラー", title="help対象が見つかりませんでした", description="入力を確認してもう一度お試しあれ"
         )
-        embed.sendEmbed(greeting=f"{self.context.author.mention}")
+        embed.sendEmbed(greeting=f"{self.context.author.mention}")(
+            greeting=f"{self.context.author.mention}"
+        )
 
     async def command_not_found(self, string):
         embed = me.MyEmbed(self.context)
         embed.default_embed(
             header="コマンドエラー", title="入力されたコマンドはありません", description="入力を確認してもう一度お試しあれ"
         )
-        embed.sendEmbed(greeting=f"{self.context.author.mention}")
+        embed.sendEmbed(greeting=f"{self.context.author.mention}")(
+            greeting=f"{self.context.author.mention}"
+        )
 
     def subcommand_not_found(self, command, string):
         if isinstance(command, Group) and len(command.all_commands) > 0:
