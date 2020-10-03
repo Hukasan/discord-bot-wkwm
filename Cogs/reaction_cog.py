@@ -37,8 +37,10 @@ class ReactionEvent(Cog):
                 pass
 
     async def ear_welcome2(self, usr_id: int, ms: Message, react: Emoji):
-        self.db_ms.tbdelete(id=str(ms.id))
-        await ms.delete()
+        usr = self.bot.get_user(usr_id)
+        if usr in ms.mentions:
+            self.db_ms.tbdelete(id=str(ms.id))
+            await ms.delete()
 
     async def ear_welcome1(self, usr_id: int, ms: Message, react: Emoji):
         self.db_ms.tbdelete(id=str(ms.id))
@@ -61,7 +63,9 @@ class ReactionEvent(Cog):
                     name="> 各チャンネルについて",
                     value="各受付内容のチャンネルに要件があればお願いします。\r__チャンネルの詳細、試験内容などは各ピン留めに貼り付けてます__\r\r以上です🍌\rよろしければ☑を押してください",
                 )
-                await embed.sendEmbed(bottums=["☑"], seed="w2")
+                await embed.sendEmbed(
+                    bottums=["☑"], seed="w2", greeting=f"{usr.mention}"
+                )
         else:
             raise extentions.GetDatafromDiscordError(
                 f"Nozokiロールオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.role_nozoki_id})"
