@@ -177,13 +177,13 @@ class MyEmbed:
                     string = f"{self.ctx.prefix} {self.ctx.command}"
                     if self.ctx.invoked_subcommand:
                         string += f" {(self.ctx.invoked_subcommand).name}"
-                    config["footer"] = {"text": f"{string}　[{time_str}]"}
+                    config["footer"] = {"text": f"[{time_str}] #{string}"}
             elif footer_url:
                 config["footer"] = {
                     "text": f"{footer}　[{time_str}]",
                     "icon_url": str(footer_url),
                 }
             else:
-                config["footer"] = {"text": f"{footer}　[{time_str}]"}
+                config["footer"] = {"text": f"[{time_str}] #{footer}"}
 
         self.config = config
