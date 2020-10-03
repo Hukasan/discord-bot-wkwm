@@ -73,7 +73,7 @@ class Help(HelpCommand):
                         f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
                     )
                 opt.add(name=f"> {cog_name}", value=content, inline=False)
-        await opt.sendEmbed()
+        await opt.sendEmbed(greeting=f"{self.context.author.mention}")
 
     async def send_cog_help(self, cog: Cog):
         embed = me.MyEmbed(self.context)

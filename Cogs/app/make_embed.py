@@ -170,20 +170,20 @@ class MyEmbed:
                 config["author"] = {"name": header}
         if time:
             time_str = datetime.now().strftime("%m/%d %H:%M:%S")
-            config["footer"] = {"text": time_str}
+            config["footer"] = {"text": ("[" + time_str + "]")}
         if footer:
             if isinstance(footer, bool):
                 if bool(self.ctx):
                     string = f"{self.ctx.prefix} {self.ctx.command}"
                     if self.ctx.invoked_subcommand:
                         string += f" {(self.ctx.invoked_subcommand).name}"
-                    config["footer"] = {"text": f"[{time_str}] #{string}"}
+                    config["footer"] = {"text": f"{time_str} #{string}"}
             elif footer_url:
                 config["footer"] = {
-                    "text": f"{footer}　[{time_str}]",
+                    "text": f"{time_str} #{footer}",
                     "icon_url": str(footer_url),
                 }
             else:
-                config["footer"] = {"text": f"[{time_str}] #{footer}"}
+                config["footer"] = {"text": f"{time_str} #{footer}"}
 
         self.config = config
