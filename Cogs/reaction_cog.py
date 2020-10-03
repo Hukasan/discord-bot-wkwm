@@ -37,7 +37,7 @@ class ReactionEvent(Cog):
                 pass
         else:
             usr = self.bot.get_user(usr_id)
-            if (react == "🗑") & (usr in ms.mentions):
+            if (str(react) == "🗑") & (usr in ms.mentions):
                 await ms.delete()
 
     async def ear_welcome2(self, usr_id: int, ms: Message, react: Emoji):
