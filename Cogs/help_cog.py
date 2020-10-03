@@ -54,7 +54,7 @@ class Help(HelpCommand):
     async def send_bot_help(self, mapping):
         opt = me.MyEmbed(self.context)
         await opt.default_embed(
-            header_icon=True, header=self.context.bot.user.name, footer=True
+            header_icon=True, header=self.context.bot.user.name, footer=True, time=False
         )
         if self.context.bot.description:
             opt.config["description"] = f"{self.context.bot.description}"
@@ -82,6 +82,7 @@ class Help(HelpCommand):
             title=f"{cog.qualified_name}カテゴリ",
             description=f"{cog.description}",
             footer=True,
+            time=False,
         )
         for cmd in cog.walk_commands():
             if (temp != cmd.name) & (not (cmd.root_parent)):
@@ -98,6 +99,7 @@ class Help(HelpCommand):
             title=f"{self.context.prefix}{group.qualified_name}",
             description=group.description,
             footer=True,
+            time=False,
         )
         if group.aliases:
             embed.add(
@@ -124,6 +126,7 @@ class Help(HelpCommand):
         await embed.default_embed(
             title="コマンドヘルプ",
             description="**" + command.name + "**",
+            time=False,
             footer=f"[{self.context.prefix}help send_command_help] {command.qualified_name}",
         )
         embed.add(
@@ -143,11 +146,18 @@ class Help(HelpCommand):
         await embed.sendEmbed()
 
     async def send_error_message(self, error):
-        embed = Embed(title="ヘルプ表示エラー", description=error, color=0xFF0000)
-        await self.get_destination().send(embed=embed)
+        embed = me.MyEmbed(self.context)
+        embed.default_embed(
+            header="ヘルプエラー", title="help対象が見つかりませんでした", description="入力を確認してもう一度お試しあれ"
+        )
+        embed.sendEmbed(greeting=f"{self.context.author.mention}")
 
     async def command_not_found(self, string):
-        return f"{string} というコマンドは存在しません。"
+        embed = me.MyEmbed(self.context)
+        embed.default_embed(
+            header="コマンドエラー", title="入力されたコマンドはありません", description="入力を確認してもう一度お試しあれ"
+        )
+        embed.sendEmbed(greeting=f"{self.context.author.mention}")
 
     def subcommand_not_found(self, command, string):
         if isinstance(command, Group) and len(command.all_commands) > 0:

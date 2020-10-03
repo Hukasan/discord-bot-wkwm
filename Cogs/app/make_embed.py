@@ -21,6 +21,7 @@ class MyEmbed:
         self.bot_info = None
         self.greeting = str()
         self.files = list()
+        self.dust = False
 
     def setTarget(self, target, bot=None):
         self.target = target
@@ -96,13 +97,21 @@ class MyEmbed:
             )
 
     async def sendEmbed(
-        self, obj=None, greeting=str(), seed=None, bottums=list(), files=list()
+        self,
+        obj=None,
+        greeting=str(),
+        seed=None,
+        bottums=list(),
+        files=list(),
+        dust=True,
     ):
         if self.config:
             if files:
                 self.config["files"] = files
             if greeting:
                 self.greeting = greeting
+            if dust:
+                self.dust = dust
             self.embed = Embed()
             self.embed = Embed.from_dict(self.config)
             obj = obj[0] if isinstance(obj, list) else obj
@@ -117,6 +126,8 @@ class MyEmbed:
                 if self.descriptions:
                     self.db_ms.add(id=ms.id, content=self.descriptions, isnow=1)
                     await ms.add_reaction("➡")
+                if self.dust:
+                    await ms.add_reaction("🗑")
                 if seed:
                     self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed=seed)
                 if bottums:
