@@ -53,7 +53,9 @@ class Help(HelpCommand):
 
     async def send_bot_help(self, mapping):
         opt = me.MyEmbed(self.context)
-        await opt.default_embed(header_icon=True, header="Command List", footer=True)
+        await opt.default_embed(
+            header_icon=True, header=self.context.bot.name, footer=True
+        )
         if self.context.bot.description:
             opt.config["description"] = f"{self.context.bot.description}"
         for cog in mapping:
