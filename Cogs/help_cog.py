@@ -114,7 +114,7 @@ class Help(HelpCommand):
             value=await self.create_category_tree(group),
             inline=False,
         )
-        await embed.sendEmbed(greeting=f"{self.context.author.mention}")()
+        await embed.sendEmbed(greeting=f"{self.context.author.mention}")
 
     async def send_command_help(self, command):
         params = "} {".join(command.clean_params.keys())
