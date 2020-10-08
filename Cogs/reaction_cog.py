@@ -24,21 +24,28 @@ class ReactionEvent(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.db_ms = table.MsfRtb()
-        self.funcs = {"w1": self.ear_welcome1, "w2": self.ear_welcome2}
+        self.funcs = {"w-1": self.ear_welcome1, "w-2": self.ear_welcome2}
         self.role_nozoki_id = int(self.bot.config["wkwm"]["nozoki_role_id"])
 
-    async def embed_react_action(self, usr_id: int, ms: Message, react: Emoji) -> bool:
-        result = self.db_ms.tbselect(id=str(ms.id))
-        if result:
-            func = self.funcs.get(result[0].seed)
-            if func:
-                return await func(usr_id, ms, react)
-            else:
-                pass
+    async def embed_react_action(
+        self, usr_id: int, ms: Message, react: Emoji, seed: str
+    ) -> bool:
+        # result = self.db_ms.tbselect(id=str(ms.id))
+        # if result:
+        # func = self.funcs.get(result[0].seed)
+        func = self.funcs.get(seed)
+        if func:
+            return await func(usr_id, ms, react)
         else:
             usr = self.bot.get_user(usr_id)
             if (str(react) == "🗑") & (usr in ms.mentions):
                 await ms.delete()
+
+    async def ear_ech(self, usr_id: int, ms: Message, react: Emoji):
+        if ctx.invoked_subcommand:
+            await ctx.send_help(ctx.invoked_subcommand)
+        elif ctx.command:
+            await ctx.send_help(ctx.command)
 
     async def ear_welcome2(self, usr_id: int, ms: Message, react: Emoji):
         usr = self.bot.get_user(usr_id)
@@ -87,7 +94,14 @@ class ReactionEvent(Cog):
             message = Message
             message = await channel.fetch_message(id=rrae.message_id)
             if message.embeds:
-                await self.embed_react_action(rrae.user_id, message, emoji)
+                # await self.embed_react_action(rrae.user_id, message, emoji)
+                for embed in message.embeds:
+                    await self.embed_react_action(
+                        usr_id=rrae.user_id,
+                        ms=message,
+                        react=emoji,
+                        seed=me.scan_footer(embed=embed),
+                    )
             else:
                 pass
 

@@ -65,14 +65,16 @@ class OutputError(Cog):
                     )
         except IndexError:
             await embed.default_embed(
-                footer=self.__error_fotter, title=self.__error_title
+                footer=self.__error_fotter,
+                title=self.__error_title,
+                greeting=f"{ctx.author.mention}",
             )
             if "required argument that is missing." in str(error):
-                embed.change_description(self.__missing_arg_message)
-                if ctx.invoked_subcommand:
-                    await ctx.send_help(ctx.invoked_subcommand)
-                elif ctx.command:
-                    await ctx.send_help(ctx.command)
+                embed.change_description(desc=self.__missing_arg_message, seed="e-c-h")
+                # if ctx.invoked_subcommand:
+                #     await ctx.send_help(ctx.invoked_subcommand)
+                # elif ctx.command:
+                #     await ctx.send_help(ctx.command)
             elif "You do not own this bot." in str(error):
                 embed.change_description(self.__permission_message)
             else:

@@ -22,6 +22,7 @@ class MyEmbed:
         self.greeting = str()
         self.files = list()
         self.dust = False
+        self.seed = str()
 
     def setTarget(self, target, bot=None):
         self.target = target
@@ -29,9 +30,11 @@ class MyEmbed:
             self.bot = bot
         return self
 
-    def change_description(self, desc):
+    def change_description(self, desc=str(), seed=str()):
         if self.config:
             self.config["description"] = desc
+        if seed:
+            self.seed = seed
 
     def setCtx(self, ctx):
         self.ctx = ctx
@@ -106,6 +109,14 @@ class MyEmbed:
         dust=True,
     ):
         if self.config:
+            if self.descriptions:
+                self.config["description"] = self.descriptions.pop(0)
+            if seed:
+                self.seed = seed
+            if self.config["footer"]:
+                self.config["footer"]["text"] = (
+                    self.config["footer"]["text"] + f"#{self.seed}"
+                )
             if files:
                 self.config["files"] = files
             if greeting:
@@ -148,12 +159,17 @@ class MyEmbed:
         footer=True,
         footer_url=None,
         time=True,
+        greeting=str(None),
+        seed=str(None),
     ):
+        time_str = str()
+        seed_str = str(seed)
+        if greeting:
+            self.greeting = greeting
         config = {"title": title, "color": 0x00FF00, "fields": []}
         time_str = str()
         if description:
             self.descriptions = self.__export_complist(obj=description)
-            config["description"] = self.descriptions.pop(0)
         if self.bot:
             self.bot_info = await self.bot.application_info()
             if thumbnail:
@@ -177,13 +193,24 @@ class MyEmbed:
                     string = f"{self.ctx.prefix} {self.ctx.command}"
                     if self.ctx.invoked_subcommand:
                         string += f" {(self.ctx.invoked_subcommand).name}"
-                    config["footer"] = {"text": f"{time_str} #{string}"}
+                    config["footer"] = {"text": f"{time_str} {string}"}
             elif footer_url:
                 config["footer"] = {
-                    "text": f"{time_str} #{footer}",
+                    "text": f"{time_str} {footer}",
                     "icon_url": str(footer_url),
                 }
             else:
-                config["footer"] = {"text": f"{time_str} #{footer}"}
+                config["footer"] = {"text": f"{time_str} {footer}"}
 
         self.config = config
+
+
+def scan_footer(embed: Embed):
+    footer = str()
+    seed = str()
+    footer = embed.to_dict()["footer"]["text"]
+    aaaaaaaaaaaaaa = footer.split()
+    for a in aaaaaaaaaaaaaa:
+        if "#" in a:
+            seed = a.split("#")[1]
+    return seed
