@@ -81,7 +81,7 @@ class Help(HelpCommand):
         await embed.default_embed(
             title=f"{cog.qualified_name}カテゴリ",
             description=f"{cog.description}",
-            footer=True,
+            footer="#ヘルプ",
             time=False,
         )
         for cmd in cog.walk_commands():
@@ -98,7 +98,7 @@ class Help(HelpCommand):
         await embed.default_embed(
             title=f"{self.context.prefix}{group.qualified_name}",
             description=group.description,
-            footer=True,
+            footer="#ヘルプ",
             time=False,
         )
         if group.aliases:

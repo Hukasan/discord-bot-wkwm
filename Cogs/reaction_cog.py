@@ -7,7 +7,7 @@ from discord import (
     Message,
     Emoji,
 )
-from discord.ext.commands import Cog, Bot
+from discord.ext.commands import Cog, Bot, Context
 from discord.abc import GuildChannel, PrivateChannel
 from Cogs.app import table, extentions, make_embed as me
 
@@ -24,28 +24,38 @@ class ReactionEvent(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.db_ms = table.MsfRtb()
-        self.funcs = {"w-1": self.ear_welcome1, "w-2": self.ear_welcome2}
+        self.funcs = {
+            "w-1": self.ear_welcome1,
+            "w-2": self.ear_welcome2,
+            "e-c-h": self.ear_ech,
+        }
         self.role_nozoki_id = int(self.bot.config["wkwm"]["nozoki_role_id"])
 
     async def embed_react_action(
-        self, usr_id: int, ms: Message, react: Emoji, seed: str
+        self, usr_id: int, ms: Message, react: Emoji, arg: list
     ) -> bool:
+        func = None
         # result = self.db_ms.tbselect(id=str(ms.id))
         # if result:
         # func = self.funcs.get(result[0].seed)
-        func = self.funcs.get(seed)
+        # print(arg)
+        if arg:
+            func = self.funcs.get(arg[0])
         if func:
-            return await func(usr_id, ms, react)
+            ctx = await self.bot.get_context(ms)
+            return await func(usr_id, ctx, react, arg)
         else:
             usr = self.bot.get_user(usr_id)
             if (str(react) == "🗑") & (usr in ms.mentions):
                 await ms.delete()
 
-    async def ear_ech(self, usr_id: int, ms: Message, react: Emoji):
-        if ctx.invoked_subcommand:
-            await ctx.send_help(ctx.invoked_subcommand)
-        elif ctx.command:
-            await ctx.send_help(ctx.command)
+    async def ear_ech(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
+        if str(react) == "🙆":
+            ctx.prefix = arg[1][0]
+            await ctx.send_help(arg[1][1:])
+            await ctx.message.delete()
+        elif str(react) == "🗑":
+            await ctx.message.delete()
 
     async def ear_welcome2(self, usr_id: int, ms: Message, react: Emoji):
         usr = self.bot.get_user(usr_id)
@@ -100,7 +110,7 @@ class ReactionEvent(Cog):
                         usr_id=rrae.user_id,
                         ms=message,
                         react=emoji,
-                        seed=me.scan_footer(embed=embed),
+                        arg=me.scan_footer(embed=embed),
                     )
             else:
                 pass

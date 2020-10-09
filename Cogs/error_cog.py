@@ -70,11 +70,14 @@ class OutputError(Cog):
                 greeting=f"{ctx.author.mention}",
             )
             if "required argument that is missing." in str(error):
-                embed.change_description(desc=self.__missing_arg_message, seed="e-c-h")
-                # if ctx.invoked_subcommand:
-                #     await ctx.send_help(ctx.invoked_subcommand)
-                # elif ctx.command:
-                #     await ctx.send_help(ctx.command)
+                string = f"{ctx.prefix}{ctx.command}"
+                if ctx.invoked_subcommand:
+                    string += f" {(ctx.invoked_subcommand).name}"
+                embed.change_description(
+                    desc=self.__missing_arg_message,
+                    arg=f"e-c-h {string}",
+                    bottums=["🙆"],
+                )
             elif "You do not own this bot." in str(error):
                 embed.change_description(self.__permission_message)
             else:

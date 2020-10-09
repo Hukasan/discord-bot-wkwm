@@ -18,7 +18,7 @@ class Talk(commands.Cog):
         self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
     def check_role_is_upper(self):
-        def predicate(ctx: commands.Context):
+        def predicate(ctx: Context):
             self.ctx.author
 
     @commands.Cog.listener()

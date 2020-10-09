@@ -22,7 +22,8 @@ class MyEmbed:
         self.greeting = str()
         self.files = list()
         self.dust = False
-        self.seed = str()
+        self.arg = "@"
+        self.bottums = list()
 
     def setTarget(self, target, bot=None):
         self.target = target
@@ -30,11 +31,14 @@ class MyEmbed:
             self.bot = bot
         return self
 
-    def change_description(self, desc=str(), seed=str()):
+    def change_description(self, desc=str(), arg=str(), bottums=list()):
         if self.config:
             self.config["description"] = desc
-        if seed:
-            self.seed = seed
+        if arg:
+
+            self.arg += arg
+        if bottums:
+            self.bottums.extend(bottums)
 
     def setCtx(self, ctx):
         self.ctx = ctx
@@ -103,7 +107,7 @@ class MyEmbed:
         self,
         obj=None,
         greeting=str(),
-        seed=None,
+        arg=str(),
         bottums=list(),
         files=list(),
         dust=True,
@@ -111,11 +115,14 @@ class MyEmbed:
         if self.config:
             if self.descriptions:
                 self.config["description"] = self.descriptions.pop(0)
-            if seed:
-                self.seed = seed
+            if arg:
+
+                self.arg += arg
+            if bottums:
+                self.bottums.extend(bottums)
             if self.config["footer"]:
                 self.config["footer"]["text"] = (
-                    self.config["footer"]["text"] + f"#{self.seed}"
+                    self.config["footer"]["text"] + f"{self.arg}"
                 )
             if files:
                 self.config["files"] = files
@@ -139,10 +146,10 @@ class MyEmbed:
                     await ms.add_reaction("➡")
                 if self.dust:
                     await ms.add_reaction("🗑")
-                if seed:
-                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed=seed)
-                if bottums:
-                    for b in bottums:
+                if arg:
+                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), arg=arg)
+                if self.bottums:
+                    for b in self.bottums:
                         if isinstance(b, str):
                             await ms.add_reaction(b)
             return ms
@@ -160,12 +167,14 @@ class MyEmbed:
         footer_url=None,
         time=True,
         greeting=str(None),
-        seed=str(None),
+        arg=str(),
     ):
         time_str = str()
-        seed_str = str(seed)
+
         if greeting:
             self.greeting = greeting
+        if arg:
+            self.arg += arg
         config = {"title": title, "color": 0x00FF00, "fields": []}
         time_str = str()
         if description:
@@ -205,12 +214,11 @@ class MyEmbed:
         self.config = config
 
 
-def scan_footer(embed: Embed):
+def scan_footer(embed: Embed) -> list:
     footer = str()
-    seed = str()
+    arg = list()
     footer = embed.to_dict()["footer"]["text"]
-    aaaaaaaaaaaaaa = footer.split()
-    for a in aaaaaaaaaaaaaa:
-        if "#" in a:
-            seed = a.split("#")[1]
-    return seed
+    if "@" in footer:
+        arg = footer.split("@")[1]
+        return arg.split(" ", 1)
+    return list()
