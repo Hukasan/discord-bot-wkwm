@@ -52,6 +52,7 @@ class ReactionEvent(Cog):
     async def ear_ech(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
         if str(react) == "🙆":
             ctx.prefix = arg[1][0]
+            ctx.author = ctx.message.mentions[0]
             await ctx.send_help(arg[1][1:])
             await ctx.message.delete()
         elif str(react) == "🗑":

@@ -1,6 +1,5 @@
 from discord import Embed, TextChannel
 from discord.ext.commands import Cog, Bot, Context
-from Cogs.app import table
 from os import linesep
 from datetime import datetime
 
@@ -13,8 +12,6 @@ class MyEmbed:
         self.bot = ctx.bot if ctx else None
         self.target = ctx.channel if ctx else None
         self.embed = None
-        self.db_ep = table.EmbedPages()
-        self.db_ms = table.MsfRtb()
         self.descriptions = list()
         self.line_number = int(0)
         self.config = {}
@@ -142,12 +139,9 @@ class MyEmbed:
             if obj:
                 ms = await obj.send(embed=self.embed, content=self.greeting)
                 if self.descriptions:
-                    self.db_ms.add(id=ms.id, content=self.descriptions, isnow=1)
                     await ms.add_reaction("➡")
                 if self.dust:
                     await ms.add_reaction("🗑")
-                if arg:
-                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed=arg)
                 if self.bottums:
                     for b in self.bottums:
                         if isinstance(b, str):
@@ -166,7 +160,7 @@ class MyEmbed:
         footer=True,
         footer_url=None,
         time=True,
-        greeting=str(None),
+        greeting=str(),
         arg=str(),
     ):
         time_str = str()
