@@ -147,7 +147,7 @@ class MyEmbed:
                 if self.dust:
                     await ms.add_reaction("🗑")
                 if arg:
-                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), arg=arg)
+                    self.db_ms.add(id=str(ms.id), cid=str(ms.channel.id), seed=arg)
                 if self.bottums:
                     for b in self.bottums:
                         if isinstance(b, str):
