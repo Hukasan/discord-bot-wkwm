@@ -57,35 +57,37 @@ class ReactionEvent(Cog):
         elif str(react) == "🗑":
             await ctx.message.delete()
 
-    async def ear_welcome2(self, usr_id: int, ms: Message, react: Emoji):
+    async def ear_welcome2(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
         usr = self.bot.get_user(usr_id)
-        if usr in ms.mentions:
-            self.db_ms.tbdelete(id=str(ms.id))
-            await ms.delete()
+        if usr in ctx.message.mentions:
+            if str(react) == "☑":
+                self.db_ms.tbdelete(id=str(ctx.message.id))
+                await ctx.message.delete()
 
-    async def ear_welcome1(self, usr_id: int, ms: Message, react: Emoji):
-        self.db_ms.tbdelete(id=str(ms.id))
-        nozoki_role = ms.guild.get_role((self.role_nozoki_id))
-        member = ms.guild.get_member(usr_id)
+    async def ear_welcome1(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
+        self.db_ms.tbdelete(id=str(ctx.message.id))
+        nozoki_role = ctx.guild.get_role((self.role_nozoki_id))
+        member = ctx.guild.get_member(usr_id)
         usr = self.bot.get_user(usr_id)
-        embed = me.MyEmbed().setTarget(target=ms.channel, bot=self.bot)
+        embed = me.MyEmbed().setTarget(target=ctx.channel, bot=self.bot)
         if bool(nozoki_role) & bool(member):
-            if usr in ms.mentions:
-                await member.add_roles(nozoki_role)
-                await ms.delete()
-                await embed.default_embed(
-                    header_icon=ms.guild.icon_url,
-                    header="公開チャンネルの説明です",
-                    footer="ウェルカムメッセージ",
-                    description="有難うございますd(ﾟДﾟ )\r公開チャンネルが見れるようになりました。",
-                )
-                embed.add(
-                    name="> 各チャンネルについて",
-                    value="各受付内容のチャンネルに要件があればお願いします。\r__チャンネルの詳細、試験内容などは各ピン留めに貼り付けてます__\r\r以上です🍌\rよろしければ☑を押してください",
-                )
-                await embed.sendEmbed(
-                    bottums=["☑"], arg="w-2", greeting=f"{usr.mention}", dust=False
-                )
+            if str(react) == "🗑":
+                if usr in ctx.message.mentions:
+                    await member.add_roles(nozoki_role)
+                    await ctx.message.delete()
+                    await embed.default_embed(
+                        header_icon=ctx.guild.icon_url,
+                        header="公開チャンネルの説明です",
+                        footer="ウェルカムメッセージ",
+                        description="有難うございますd(ﾟДﾟ )\r公開チャンネルが見れるようになりました。",
+                    )
+                    embed.add(
+                        name="> 各チャンネルについて",
+                        value="各受付内容のチャンネルに要件があればお願いします。\r__チャンネルの詳細、試験内容などは各ピン留めに貼り付けてます__\r\r以上です🍌\rよろしければ☑を押してください",
+                    )
+                    await embed.sendEmbed(
+                        bottums=["☑"], arg="w-2", greeting=f"{usr.mention}", dust=False
+                    )
         else:
             raise extentions.GetDatafromDiscordError(
                 f"Nozokiロールオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.role_nozoki_id})"
