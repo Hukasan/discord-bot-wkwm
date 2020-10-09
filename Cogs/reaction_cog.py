@@ -68,7 +68,6 @@ class ReactionEvent(Cog):
         nozoki_role = ms.guild.get_role((self.role_nozoki_id))
         member = ms.guild.get_member(usr_id)
         usr = self.bot.get_user(usr_id)
-        print("きてます")
         embed = me.MyEmbed().setTarget(target=ms.channel, bot=self.bot)
         if bool(nozoki_role) & bool(member):
             if usr in ms.mentions:
@@ -85,7 +84,7 @@ class ReactionEvent(Cog):
                     value="各受付内容のチャンネルに要件があればお願いします。\r__チャンネルの詳細、試験内容などは各ピン留めに貼り付けてます__\r\r以上です🍌\rよろしければ☑を押してください",
                 )
                 await embed.sendEmbed(
-                    bottums=["☑"], seed="w2", greeting=f"{usr.mention}", dust=False
+                    bottums=["☑"], arg="w-2", greeting=f"{usr.mention}", dust=False
                 )
         else:
             raise extentions.GetDatafromDiscordError(

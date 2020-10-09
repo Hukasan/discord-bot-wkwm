@@ -30,7 +30,7 @@ class Welcome(Cog):
                 value="・ 宣伝は許可を取ってください\r・ 会話の転載はやめてください\r・ 誹謗中傷はやめてください\rお約束が守れない場合、勝手に追放します",
             )
             opt.add(name="> 🗑押してください", value="読み理解したらこのチャットの🗑を押してください")
-            await opt.sendEmbed(greeting=(member.mention + self.header), seed="w-1")
+            await opt.sendEmbed(greeting=(member.mention + self.header), arg="w-1")
         else:
             raise extentions.GetDatafromDiscordError(
                 f"Welcomeチャンネルオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.welcome_room_id})"
