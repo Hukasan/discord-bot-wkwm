@@ -2,7 +2,8 @@ from os import environ, listdir, path
 from discord.ext.commands import Bot
 
 
-files = listdir("Cogs")
+p = "Cogs"
+files = listdir(p)
 extensions = [path.splitext(f)[0] for f in files if path.isfile(path.join(p, f))]
 if __name__ == "__main__":
     bot = Bot(
