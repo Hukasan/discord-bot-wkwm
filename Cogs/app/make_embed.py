@@ -114,7 +114,7 @@ class MyEmbed:
             if footer_arg:
                 self.footer_arg += footer_arg
             if self.footer:
-                self.config["footer"]["text"] = self.footer + self.footer_arg
+                self.config["footer"] = {"text": self.footer + self.footer_arg}
             else:
                 self.config["footer"] = {"text": self.footer_arg}
             if self.descriptions:
@@ -204,7 +204,6 @@ class MyEmbed:
                 self.icon_url = str(footer_url)
             else:
                 self.footer = f"{time_str} {footer}"
-
         self.config = config
         return self
 
