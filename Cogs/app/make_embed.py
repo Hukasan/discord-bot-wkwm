@@ -212,7 +212,7 @@ class MyEmbed:
 def scan_footer(embed: Embed) -> list:
     footer = str()
     arg = list()
-    footer = embed.to_dict()["footer"]["text"]
+    footer = embed.to_dict().get("footer").get("text")
     if "@" in footer:
         arg = footer.split("@")[1]
         return arg.split(" ", 1)
