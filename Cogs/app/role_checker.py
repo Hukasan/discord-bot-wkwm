@@ -28,9 +28,9 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
 
         comp_index = guild_role_list.index(comp_role)
         print(comp_index, guild_role_list.index(member.top_role))
-        if (comp_index >= guild_role_list.index(member.top_role)) & (bool(ignore_same)):
+        if (comp_index <= guild_role_list.index(member.top_role)) & (bool(ignore_same)):
             return True
-        elif (comp_index > guild_role_list.index(member.top_role)) & (
+        elif (comp_index < guild_role_list.index(member.top_role)) & (
             not (bool(ignore_same))
         ):
             return True
