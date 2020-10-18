@@ -26,7 +26,6 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
         guild_role_list = list()
         guild_role_list = await guild.fetch_roles()
         comp_index = guild_role_list.index(comp_role)
-        print(comp_index, guild_role_list.index(member.top_role))
         if (comp_index >= guild_role_list.index(member.top_role)) & (bool(ignore_same)):
             return True
         elif (comp_index > guild_role_list.index(member.top_role)) & (
@@ -35,4 +34,5 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
             return True
     else:
         print("基準ロールが取得できませｎ")
+        print(await guild.fetch_roles())
     return False
