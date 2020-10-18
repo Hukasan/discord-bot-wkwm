@@ -113,7 +113,6 @@ class MyEmbed:
             if self.descriptions:
                 self.config["description"] = self.descriptions.pop(0)
             if arg:
-
                 self.arg += arg
             if bottums:
                 self.bottums.extend(bottums)
@@ -206,6 +205,7 @@ class MyEmbed:
                 config["footer"] = {"text": f"{time_str} {footer}"}
 
         self.config = config
+        return self
 
 
 def scan_footer(embed: Embed) -> list:
