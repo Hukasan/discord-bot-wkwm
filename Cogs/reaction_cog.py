@@ -87,7 +87,10 @@ class ReactionEvent(Cog):
                         value="各受付内容のチャンネルに要件があればお願いします。\r__チャンネルの詳細、試験内容などは各ピン留めに貼り付けてます__\r\r以上です🍌\rよろしければ☑を押してください",
                     )
                     await embed.sendEmbed(
-                        bottums=["☑"], arg="w-2", greeting=f"{usr.mention}", dust=False
+                        bottums=["☑"],
+                        footer_arg="w-2",
+                        greeting=f"{usr.mention}",
+                        dust=False,
                     )
         else:
             raise extentions.GetDatafromDiscordError(

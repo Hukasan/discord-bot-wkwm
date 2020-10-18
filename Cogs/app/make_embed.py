@@ -116,7 +116,7 @@ class MyEmbed:
             if self.footer:
                 self.config["footer"]["text"] = self.footer + self.footer_arg
             else:
-                self.config["footer"] = {"text": self.arg}
+                self.config["footer"] = {"text": self.footer_arg}
             if self.descriptions:
                 self.config["description"] = self.descriptions.pop(0)
 
