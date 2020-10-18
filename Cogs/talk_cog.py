@@ -2,7 +2,7 @@ from discord import Guild, Message
 from discord.ext.commands import Context
 from discord.ext import commands
 from dispander import dispand, compose_embed
-from Cogs.app import table, make_embed as me, extentions
+from Cogs.app import table, make_embed as me, extentions, role_checker as ac
 from gc import collect
 from emoji import UNICODE_EMOJI
 
@@ -17,9 +17,13 @@ class Talk(commands.Cog):
         # self.team = Team(bot)
         self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
-    def check_role_is_upper(self):
-        def predicate(ctx: Context):
-            self.ctx.author
+    def check_role_is_upper_member():
+        async def predicate(ctx: Context):
+            return await ac.isroleupper(
+                role_id=ctx.bot.config["wkwm"]["ministar_role_id"], user=ctx.author
+            )
+
+        return commands.check(predicate)
 
     @commands.Cog.listener()
     async def on_message(self, message: Message):
@@ -42,14 +46,17 @@ class Talk(commands.Cog):
             return
         # collect()
 
-    @commands.is_owner()
     @commands.group(aliases=["コマンド", "こまんど", "command"], description="コマンド管理")
+    @check_role_is_upper_member()
     async def cmd(self, ctx):
-        """[※管理者のみ]"""
+        """
+        ・親コマンドです、サブコマンドを指定してください。
+        ・指定ロール以上のみ使えます。※設定は、
+        **?help setting**　で確認ください
+        """
         if ctx.invoked_subcommand is None:
-            await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンド追加")
+            raise Exception("trigger is a required argument that is missing.")
 
-    @commands.is_owner()
     @cmd.command(aliases=["a", "add", "ついか", "追加"], description="追加")
     async def cmd_add(self, ctx, key, reaction):
         self.db_cmd.add(id=key, body=reaction)

@@ -8,7 +8,7 @@ extensions = [path.splitext(f)[0] for f in files if path.isfile(path.join(p, f))
 if __name__ == "__main__":
     bot = Bot(
         command_prefix=["$", "＄", "?", "？"],
-        description="Saru's Wakewakaran Bot Project",
+        description="Saru's Wakewakaran Bot Project\rえすだぶりゅびてぃ",
     )
     config = {}
     config["wkwm"] = {}
@@ -16,6 +16,7 @@ if __name__ == "__main__":
     config["wkwm"]["welcome_room_id"] = environ["WELCOME_ROOM_ID"]
     config["wkwm"]["leave_notice_room_id"] = environ["LEAVE_NOTICE_ROOM_ID"]
     config["wkwm"]["nozoki_role_id"] = environ["NOZOKI_ROLE_ID"]
+    config["wkwm"]["ministar_role_id"] = environ["MINISTAR_ROLE_ID"]
     TOKEN = environ["BOT_ACCESS_TOKEN"]  # 環境変数から取得
     bot.config = config
     for extension in extensions:
