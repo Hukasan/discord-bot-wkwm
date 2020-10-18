@@ -43,14 +43,14 @@ class Talk(commands.Cog):
         # collect()
 
     @commands.is_owner()
-    @commands.group(aliases=["c", "ｃ", "コマンド", "こまんど", "command"], description="コマンド管理")
+    @commands.group(aliases=["コマンド", "こまんど", "command"], description="コマンド管理")
     async def cmd(self, ctx):
         """[※管理者のみ]"""
         if ctx.invoked_subcommand is None:
             await ctx.send("サブコマンドがいるよ 例:\r$cmd add -> コマンド追加")
 
     @commands.is_owner()
-    @cmd.command(aliases=["a", "ついか", "追加"], description="追加")
+    @cmd.command(aliases=["a", "add", "ついか", "追加"], description="追加")
     async def cmd_add(self, ctx, key, reaction):
         self.db_cmd.add(id=key, body=reaction)
         await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
@@ -83,14 +83,14 @@ class Talk(commands.Cog):
         if ctx.invoked_subcommand is None:
             self.db_cat.add(id=trigger, body=reaction)
             await ctx.message.add_reaction("💮")
-            await ctx.send("さくせす")
+            await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
 
     @cat.command(aliases=["r", "react", "ｒ"], description=("追加※絵文字"))
     async def cat_add_react(self, ctx: Context, trigger, reaction):
         if reaction in UNICODE_EMOJI:
             self.db_cat.add(id=trigger, body=reaction, isreact=True)
             await ctx.message.add_reaction("💮")
-            await ctx.send("さくせす")
+            await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
         else:
             raise extentions.InputError(
                 "このコマンドは、絵文字リアクション追加です\rリアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩"
@@ -98,8 +98,14 @@ class Talk(commands.Cog):
 
     @cat.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cat_delete(self, ctx, key):
-        self.db_cat.tbdelete(id=str(key))
-        await ctx.send(f"さくせす {key} の削除に成功しました💩")
+        for query in self.db_cat.tbselect():
+            if query.id == key:
+                self.db_cat.tbdelete(id=str(key))
+                await ctx.message.add_reaction("💮")
+                await ctx.send(f"さくせす {key} の削除に成功しました💩")
+                return
+        await ctx.message.add_reaction("😢")
+        await ctx.send(f"ぴえん。 {key} の削除に失敗しました。\r入力を確認してください\r> [?view r]\rで一覧が表示できます")
 
     @commands.group(
         aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示"
