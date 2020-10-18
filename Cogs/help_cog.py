@@ -143,25 +143,14 @@ class Help(HelpCommand):
                 value="`" + "`, `".join(command.aliases) + "`",
                 inline=False,
             )
-        await embed.sendEmbed(greeting=f"{self.context.author.mention}")()
+        await embed.sendEmbed(greeting=f"{self.context.author.mention}")
 
     async def send_error_message(self, error):
         embed = me.MyEmbed(self.context)
-        embed.default_embed(
+        await embed.default_embed(
             header="ヘルプエラー", title="help対象が見つかりませんでした", description="入力を確認してもう一度お試しあれ"
         )
-        embed.sendEmbed(greeting=f"{self.context.author.mention}")(
-            greeting=f"{self.context.author.mention}"
-        )
-
-    async def command_not_found(self, string):
-        embed = me.MyEmbed(self.context)
-        embed.default_embed(
-            header="コマンドエラー", title="入力されたコマンドはありません", description="入力を確認してもう一度お試しあれ"
-        )
-        embed.sendEmbed(greeting=f"{self.context.author.mention}")(
-            greeting=f"{self.context.author.mention}"
-        )
+        await embed.sendEmbed(greeting=f"{self.context.author.mention}")
 
     def subcommand_not_found(self, command, string):
         if isinstance(command, Group) and len(command.all_commands) > 0:
