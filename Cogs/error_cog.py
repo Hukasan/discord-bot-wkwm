@@ -22,7 +22,7 @@ class OutputError(Cog):
         self.__undefine_error_title = "予期せぬエラー"
         self.__notice_owner_message = "おぉん　エラーってるんですけどぉ↓↓"
         self.__missing_arg_message = "そのコマンドに必要な要素指定が足りていません\r" "コマンドの詳細を表示しますか？"
-        self.__permission_message = "指定されたコマンドは管理者のみ実行することができます。"
+        self.__permission_message = "😢指定されたコマンドを実行する権限が貴方にありません\r必要があれば、管理者まで問い合わせください"
 
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error):
@@ -68,6 +68,7 @@ class OutputError(Cog):
                 footer=self.__error_fotter,
                 title=self.__error_title,
                 greeting=f"{ctx.author.mention}",
+                time=False,
             )
             if "required argument that is missing." in str(error):
                 string = f"{ctx.prefix}{ctx.command}"
@@ -79,6 +80,8 @@ class OutputError(Cog):
                     bottums=["🙆"],
                 )
             elif "You do not own this bot." in str(error):
+                embed.change_description(self.__permission_message)
+            elif "The check functions for command cmd failed." in str(error):
                 embed.change_description(self.__permission_message)
             else:
                 embed.add(

@@ -110,7 +110,7 @@ class Help(HelpCommand):
         if group.help:
             embed.add(name="__詳細__", value=group.help, inline=False)
         embed.add(
-            name="> サブコマンド :",
+            name="__サブコマンド__",
             value=await self.create_category_tree(group),
             inline=False,
         )

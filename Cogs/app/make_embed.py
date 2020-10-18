@@ -19,7 +19,9 @@ class MyEmbed:
         self.greeting = str()
         self.files = list()
         self.dust = False
-        self.arg = "@"
+        self.footer = str()
+        self.icon_url = str()
+        self.footer_arg = "@"
         self.bottums = list()
 
     def setTarget(self, target, bot=None):
@@ -32,8 +34,7 @@ class MyEmbed:
         if self.config:
             self.config["description"] = desc
         if arg:
-
-            self.arg += arg
+            self.footer_arg += arg
         if bottums:
             self.bottums.extend(bottums)
 
@@ -104,22 +105,24 @@ class MyEmbed:
         self,
         obj=None,
         greeting=str(),
-        arg=str(),
+        footer_arg=str(),
         bottums=list(),
         files=list(),
         dust=True,
     ):
         if self.config:
+            if footer_arg:
+                self.footer_arg += footer_arg
+            if self.footer:
+                self.config["footer"]["text"] = self.footer + self.footer_arg
+            else:
+                self.config["footer"] = {"text": self.arg}
             if self.descriptions:
                 self.config["description"] = self.descriptions.pop(0)
-            if arg:
-                self.arg += arg
+
             if bottums:
                 self.bottums.extend(bottums)
-            if self.config["footer"]:
-                self.config["footer"]["text"] = (
-                    self.config["footer"]["text"] + f"{self.arg}"
-                )
+
             if files:
                 self.config["files"] = files
             if greeting:
@@ -188,21 +191,19 @@ class MyEmbed:
                 config["author"] = {"name": header}
         if time:
             time_str = datetime.now().strftime("%m/%d %H:%M:%S")
-            config["footer"] = {"text": ("[" + time_str + "]")}
+            self.footer = "[" + time_str + "]"
         if footer:
             if isinstance(footer, bool):
                 if bool(self.ctx):
                     string = f"{self.ctx.prefix} {self.ctx.command}"
                     if self.ctx.invoked_subcommand:
                         string += f" {(self.ctx.invoked_subcommand).name}"
-                    config["footer"] = {"text": f"{time_str} {string}"}
+                    self.footer = f"{time_str} {string}"
             elif footer_url:
-                config["footer"] = {
-                    "text": f"{time_str} {footer}",
-                    "icon_url": str(footer_url),
-                }
+                self.footer = f"{time_str} {footer}"
+                self.icon_url = str(footer_url)
             else:
-                config["footer"] = {"text": f"{time_str} {footer}"}
+                self.footer = f"{time_str} {footer}"
 
         self.config = config
         return self
