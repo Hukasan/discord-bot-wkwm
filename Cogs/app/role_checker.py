@@ -18,6 +18,7 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
     """
     ユーザがそのロールを超えるロールを持っているかどうかを判断します
     """
+    guild = Guild
     guild = user.guild
     member = guild.get_member(user.id)
     comp_role = guild.get_role(role_id)
@@ -32,4 +33,6 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
             not (bool(ignore_same))
         ):
             return True
+    else:
+        print("基準ロールが取得できませｎ")
     return False
