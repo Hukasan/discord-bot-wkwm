@@ -21,7 +21,7 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
     guild = Guild
     guild = user.guild
     member = guild.get_member(user.id)
-    comp_role = guild.get_role(role_id)
+    comp_role = guild.get_role(int(role_id))
     if comp_role:
         guild_role_list = list()
         guild_role_list = await guild.fetch_roles()
@@ -34,5 +34,4 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
             return True
     else:
         print("基準ロールが取得できませｎ")
-        print(await guild.fetch_roles())
     return False
