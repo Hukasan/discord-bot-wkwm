@@ -2,7 +2,6 @@ from discord import Embed, TextChannel, Message
 from discord.ext.commands import Cog, Bot, Context
 from os import linesep
 from datetime import datetime
-from Cogs.app import data_io as di
 
 # from copy import copy
 
