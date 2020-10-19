@@ -24,9 +24,7 @@ class Talk(commands.Cog):
         """
 
         async def predicate(ctx: Context):
-            return await ac.isroleupper(
-                role_id=ctx.bot.config["wkwm"]["ministar_role_id"], user=ctx.author
-            )
+            return await ac.isroleupper(role_id=ctx.bot.config["wkwm"]["ministar_role_id"], user=ctx.author)
 
         return commands.check(predicate)
 
@@ -104,9 +102,7 @@ class Talk(commands.Cog):
             await ctx.message.add_reaction("💮")
             await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
         else:
-            raise extentions.InputError(
-                "このコマンドは、絵文字リアクション追加です\rリアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩"
-            )
+            raise extentions.InputError("このコマンドは、絵文字リアクション追加です\rリアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩")
 
     @cat.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cat_delete(self, ctx, key):
@@ -119,9 +115,7 @@ class Talk(commands.Cog):
         await ctx.message.add_reaction("😢")
         await ctx.send(f"ぴえん。 {key} の削除に失敗しました。\r入力を確認してください\r> [?view r]\rで一覧が表示できます")
 
-    @commands.group(
-        aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示"
-    )
+    @commands.group(aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示")
     async def view(self, ctx: Context):
         if ctx.invoked_subcommand is None:
             embed = me.MyEmbed(ctx)
@@ -150,8 +144,8 @@ class Talk(commands.Cog):
         qlist = t.tbselect()
         for q in qlist:
             content += f"・{q.id}\n"
-        if not (embed.config):
-            await embed.default_embed(footer=True)
+        if not (embed.title):
+            await embed.default_embed(title="トリガープレビュー")
         embed.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
 
 
