@@ -57,7 +57,7 @@ class Help(HelpCommand):
             header_icon=True, header=self.context.bot.user.name, time=False
         )
         if self.context.bot.description:
-            opt.config["description"] = f"{self.context.bot.description}"
+            opt.change_description(desc=f"{self.context.bot.description}")
         for cog in mapping:
             if cog:
                 cog_name = cog.qualified_name

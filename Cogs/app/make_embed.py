@@ -18,7 +18,7 @@ class MyEmbed:
         self.obj = None
         self.footer = str()
         self.icon_url = str()
-        self.feilds = list()
+        self.fields = list()
         self.embed = None
         self.description = str()
         self.descriptions = list()
@@ -100,7 +100,7 @@ class MyEmbed:
         if greeting:
             self.greeting = greeting
         self.description = description if description else self.description
-        self.feilds.append({"name": name, "value": value, "inline": inline})
+        self.fields.append({"name": name, "value": value, "inline": inline})
 
     async def sendEmbed(
         self,
@@ -122,8 +122,9 @@ class MyEmbed:
             if self.footer or self.footer_arg
             else None
         )
-        self.config["description"] = self.descriptions if self.description else None
+        self.config["description"] = self.description if self.description else None
         self.config["files"] = files if files else None
+        self.config["fields"] = self.fields
 
         self.embed = Embed()
         self.embed = Embed.from_dict(self.config)
@@ -135,8 +136,6 @@ class MyEmbed:
             obj = self.ctx.channel
         if obj:
             ms = await obj.send(embed=self.embed, content=self.greeting)
-            if self.descriptions:
-                await ms.add_reaction("➡")
             if self.dust:
                 await ms.add_reaction("🗑")
             if self.bottums:
