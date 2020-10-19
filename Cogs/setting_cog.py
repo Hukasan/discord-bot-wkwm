@@ -3,7 +3,6 @@ from discord.ext.commands import (
     Cog,
     Bot,
     Context,
-    HelpCommand,
     command,
     is_owner,
     Group,

@@ -20,6 +20,10 @@ session = SessionClass()
 
 
 class DBIO:
+    """
+    データベース管理
+    """
+
     def __init__(self):
         self.table = Model
 

@@ -28,10 +28,10 @@ class OutputError(Cog):
     async def on_command_error(self, ctx: Context, error):
         if not (self.owner):
             self.owner = self.bot.get_user(self.bot.owner_id)
-        if self.owner:
-            self.__notice_owner_message = (
-                self.owner.mention + self.__notice_owner_message
-            )
+            if self.owner:
+                self.__notice_owner_message = (
+                    self.owner.mention + self.__notice_owner_message
+                )
         cmd = str()
         embed = me.MyEmbed(ctx)
         try:

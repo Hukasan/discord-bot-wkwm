@@ -18,7 +18,8 @@ from Cogs.app import table, extentions, make_embed as me
 
 class ReactionEvent(Cog):
     """
-    リアクションに対しての処理(ページ遷移を除く)
+    リアクションに対しての処理
+    ear:embed_reaction_actionえ？それじゃeraじゃんて。そんなこたぁきにすんなって
     """
 
     def __init__(self, bot: Bot):
@@ -58,13 +59,6 @@ class ReactionEvent(Cog):
         elif str(react) == "🗑":
             await ctx.message.delete()
 
-    async def ear_welcome2(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
-        usr = self.bot.get_user(usr_id)
-        if usr in ctx.message.mentions:
-            if str(react) == "☑":
-                self.db_ms.tbdelete(id=str(ctx.message.id))
-                await ctx.message.delete()
-
     async def ear_welcome1(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
         self.db_ms.tbdelete(id=str(ctx.message.id))
         nozoki_role = ctx.guild.get_role((self.role_nozoki_id))
@@ -96,6 +90,13 @@ class ReactionEvent(Cog):
             raise extentions.GetDatafromDiscordError(
                 f"Nozokiロールオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.role_nozoki_id})"
             )
+
+    async def ear_welcome2(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
+        usr = self.bot.get_user(usr_id)
+        if usr in ctx.message.mentions:
+            if str(react) == "☑":
+                self.db_ms.tbdelete(id=str(ctx.message.id))
+                await ctx.message.delete()
 
     @Cog.listener()
     async def on_raw_reaction_add(self, rrae: RawReactionActionEvent):

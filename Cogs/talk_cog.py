@@ -17,7 +17,12 @@ class Talk(commands.Cog):
         # self.team = Team(bot)
         self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
+    @staticmethod  # インスタンスにアクセスしない
     def check_role_is_upper_member():
+        """
+        権限ロール以上のロールをユーザが持っているかを判定
+        """
+
         async def predicate(ctx: Context):
             return await ac.isroleupper(
                 role_id=ctx.bot.config["wkwm"]["ministar_role_id"], user=ctx.author

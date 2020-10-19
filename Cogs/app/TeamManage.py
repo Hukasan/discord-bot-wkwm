@@ -10,6 +10,10 @@ repatter = re.compile(pattern=pattern)
 
 
 class Team:
+    """
+    クラン戦募集あしすと(全然できてない)
+    """
+
     def __init__(self, bot: Bot):
         self.teams = {}
         self.bot = bot

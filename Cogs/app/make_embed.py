@@ -1,26 +1,32 @@
-from discord import Embed, TextChannel
+from discord import Embed, TextChannel, Message
 from discord.ext.commands import Cog, Bot, Context
 from os import linesep
 from datetime import datetime
+from Cogs.app import data_io as di
 
 # from copy import copy
 
 
 class MyEmbed:
+    """
+    embed生成
+    """
+
     def __init__(self, ctx=None):
         self.ctx = ctx
         self.bot = ctx.bot if ctx else None
         self.target = ctx.channel if ctx else None
+        self.footer = str()
+        self.icon_url = str()
+        self.feilds = list()
         self.embed = None
+        self.description = str()
         self.descriptions = list()
         self.line_number = int(0)
-        self.config = {}
         self.bot_info = None
         self.greeting = str()
         self.files = list()
         self.dust = False
-        self.footer = str()
-        self.icon_url = str()
         self.footer_arg = "@"
         self.bottums = list()
 
@@ -31,8 +37,7 @@ class MyEmbed:
         return self
 
     def change_description(self, desc=str(), arg=str(), bottums=list()):
-        if self.config:
-            self.config["description"] = desc
+        self.description = desc
         if arg:
             self.footer_arg += arg
         if bottums:
@@ -94,12 +99,8 @@ class MyEmbed:
     ) -> None:
         if greeting:
             self.greeting = greeting
-        if self.config:
-            if description:
-                self.config["description"] = description
-            self.config["fields"].append(
-                {"name": name, "value": value, "inline": inline}
-            )
+        self.description = description if description else self.description
+        self.fields.append({"name": name, "value": value, "inline": inline})
 
     async def sendEmbed(
         self,
@@ -109,32 +110,28 @@ class MyEmbed:
         bottums=list(),
         files=list(),
         dust=True,
-    ):
+    ) -> Message:
         if self.config:
-            if footer_arg:
-                self.footer_arg += footer_arg
-            if self.footer:
-                self.config["footer"] = {"text": self.footer + self.footer_arg}
-            else:
-                self.config["footer"] = {"text": self.footer_arg}
-            if self.descriptions:
-                self.config["description"] = self.descriptions.pop(0)
-
+            self.footer_arg += footer_arg if bool(footer_arg) else None
+            self.greeting = greeting if greeting else None
+            self.dust = dust if dust else None
             if bottums:
                 self.bottums.extend(bottums)
 
-            if files:
-                self.config["files"] = files
-            if greeting:
-                self.greeting = greeting
-            if dust:
-                self.dust = dust
+            self.config["footer"] = (
+                {"text": self.footer + self.footer_arg}
+                if self.footer or self.footer_arg
+                else None
+            )
+            self.config["description"] = self.descriptions if self.description else None
+            self.config["files"] = files if files else None
+            self.config[""]
+
             self.embed = Embed()
             self.embed = Embed.from_dict(self.config)
+
             obj = obj[0] if isinstance(obj, list) else obj
-            if obj:
-                pass
-            elif self.target:
+            if (not (self.obj)) & self.target:
                 obj = self.target
             elif self.ctx:
                 obj = self.ctx.channel

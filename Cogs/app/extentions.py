@@ -1,3 +1,8 @@
+"""
+独自エラー
+"""
+
+
 class GetDatafromDiscordError(Exception):
     pass
 

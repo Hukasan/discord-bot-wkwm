@@ -1,5 +1,7 @@
 # Discord bot 　わけわかめ (Beta)
 
+サーバ密着型ネカマ育成 Bot
+
 - discord.py 1.3.5
 - python3.8.0
 - Heroku による稼働(postgres アドオン使用)
