@@ -43,9 +43,7 @@ class Help(HelpCommand):
         if isinstance(cmd, Group):
             for subcmd in cmd.walk_commands():
                 if not (subcmd.name == temp):
-                    content += await self.create_category_tree(
-                        cmd=subcmd, index=(index + 1)
-                    )
+                    content += await self.create_category_tree(cmd=subcmd, index=(index + 1))
                 temp = subcmd.name
             return content
         elif isinstance(cmd, Command):
@@ -53,25 +51,27 @@ class Help(HelpCommand):
 
     async def send_bot_help(self, mapping):
         opt = me.MyEmbed(self.context)
-        await opt.default_embed(
-            header_icon=True, header=self.context.bot.user.name, time=False
-        )
+        await opt.default_embed(header_icon=True, header=self.context.bot.user.name, time=False)
         if self.context.bot.description:
-            opt.change_description(desc=f"{self.context.bot.description}")
+            opt.change_description(
+                desc=(
+                    f"{self.context.bot.description}\n"
+                    f"**{self.context.prefix}help**\n--{self.command_attrs['description']}\n"
+                )
+            )
         for cog in mapping:
             if cog:
                 cog_name = cog.qualified_name
             else:
                 cog_name = self.no_category_name
-
+            if cog_name == "Help":
+                continue
             command_list = await self.filter_commands(mapping[cog], sort=True)
             content = str()
             if command_list:
                 command_list = set(command_list)
                 for cmd in command_list:
-                    content += (
-                        f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
-                    )
+                    content += f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
                 opt.add(name=f"> {cog_name}", value=content, inline=False)
         await opt.sendEmbed(greeting=f"{self.context.author.mention}")
 
@@ -131,9 +131,7 @@ class Help(HelpCommand):
         )
         embed.add(
             name="__利用方法__",
-            value=(
-                f"**{self.context.prefix}{command.qualified_name} {params}**\r" + desc
-            ),
+            value=(f"**{self.context.prefix}{command.qualified_name} {params}**\r" + desc),
         )
         if command.help:
             embed.add(name="__詳細__", value=command.help, inline=False)
@@ -147,9 +145,7 @@ class Help(HelpCommand):
 
     async def send_error_message(self, error):
         embed = me.MyEmbed(self.context)
-        await embed.default_embed(
-            header="ヘルプエラー", title="help対象が見つかりませんでした", description="入力を確認してもう一度お試しあれ"
-        )
+        await embed.default_embed(header="ヘルプエラー", title="help対象が見つかりませんでした", description="入力を確認してもう一度お試しあれ")
         await embed.sendEmbed(greeting=f"{self.context.author.mention}")
 
     def subcommand_not_found(self, command, string):

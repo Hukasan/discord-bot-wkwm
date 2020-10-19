@@ -29,9 +29,7 @@ class OutputError(Cog):
         if not (self.owner):
             self.owner = self.bot.get_user(self.bot.owner_id)
             if self.owner:
-                self.__notice_owner_message = (
-                    self.owner.mention + self.__notice_owner_message
-                )
+                self.__notice_owner_message = self.owner.mention + self.__notice_owner_message
         cmd = str()
         embed = me.MyEmbed(ctx)
         try:
@@ -42,9 +40,7 @@ class OutputError(Cog):
                 return
             else:
                 dubleq = str(error).split('"')
-                await embed.default_embed(
-                    footer=self.__error_fotter, title=self.__error_title
-                )
+                await embed.default_embed(footer=self.__error_fotter, title=self.__error_title)
                 if dubleq:
                     if dubleq[0] == "Command " and dubleq[2] == " is not found":
                         embed.add(
@@ -94,3 +90,4 @@ class OutputError(Cog):
 
 def setup(bot):
     return bot.add_cog(OutputError(bot))
+    # pass

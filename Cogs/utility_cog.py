@@ -20,9 +20,7 @@ class Utility(Cog):
                 await ctx.send(embed=(compose_embed(ms)))
         else:
             myembed = me.MyEmbed(ctx)
-            myembed.default_embed(
-                title="ピン留め表示", description="**このチャンネルにピン留めは無い様(*ﾟ∀ﾟ)ゞﾃﾞｼ**"
-            )
+            myembed.default_embed(title="ピン留め表示", description="**このチャンネルにピン留めは無い様(*ﾟ∀ﾟ)ゞﾃﾞｼ**")
 
     @command(aliases=["s", "さーち", "サーチ", "ロール検索"], description="ロールメンバ表示")
     async def serch(self, ctx: Context, name: str):

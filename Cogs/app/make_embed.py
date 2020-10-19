@@ -16,8 +16,13 @@ class MyEmbed:
         self.bot = ctx.bot if ctx else None
         self.target = ctx.channel if ctx else None
         self.obj = None
+        self.title = str()
+        self.color = None
+        self.thumbnail = False
         self.footer = str()
         self.icon_url = str()
+        self.header = None
+        self.header_icon_url = str()
         self.fields = list()
         self.embed = None
         self.description = str()
@@ -26,8 +31,9 @@ class MyEmbed:
         self.bot_info = None
         self.greeting = str()
         self.files = list()
+        self.time = False
         self.dust = False
-        self.footer_arg = "@"
+        self.footer_arg = str()
         self.bottums = list()
 
     def setTarget(self, target, bot=None):
@@ -94,9 +100,34 @@ class MyEmbed:
                         line = 0
         return ex
 
-    def add(
-        self, name: str, value: str, inline=False, greeting=str(), description=str()
-    ) -> None:
+    async def default_embed(
+        self,
+        title=None,
+        color=0x00FF00,
+        description=None,
+        thumbnail=False,
+        header=str(),
+        header_icon=None,
+        footer=str(),
+        footer_url=str(),
+        time=True,
+        greeting=str(),
+        arg=str(),
+    ):
+        self.title = title
+        self.color = color
+        self.time = time
+        self.footer = footer
+        self.icon_url = footer_url if footer else str()
+        self.header = header
+        self.header_icon_url = header_icon if header else str()
+        self.thumbnai = thumbnail
+        self.greeting = greeting
+        self.footer_arg = arg
+        self.description = (self.__export_complist(obj=description)).pop() if description else None
+        return self
+
+    def add(self, name: str, value: str, inline=False, greeting=str(), description=str()) -> None:
         if greeting:
             self.greeting = greeting
         self.description = description if description else self.description
@@ -111,23 +142,38 @@ class MyEmbed:
         files=list(),
         dust=True,
     ) -> Message:
-        self.footer_arg += footer_arg if bool(footer_arg) else str()
-        self.greeting = greeting if greeting else None
-        self.dust = dust if dust else None
+        if self.footer_arg:
+            self.footer_arg = f"@{self.footer_arg}{footer_arg}"
+        self.greeting = greeting if bool(greeting) else self.greeting
+        self.dust = dust if dust else self.dust
         if bottums:
             self.bottums.extend(bottums)
+        config = dict()
+        if (bool(self.footer)) or (bool(self.footer_arg)):
+            time_str = str()
+            if self.time:
+                time_str = (datetime.now()).strftime("%m/%d %H:%M:%S")
+            config["footer"] = {"text": f"{time_str}#{self.footer}{self.footer_arg}"}
+            config["footer"]["icon_url"] = self.icon_url if self.icon_url else None
 
-        self.config["footer"] = (
-            {"text": self.footer + self.footer_arg}
-            if self.footer or self.footer_arg
-            else None
-        )
-        self.config["description"] = self.description if self.description else None
-        self.config["files"] = files if files else None
-        self.config["fields"] = self.fields
+        if bool(self.bot) & bool(self.thumbnail):
+            self.bot_info = await self.bot.application_info()
+            config["thumbnail"] = {"url": str(self.bot_info.icon_url)}
+
+        if self.header:
+            config["author"] = {"name": self.header}
+            if isinstance(self.header_icon_url, str):
+                config["author"]["icon_url"] = str(self.header_icon_url)
+            elif self.bot:
+                bot_info = await self.bot.application_info()
+                config["author"]["icon_url"] = str(bot_info.icon_url) if bot_info else None
+
+        config["description"] = self.description if self.description else None
+        config["files"] = files if files else None
+        config["fields"] = self.fields
 
         self.embed = Embed()
-        self.embed = Embed.from_dict(self.config)
+        self.embed = Embed.from_dict(config)
 
         obj = obj[0] if isinstance(obj, list) else obj
         if (not (self.obj)) & bool(self.target):
@@ -144,67 +190,15 @@ class MyEmbed:
                         await ms.add_reaction(b)
         return ms
 
-    async def default_embed(
-        self,
-        title=None,
-        description=None,
-        thumbnail=False,
-        header=None,
-        header_icon=None,
-        footer=True,
-        footer_url=None,
-        time=True,
-        greeting=str(),
-        arg=str(),
-    ):
-        time_str = str()
-
-        if greeting:
-            self.greeting = greeting
-        if arg:
-            self.arg += arg
-        config = {"title": title, "color": 0x00FF00, "fields": []}
-        time_str = str()
-        if description:
-            self.descriptions = self.__export_complist(obj=description)
-        if self.bot:
-            self.bot_info = await self.bot.application_info()
-            if thumbnail:
-                config["thumnail"] = {"url": str(self.bot_info.icon_url)}
-        if header:
-            if isinstance(header_icon, bool) & bool(self.bot_info):
-                config["author"] = {
-                    "name": header,
-                    "icon_url": str(self.bot_info.icon_url),
-                }
-            elif header_icon:
-                config["author"] = {"name": header, "icon_url": str(header_icon)}
-            else:
-                config["author"] = {"name": header}
-        if time:
-            time_str = datetime.now().strftime("%m/%d %H:%M:%S")
-            self.footer = "[" + time_str + "]"
-        if footer:
-            if isinstance(footer, bool):
-                if bool(self.ctx):
-                    string = f"{self.ctx.prefix} {self.ctx.command}"
-                    if self.ctx.invoked_subcommand:
-                        string += f" {(self.ctx.invoked_subcommand).name}"
-                    self.footer = f"{time_str} {string}"
-            elif footer_url:
-                self.footer = f"{time_str} {footer}"
-                self.icon_url = str(footer_url)
-            else:
-                self.footer = f"{time_str} {footer}"
-        self.config = config
-        return self
-
 
 def scan_footer(embed: Embed) -> list:
     footer = str()
     arg = list()
-    footer = embed.to_dict().get("footer").get("text")
-    if "@" in footer:
-        arg = footer.split("@")[1]
-        return arg.split(" ", 1)
+    if embed:
+        footer = (embed.to_dict()).get("footer")
+        if footer:
+            text = footer.get("text")
+            if "@" in text:
+                arg = text.split("@")[1]
+                return arg.split(" ", 1)
     return list()
