@@ -17,7 +17,7 @@ class Talk(commands.Cog):
         # self.team = Team(bot)
         self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
-    @staticmethod  # インスタンスにアクセスしない
+    # インスタンスにアクセスしない
     def check_role_is_upper_member():
         """
         権限ロール以上のロールをユーザが持っているかを判定

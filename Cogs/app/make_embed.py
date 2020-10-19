@@ -15,6 +15,7 @@ class MyEmbed:
         self.ctx = ctx
         self.bot = ctx.bot if ctx else None
         self.target = ctx.channel if ctx else None
+        self.obj = None
         self.footer = str()
         self.icon_url = str()
         self.feilds = list()
@@ -99,7 +100,7 @@ class MyEmbed:
         if greeting:
             self.greeting = greeting
         self.description = description if description else self.description
-        self.fields.append({"name": name, "value": value, "inline": inline})
+        self.feilds.append({"name": name, "value": value, "inline": inline})
 
     async def sendEmbed(
         self,
@@ -110,43 +111,39 @@ class MyEmbed:
         files=list(),
         dust=True,
     ) -> Message:
-        if self.config:
-            self.footer_arg += footer_arg if bool(footer_arg) else None
-            self.greeting = greeting if greeting else None
-            self.dust = dust if dust else None
-            if bottums:
-                self.bottums.extend(bottums)
+        self.footer_arg += footer_arg if bool(footer_arg) else str()
+        self.greeting = greeting if greeting else None
+        self.dust = dust if dust else None
+        if bottums:
+            self.bottums.extend(bottums)
 
-            self.config["footer"] = (
-                {"text": self.footer + self.footer_arg}
-                if self.footer or self.footer_arg
-                else None
-            )
-            self.config["description"] = self.descriptions if self.description else None
-            self.config["files"] = files if files else None
-            self.config[""]
+        self.config["footer"] = (
+            {"text": self.footer + self.footer_arg}
+            if self.footer or self.footer_arg
+            else None
+        )
+        self.config["description"] = self.descriptions if self.description else None
+        self.config["files"] = files if files else None
 
-            self.embed = Embed()
-            self.embed = Embed.from_dict(self.config)
+        self.embed = Embed()
+        self.embed = Embed.from_dict(self.config)
 
-            obj = obj[0] if isinstance(obj, list) else obj
-            if (not (self.obj)) & self.target:
-                obj = self.target
-            elif self.ctx:
-                obj = self.ctx.channel
-            if obj:
-                ms = await obj.send(embed=self.embed, content=self.greeting)
-                if self.descriptions:
-                    await ms.add_reaction("➡")
-                if self.dust:
-                    await ms.add_reaction("🗑")
-                if self.bottums:
-                    for b in self.bottums:
-                        if isinstance(b, str):
-                            await ms.add_reaction(b)
-            return ms
-        else:
-            return None
+        obj = obj[0] if isinstance(obj, list) else obj
+        if (not (self.obj)) & bool(self.target):
+            obj = self.target
+        elif self.ctx:
+            obj = self.ctx.channel
+        if obj:
+            ms = await obj.send(embed=self.embed, content=self.greeting)
+            if self.descriptions:
+                await ms.add_reaction("➡")
+            if self.dust:
+                await ms.add_reaction("🗑")
+            if self.bottums:
+                for b in self.bottums:
+                    if isinstance(b, str):
+                        await ms.add_reaction(b)
+        return ms
 
     async def default_embed(
         self,
