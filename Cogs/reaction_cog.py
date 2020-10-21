@@ -24,7 +24,6 @@ class ReactionEvent(Cog):
 
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.db_ms = table.MsfRtb()
         self.funcs = {
             "w-1": self.ear_welcome1,
             "w-2": self.ear_welcome2,
@@ -32,9 +31,7 @@ class ReactionEvent(Cog):
         }
         self.role_nozoki_id = int(self.bot.config["wkwm"]["nozoki_role_id"])
 
-    async def embed_react_action(
-        self, usr_id: int, ms: Message, react: Emoji, arg: list
-    ) -> bool:
+    async def embed_react_action(self, usr_id: int, ms: Message, react: Emoji, arg: list) -> bool:
         func = None
         # result = self.db_ms.tbselect(id=str(ms.id))
         # if result:

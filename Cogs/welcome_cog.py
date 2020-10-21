@@ -8,7 +8,6 @@ class Welcome(Cog):
         self.bot = bot
         self.welcome_room_id = int(self.bot.config["wkwm"]["welcome_room_id"])
         self.header = ""
-        self.db_ms = table.MsfRtb()
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
