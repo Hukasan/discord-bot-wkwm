@@ -13,7 +13,6 @@ dispander==0.4.0
 echidna==0.2.1
 flake8==3.8.3
 # -e git+https://github.com/Hukasan/discord-bot-id.git@478b80a410276f3d0f306a804a24f91f73e40363#egg=Flask
-Flask-SQLAlchemy==2.4.4
 gunicorn==20.0.4
 Hamlish-Jinja==0.3.3
 httplib2==0.18.1

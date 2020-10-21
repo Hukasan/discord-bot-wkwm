@@ -142,7 +142,7 @@ class MyEmbed:
         files=list(),
         dust=True,
     ) -> Message:
-        if self.footer_arg:
+        if bool(self.footer_arg) or bool(footer_arg):
             self.footer_arg = f"@{self.footer_arg}{footer_arg}"
         self.greeting = greeting if bool(greeting) else self.greeting
         self.dust = dust if dust else self.dust

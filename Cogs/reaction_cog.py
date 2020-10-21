@@ -57,7 +57,6 @@ class ReactionEvent(Cog):
             await ctx.message.delete()
 
     async def ear_welcome1(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
-        self.db_ms.tbdelete(id=str(ctx.message.id))
         nozoki_role = ctx.guild.get_role((self.role_nozoki_id))
         member = ctx.guild.get_member(usr_id)
         usr = self.bot.get_user(usr_id)
@@ -92,7 +91,6 @@ class ReactionEvent(Cog):
         usr = self.bot.get_user(usr_id)
         if usr in ctx.message.mentions:
             if str(react) == "☑":
-                self.db_ms.tbdelete(id=str(ctx.message.id))
                 await ctx.message.delete()
 
     @Cog.listener()
