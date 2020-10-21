@@ -109,48 +109,48 @@ class Cattb(DBIO):
         session.close()
 
 
-class MsfRtb(DBIO):
-    def __init__(self):
-        self.table = self.MsforReact
+# class MsfRtb(DBIO):
+#     def __init__(self):
+#         self.table = self.MsforReact
 
-    class MsforReact(Model):
-        __tablename__ = "msforreact"
-        id = Column(String(), nullable=False, primary_key=True)
-        cid = Column(String(), nullable=False)
-        seed = Column(String(), nullable=True)
+#     class MsforReact(Model):
+#         __tablename__ = "msforreact"
+#         id = Column(String(), nullable=False, primary_key=True)
+#         cid = Column(String(), nullable=False)
+#         seed = Column(String(), nullable=True)
 
-    def add(self, id: str, cid: str, seed: str):
-        t = self.table()
-        if not (self.tbdelete(id=id)):
-            t.id = id
-            t.cid = cid
-            t.seed = seed
-            session.add(t)
-        session.commit()
-        session.close()
+#     def add(self, id: str, cid: str, seed: str):
+#         t = self.table()
+#         if not (self.tbdelete(id=id)):
+#             t.id = id
+#             t.cid = cid
+#             t.seed = seed
+#             session.add(t)
+#         session.commit()
+#         session.close()
 
 
-class EmbedPages(DBIO):
-    def __init__(self):
-        self.table = self.Page
+# class EmbedPages(DBIO):
+#     def __init__(self):
+#         self.table = self.Page
 
-    class Page(Model):
-        __tablename__ = "embedpages"
-        id = Column(String(), nullable=False, primary_key=True)
-        number = Column(Integer, nullable=False)
-        content = Column(String(), nullable=False)
-        isnow = Column(Boolean(), nullable=False)
+#     class Page(Model):
+#         __tablename__ = "embedpages"
+#         id = Column(String(), nullable=False, primary_key=True)
+#         number = Column(Integer, nullable=False)
+#         content = Column(String(), nullable=False)
+#         isnow = Column(Boolean(), nullable=False)
 
-    def add(self, id: str, number: int, content: str, isnow: bool):
-        t = self.table()
-        if not (self.tbdelete(id=id)):
-            t.id = id
-            t.number = number
-            t.content = content
-            t.isnow = isnow
-            session.add(t)
-        session.commit()
-        session.close()
+#     def add(self, id: str, number: int, content: str, isnow: bool):
+#         t = self.table()
+#         if not (self.tbdelete(id=id)):
+#             t.id = id
+#             t.number = number
+#             t.content = content
+#             t.isnow = isnow
+#             session.add(t)
+#         session.commit()
+#         session.close()
 
 
 if __name__ == "__main__":
