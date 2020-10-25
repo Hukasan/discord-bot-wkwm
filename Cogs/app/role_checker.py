@@ -16,6 +16,7 @@ from discord.abc import GuildChannel, PrivateChannel
 
 async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
     """
+    check
     ユーザがそのロールを超えるロールを持っているかどうかを判断します
     """
     guild = Guild
@@ -30,9 +31,7 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
         print(comp_index, guild_role_list.index(member.top_role))
         if (comp_index <= guild_role_list.index(member.top_role)) & (bool(ignore_same)):
             return True
-        elif (comp_index < guild_role_list.index(member.top_role)) & (
-            not (bool(ignore_same))
-        ):
+        elif (comp_index < guild_role_list.index(member.top_role)) & (not (bool(ignore_same))):
             return True
     else:
         print("基準ロールが取得できませｎ")

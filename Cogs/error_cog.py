@@ -89,5 +89,5 @@ class OutputError(Cog):
 
 
 def setup(bot):
-    # return bot.add_cog(OutputError(bot))
-    pass
+    return bot.add_cog(OutputError(bot))
+    # pass
