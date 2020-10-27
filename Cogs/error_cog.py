@@ -46,6 +46,7 @@ class OutputError(Cog):
                         embed.add(
                             name="無効なコマンド",
                             value=f'コマンドに " {dubleq[1]} " はありませんでした。\r？help コマンドで確認することができます',
+                            greeting=ctx.author.mention,
                         )
                     else:
                         embed.add(
