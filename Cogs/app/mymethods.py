@@ -12,6 +12,6 @@ def lastone(iterable):
             yield last, False
             last = val  # 値の更新
         # 最後の一つ
-        yield last, True
-    else:
-        yield None, True
+        if last:
+            yield last, True
+    yield None, True
