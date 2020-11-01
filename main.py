@@ -18,6 +18,7 @@ if __name__ == "__main__":
     config["nozoki_role_id"] = environ["NOZOKI_ROLE_ID"]
     config["ministar_role_id"] = environ["MINISTAR_ROLE_ID"]
     config["member_role_id"] = environ["MEMBER_ROLE_ID"]
+    config["server_info_scope_role_ids"] = [707125794404565002]
     TOKEN = environ["BOT_ACCESS_TOKEN"]  # 環境変数から取得
     bot.config = {"wkwm": config, "707027737335955476": config}
     for extension in extensions:
