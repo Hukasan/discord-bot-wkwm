@@ -39,14 +39,18 @@ class Utility(Cog):
                 ministar_role_id = self.bot.config[str(server.id)].get("ministar_role_id")
                 scope_role_ids = self.bot.config[str(server.id)].get("server_info_scope_role_ids")
                 if nozoki_role_id:
-                    scope_roles.update({(server.get_role(nozoki_role_id)): "👀"})
+                    if server.get_role(nozoki_role_id):
+                        scope_roles.update({(server.get_role(nozoki_role_id)): "👀"})
                 if member_role_id:
-                    scope_roles.update({(server.get_role(member_role_id)): "🐒"})
+                    if server.get_role(member_role_id):
+                        scope_roles.update({(server.get_role(member_role_id)): "🐒"})
                 if ministar_role_id:
-                    scope_roles.update({(server.get_role(ministar_role_id)): "🌟"})
+                    if server.get_role(ministar_role_id):
+                        scope_roles.update({(server.get_role(ministar_role_id)): "🌟"})
                 if scope_role_ids:
                     for scope_role_id in scope_role_ids:
-                        scope_roles.update({(server.get_role(scope_role_id)): "🧻"})
+                        if server.get_role(scope_role_id):
+                            scope_roles.update({(server.get_role(scope_role_id)): "🧻"})
 
             for temp in server.by_category():
                 if temp[0]:
