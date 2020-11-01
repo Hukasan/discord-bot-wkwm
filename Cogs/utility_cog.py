@@ -34,9 +34,9 @@ class Utility(Cog):
         for server in servers:
             channel_name_all = f"{self.channel_name_all}: {server._member_count} 人"
             if self.bot.config.get(str(server.id)):
-                nozoki_role_id = self.bot.config[str(server.id)].get("nozoki_role_id")
-                member_role_id = self.bot.config[str(server.id)].get("member_role_id")
-                ministar_role_id = self.bot.config[str(server.id)].get("ministar_role_id")
+                member_role_id = int(self.bot.config[str(server.id)].get("member_role_id"))
+                nozoki_role_id = int(self.bot.config[str(server.id)].get("nozoki_role_id"))
+                ministar_role_id = int(self.bot.config[str(server.id)].get("ministar_role_id"))
                 scope_role_ids = self.bot.config[str(server.id)].get("server_info_scope_role_ids")
                 if nozoki_role_id:
                     if server.get_role(nozoki_role_id):
@@ -49,8 +49,8 @@ class Utility(Cog):
                         scope_roles.update({(server.get_role(ministar_role_id)): "🌟"})
                 if scope_role_ids:
                     for scope_role_id in scope_role_ids:
-                        if server.get_role(scope_role_id):
-                            scope_roles.update({(server.get_role(scope_role_id)): "🧻"})
+                        if server.get_role(int(scope_role_id)):
+                            scope_roles.update({(server.get_role(int(scope_role_id))): "🧻"})
 
             for temp in server.by_category():
                 if temp[0]:
