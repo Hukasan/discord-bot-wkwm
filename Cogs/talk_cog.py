@@ -34,7 +34,7 @@ class Talk(commands.Cog):
         if message.author.bot:
             return
         await dispand(message)  # もしもdiscord内のメッセージリンクだったばあいそれをプレビュ
-        await self.teamio.scan_message(message, self.room_id)
+        # await self.teamio.scan_message(message, self.room_id)
         content = message.content
         ex_content = str()
         for query in self.db_cat.tbselect():
