@@ -17,17 +17,6 @@ class Talk(commands.Cog):
         self.teamio = tm.TeamIO(bot)
         self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
-    # インスタンスにアクセスしない
-    def check_role_is_upper_member():
-        """
-        権限ロール以上のロールをユーザが持っているかを判定
-        """
-
-        async def predicate(ctx: Context):
-            return await ac.isroleupper(role_id=ctx.bot.config["wkwm"]["ministar_role_id"], user=ctx.author)
-
-        return commands.check(predicate)
-
     @commands.Cog.listener()
     async def on_message(self, message: Message):
         # print(f'ms->[{message.content}]')
@@ -50,7 +39,7 @@ class Talk(commands.Cog):
         # collect()
 
     @commands.group(aliases=["コマンド", "こまんど", "command"], description="コマンド管理")
-    @check_role_is_upper_member()
+    @ac.check_role_is_upper_member()
     async def cmd(self, ctx):
         """
         ・親コマンドです、サブコマンドを指定してください。

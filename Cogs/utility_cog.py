@@ -2,7 +2,7 @@ from discord import Guild, CategoryChannel, VoiceChannel
 from discord.ext.tasks import loop
 from discord.ext.commands import Cog, Bot, command, Context, group
 from dispander import dispand, compose_embed
-from Cogs.app import table, make_embed as me, mymethods as mm
+from Cogs.app import table, make_embed as me, mymethods as mm, role_checker as ac
 import re
 
 
@@ -21,6 +21,7 @@ class Utility(Cog):
         await self.loop_info_update.start()
 
     @group()
+    @ac.check_role_is_upper_member()
     async def info(self, ctx):
         """
         ・親コマンドです、サブコマンドを指定してください。
