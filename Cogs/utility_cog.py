@@ -1,6 +1,6 @@
 from discord import Guild, CategoryChannel, VoiceChannel
 from discord.ext.tasks import loop
-from discord.ext.commands import Cog, Bot, command, Context
+from discord.ext.commands import Cog, Bot, command, Context, group
 from dispander import dispand, compose_embed
 from Cogs.app import table, make_embed as me, mymethods as mm
 import re
@@ -18,11 +18,35 @@ class Utility(Cog):
 
     @Cog.listener()
     async def on_ready(self):
-        await self.update_server_info.start()
+        await self.loop_info_update.start()
 
-    @loop(seconds=30.0)
+    @group()
+    async def info(self, ctx):
+        """
+        ・親コマンドです、サブコマンドを指定してください。
+        ・指定ロール以上のみ使えます。※設定は、
+        **?help setting**　で確認ください
+        """
+        if ctx.invoked_subcommand is None:
+            raise Exception("trigger is a required argument that is missing.")
+
+    @info.command()
+    async def add_role(self, ctx: Context, id):
+        if ctx.guild.get_role(int(id)):
+            roles = list()
+            roles = self.bot.config[str(ctx.guild.id)]["server_info_scope_role_ids"]
+            if roles:
+                self.bot.config[str(ctx.guild.id)]["server_info_scope_role_ids"] = roles.append(int(id))
+            else:
+                self.bot.config[str(ctx.guild.id)]["server_info_scope_role_ids"] = [int(id)]
+            await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
+        await self.update_server_info()
+
+    @loop(minutes=60.0)
+    async def loop_info_update(self):
+        await self.update_server_info()
+
     async def update_server_info(self):
-        # print("loop")
         server = Guild
         # category = CategoryChannel
         # channel = VoiceChannel
@@ -84,6 +108,7 @@ class Utility(Cog):
                             await server.create_voice_channel(category=category, name=channel_name_role, reason=reason)
             else:
                 await server.create_category(name=category_name, reason=reason, position=1)
+        pass
 
     @command(aliases=["ピン留め", "ピン", "ぴんどめ"], description="ぴんどめ表示")
     async def pins(self, ctx: Context):
