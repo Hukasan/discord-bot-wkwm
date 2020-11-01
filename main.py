@@ -19,7 +19,7 @@ if __name__ == "__main__":
     config["ministar_role_id"] = environ["MINISTAR_ROLE_ID"]
     config["member_role_id"] = environ["MEMBER_ROLE_ID"]
     TOKEN = environ["BOT_ACCESS_TOKEN"]  # 環境変数から取得
-    bot.config = {"wkwm": config}
+    bot.config = {"wkwm": config, "707027737335955476": config}
     for extension in extensions:
         bot.load_extension(f"Cogs.{extension}")
     bot.run(TOKEN)
