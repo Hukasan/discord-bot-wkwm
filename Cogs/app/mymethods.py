@@ -5,13 +5,17 @@ def lastone(iterable):
     # イテレータを取得して最初の値を取得する
     if iterable:
         it = iter(iterable)
-        last = next(it)
-        # 2番目の値から開始して反復子を使い果たすまで実行
-        for val in it:
-            # 一つ前の値を返す
-            yield last, False
-            last = val  # 値の更新
-        # 最後の一つ
-        if last:
+        try:
+            last = next(it)
+            # 2番目の値から開始して反復子を使い果たすまで実行
+            for val in it:
+                # 一つ前の値を返す
+                yield last, False
+                last = val  # 値の更新
+            # 最後の一つ
             yield last, True
-    yield None, True
+        except StopIteration:
+            yield None, True
+
+    else:
+        yield None, True
