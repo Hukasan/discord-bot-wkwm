@@ -58,10 +58,11 @@ class Utility(Cog):
                 for channel, islast in mm.lastone(category.voice_channels):
                     if flag_all:
                         pass
-                    elif self.repatter_all.match(string=channel.name):
-                        await channel.edit(name=channel_name_all)
-                        flag_all = True
-                    elif islast:
+                    elif bool(channel):
+                        if self.repatter_all.match(string=channel.name):
+                            await channel.edit(name=channel_name_all)
+                            flag_all = True
+                    if (not (bool(flag_all))) & islast:
                         await server.create_voice_channel(category=category, name=channel_name_all, reason=reason)
                     for scope_role in scope_roles.keys():
                         channel_name_role = (
@@ -70,10 +71,11 @@ class Utility(Cog):
                         repatter_role = re.compile(pattern=f"{scope_roles.get(scope_role)}{scope_role.name}:.*")
                         if flag_roles.get(scope_role.id):
                             pass
-                        elif repatter_role.match(string=channel.name):
-                            await channel.edit(name=channel_name_role)
-                            flag_roles.update({scope_role.id: True})
-                        elif islast:
+                        elif bool(channel):
+                            if repatter_role.match(string=channel.name):
+                                await channel.edit(name=channel_name_role)
+                                flag_roles.update({scope_role.id: True})
+                        if islast & (not (bool(flag_roles.get(scope_role.id)))):
                             await server.create_voice_channel(category=category, name=channel_name_role, reason=reason)
             else:
                 await server.create_category(name=category_name, reason=reason, position=1)

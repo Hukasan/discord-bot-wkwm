@@ -21,14 +21,16 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
     """
     guild = Guild
     guild = user.guild
-    print(user.id)
     member = guild.get_member(user_id=int(user.id))
-    print(member)
     comp_role = guild.get_role(int(role_id))
     guild_role_list = list()
     guild_role_list = await guild.fetch_roles()
     comp_index = guild_role_list.index(comp_role)
-    if (comp_index <= guild_role_list.index(member.top_role)) & (bool(ignore_same)):
+    print(comp_index, guild_role_list.index(member.top_role))
+    print(comp_role, member.top_role)
+    if comp_index > guild_role_list.index(member.top_role):
         return True
-    elif (comp_index < guild_role_list.index(member.top_role)) & (not (bool(ignore_same))):
+    elif (comp_index == guild_role_list.index(member.top_role)) & (bool(ignore_same)):
         return True
+    else:
+        return False
