@@ -20,9 +20,9 @@ class Utility(Cog):
     async def on_ready(self):
         await self.update_server_info.start()
 
-    @loop(seconds=20.0)
+    @loop(seconds=30.0)
     async def update_server_info(self):
-        print("loop")
+        # print("loop")
         server = Guild
         # category = CategoryChannel
         # channel = VoiceChannel
@@ -49,9 +49,10 @@ class Utility(Cog):
                         scope_roles.update({(server.get_role(scope_role_id)): "🧻"})
 
             for temp in server.by_category():
-                if temp[0].name == category_name:
-                    category = temp[0]
-                    break
+                if temp[0]:
+                    if temp[0].name == category_name:
+                        category = temp[0]
+                        break
             if category:
                 flag_all = False
                 flag_roles = dict()
