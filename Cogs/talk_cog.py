@@ -2,7 +2,7 @@ from discord import Guild, Message
 from discord.ext.commands import Context
 from discord.ext import commands
 from dispander import dispand, compose_embed
-from Cogs.app import table, make_embed as me, extentions, role_checker as ac
+from Cogs.app import table, make_embed as me, extentions, role_checker as ac, team_manage as tm
 from gc import collect
 from emoji import UNICODE_EMOJI
 
@@ -14,7 +14,7 @@ class Talk(commands.Cog):
         self.bot = bot
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
-        # self.team = Team(bot)
+        self.teamio = tm.TeamIO(bot)
         self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
     # インスタンスにアクセスしない
@@ -34,7 +34,7 @@ class Talk(commands.Cog):
         if message.author.bot:
             return
         await dispand(message)  # もしもdiscord内のメッセージリンクだったばあいそれをプレビュ
-        # await self.team.scan_message(message, self.room_id)
+        await self.teamio.scan_message(message, self.room_id)
         content = message.content
         ex_content = str()
         for query in self.db_cat.tbselect():

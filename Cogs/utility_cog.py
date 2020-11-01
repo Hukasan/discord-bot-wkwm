@@ -1,7 +1,9 @@
-from discord import Guild
+from discord import Guild, CategoryChannel, VoiceChannel
+from discord.ext.tasks import loop
 from discord.ext.commands import Cog, Bot, command, Context
 from dispander import dispand, compose_embed
-from Cogs.app import table, make_embed as me
+from Cogs.app import table, make_embed as me, mymethods as mm
+import re
 
 
 class Utility(Cog):
@@ -11,6 +13,70 @@ class Utility(Cog):
 
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.channel_name_all = "全体人数"
+        self.repatter_all = re.compile(pattern=f"{self.channel_name_all}:.*")
+
+    @Cog.listener()
+    async def on_ready(self):
+        await self.update_server_info.start()
+
+    @loop(seconds=20.0)
+    async def update_server_info(self):
+        print("loop")
+        server = Guild
+        # category = CategoryChannel
+        # channel = VoiceChannel
+        category = None
+        scope_roles = dict()
+        category_name = "SERVER_INFO"
+        reason = "server_info_setup"
+        servers = self.bot.guilds
+        for server in servers:
+            channel_name_all = f"{self.channel_name_all}: {server._member_count} 人"
+            if self.bot.config.get(str(server.id)):
+                nozoki_role_id = self.bot.config[str(server.id)].get("nozoki_role_id")
+                member_role_id = self.bot.config[str(server.id)].get("member_role_id")
+                ministar_role_id = self.bot.config[str(server.id)].get("ministar_role_id")
+                scope_role_ids = self.bot.config[str(server.id)].get("server_info_scope_role_ids")
+                if nozoki_role_id:
+                    scope_roles.update({(server.get_role(nozoki_role_id)): "👀"})
+                if member_role_id:
+                    scope_roles.update({(server.get_role(member_role_id)): "🐒"})
+                if ministar_role_id:
+                    scope_roles.update({(server.get_role(ministar_role_id)): "🌟"})
+                if scope_role_ids:
+                    for scope_role_id in scope_role_ids:
+                        scope_roles.update({(server.get_role(scope_role_id)): "🧻"})
+
+            for temp in server.by_category():
+                if temp[0].name == category_name:
+                    category = temp[0]
+                    break
+            if category:
+                flag_all = False
+                flag_roles = dict()
+                for channel, islast in mm.lastone(category.voice_channels):
+                    if flag_all:
+                        pass
+                    elif self.repatter_all.match(string=channel.name):
+                        await channel.edit(name=channel_name_all)
+                        flag_all = True
+                    elif islast:
+                        await server.create_voice_channel(category=category, name=channel_name_all, reason=reason)
+                    for scope_role in scope_roles.keys():
+                        channel_name_role = (
+                            f"{scope_roles.get(scope_role)}{scope_role.name}: {len(scope_role.members)} 人"
+                        )
+                        repatter_role = re.compile(pattern=f"{scope_roles.get(scope_role)}{scope_role.name}:.*")
+                        if flag_roles.get(scope_role.id):
+                            pass
+                        elif repatter_role.match(string=channel.name):
+                            await channel.edit(name=channel_name_role)
+                            flag_roles.update({scope_role.id: True})
+                        elif islast:
+                            await server.create_voice_channel(category=category, name=channel_name_role, reason=reason)
+            else:
+                await server.create_category(name=category_name, reason=reason, position=1)
 
     @command(aliases=["ピン留め", "ピン", "ぴんどめ"], description="ぴんどめ表示")
     async def pins(self, ctx: Context):
