@@ -19,3 +19,8 @@ def lastone(iterable):
 
     else:
         yield None, True
+
+
+def dainyu(x, y=None):
+    ans = x if x else y
+    return ans

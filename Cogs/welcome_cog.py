@@ -6,30 +6,29 @@ from Cogs.app import table, make_embed as me, extentions
 class Welcome(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.welcome_room_id = int(self.bot.config["wkwm"]["welcome_room_id"])
-        self.header = ""
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
         if member.bot:
             return
-        welcome_room = self.bot.get_channel(self.welcome_room_id)
-
-        desc = "はじめまして、わけわかめBotです"
+        welcome_room = self.bot.get_channel(
+            int(self.bot.config[str(member.guild.id)]["channel_ids"]["welcome"])
+        )
         if welcome_room:
             opt = me.MyEmbed().setTarget(target=welcome_room, bot=self.bot)
             await opt.default_embed(
-                header=desc,
+                header="はじめまして、わけわかめBotです",
                 header_icon=True,
-                description="ようこそ猿sのばなな農園へ🍌🐵\r🙇公開チャンネルに入る前にお読みださい",
+                description="ようこそ猿sのばなな農園へ!🍌🐵\r🙇公開チャンネルに入る前に、おやくそくです",
                 footer="ウェルカムメッセージ",
             )
             opt.add(
                 name="> おやくそく",
-                value="・ 宣伝は許可を取ってください\r・ 会話の転載はやめてください\r・ 誹謗中傷はやめてください\rお約束が守れない場合、勝手に追放します",
+                value="・ 無許可宣伝(url転載含む)\r・ 他人を傷付ける言葉\rはやめれください\r気持ち良いサーバづくりにご協力ください\r\r了解されたら、↓🍌を押してください",
             )
-            opt.add(name="> 🗑押してください", value="読み理解したらこのチャットの🗑を押してください")
-            await opt.sendEmbed(greeting=(member.mention + self.header), footer_arg="w-1")
+            await opt.sendEmbed(
+                greeting=(member.mention), footer_arg="w-1", dust=False, bottums="🍌"
+            )
         else:
             raise extentions.GetDatafromDiscordError(
                 f"Welcomeチャンネルオブジェクトの取得に失敗しました。\r登録しているIDを確認してください({self.welcome_room_id})"

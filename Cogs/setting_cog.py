@@ -1,14 +1,7 @@
-import discord
-from discord.ext.commands import (
-    Cog,
-    Bot,
-    Context,
-    command,
-    is_owner,
-    Group,
-    Command,
-)
-from Cogs.app import table, make_embed as me
+from discord.ext.tasks import loop
+from discord import Guild
+from discord.ext.commands import Cog, Bot, Context, command, is_owner, Group, Command, group
+from Cogs.app import table, make_embed as me, role_checker as ac, mymethods as mm
 
 
 class Setting(Cog):
@@ -20,7 +13,7 @@ class Setting(Cog):
     async def load(self, ctx: Context):
         for extension in list(self.bot.extensions):
             self.bot.reload_extension(f"{extension}")
-            print(f"{extension}_is_reloted")
+            print(f"{extension}:is_reloted")
         print("再読み込み完了")
         await ctx.message.add_reaction("☑")
 

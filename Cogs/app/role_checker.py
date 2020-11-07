@@ -26,8 +26,8 @@ async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
     guild_role_list = list()
     guild_role_list = await guild.fetch_roles()
     comp_index = guild_role_list.index(comp_role)
-    print(comp_index, guild_role_list.index(member.top_role))
-    print(comp_role, member.top_role)
+    # print(comp_index, guild_role_list.index(member.top_role))
+    # print(comp_role, member.top_role)
     if comp_index < guild_role_list.index(member.top_role):
         return True
     elif (comp_index == guild_role_list.index(member.top_role)) & (bool(ignore_same)):
@@ -42,6 +42,9 @@ def check_role_is_upper_member():
     """
 
     async def predicate(ctx: Context):
-        return await isroleupper(role_id=ctx.bot.config["wkwm"]["ministar_role_id"], user=ctx.author)
+        return await isroleupper(
+            role_id=ctx.bot.config[str(ctx.guild.id)]["role_ids"]["ministar"],
+            user=ctx.author,
+        )
 
     return check(predicate)

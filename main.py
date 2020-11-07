@@ -9,7 +9,9 @@ extensions = [path.splitext(f)[0] for f in files if path.isfile(path.join(p, f))
 intents = Intents.all()
 if __name__ == "__main__":
     bot = Bot(
-        command_prefix=["$", "＄", "?", "？"], description="Saru's Wakewakaran Bot Project\rえすだぶりゅびてぃ", intents=intents
+        command_prefix=["$", "＄", "?", "？"],
+        description="Saru's Wakewakaran Bot Project\r会話をお盛んにしたいBot",
+        intents=intents,
     )
     config = {}
     config["room_id"] = environ["BOT_ROOM_ID"]

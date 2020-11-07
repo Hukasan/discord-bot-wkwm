@@ -48,6 +48,16 @@ class DBIO:
         session.close()
 
 
+class Roletb(DBIO):
+    def __init__(self):
+        self.table = self.Role
+
+    class Role(Model):
+        __tablename__ = "roles"
+        id = Column(Integer(), nullable=False, primary_key=True)
+        seed = Column(String(), nullable=True)
+
+
 class Cmdtb(DBIO):
     def __init__(self):
         self.table = self.Cmd

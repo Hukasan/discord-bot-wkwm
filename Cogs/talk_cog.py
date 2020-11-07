@@ -2,7 +2,13 @@ from discord import Guild, Message
 from discord.ext.commands import Context
 from discord.ext import commands
 from dispander import dispand, compose_embed
-from Cogs.app import table, make_embed as me, extentions, role_checker as ac, team_manage as tm
+from Cogs.app import (
+    table,
+    make_embed as me,
+    extentions,
+    role_checker as ac,
+    team_manage as tm,
+)
 from gc import collect
 from emoji import UNICODE_EMOJI
 
@@ -10,12 +16,13 @@ from emoji import UNICODE_EMOJI
 class Talk(commands.Cog):
     """会話系のコマンド群"""
 
+    qualified_name = "トーク設定"
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.db_cmd = table.Cmdtb()
         self.db_cat = table.Cattb()
         self.teamio = tm.TeamIO(bot)
-        self.room_id = int(self.bot.config["wkwm"]["room_id"])
 
     @commands.Cog.listener()
     async def on_message(self, message: Message):
@@ -38,9 +45,9 @@ class Talk(commands.Cog):
             return
         # collect()
 
-    @commands.group(aliases=["コマンド", "こまんど", "command"], description="コマンド管理")
+    @commands.group(aliases=["フレーズ", "ふれーず", "ふれ", "ph"], description="フレーズ管理")
     @ac.check_role_is_upper_member()
-    async def cmd(self, ctx):
+    async def phrase(self, ctx):
         """
         ・親コマンドです、サブコマンドを指定してください。
         ・指定ロール以上のみ使えます。※設定は、
@@ -49,13 +56,13 @@ class Talk(commands.Cog):
         if ctx.invoked_subcommand is None:
             raise Exception("trigger is a required argument that is missing.")
 
-    @cmd.command(aliases=["a", "add", "ついか", "追加"], description="追加")
-    async def cmd_add(self, ctx, key, reaction):
+    @phrase.command(aliases=["a", "add", "ついか", "追加"], description="追加")
+    async def phrase_add(self, ctx, key, reaction):
         self.db_cmd.add(id=key, body=reaction)
         await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
 
-    @cmd.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
-    async def cmd_delete(self, ctx, key):
+    @phrase.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
+    async def phrase_delete(self, ctx, key):
         self.db_cmd.tbdelete(id=str(key))
         await ctx.send(f"さくせす {key} の削除に成功しましたぁ")
 
@@ -91,7 +98,9 @@ class Talk(commands.Cog):
             await ctx.message.add_reaction("💮")
             await ctx.send("追加いず、さくせすъ(ﾟДﾟ)")
         else:
-            raise extentions.InputError("このコマンドは、絵文字リアクション追加です\rリアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩")
+            raise extentions.InputError(
+                "このコマンドは、絵文字リアクション追加です\rリアクションに、絵文字を指定してください\r(例)?cat add_react うんち 💩"
+            )
 
     @cat.command(aliases=["delete", "d", "削除", "さくじょ"], description=("削除"))
     async def cat_delete(self, ctx, key):
@@ -104,7 +113,9 @@ class Talk(commands.Cog):
         await ctx.message.add_reaction("😢")
         await ctx.send(f"ぴえん。 {key} の削除に失敗しました。\r入力を確認してください\r> [?view r]\rで一覧が表示できます")
 
-    @commands.group(aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示")
+    @commands.group(
+        aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示"
+    )
     async def view(self, ctx: Context):
         if ctx.invoked_subcommand is None:
             embed = me.MyEmbed(ctx)
