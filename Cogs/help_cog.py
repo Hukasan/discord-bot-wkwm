@@ -19,12 +19,24 @@ class Help(HelpCommand):
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
         self.command_attrs["aliases"] = ["ヘルプ", "へるぷ", "h", "ｈ", "コマンド", "こまんど", "cmd"]
         self.dfembed = me.MyEmbed().default_embed(
-            mention=True,
+            mention_author=True,
             header_icon=True,
             footer="操作ガイド",
             footer_arg="h-p",
             time=False,
         )
+        self.counts = [
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+            "🔟",
+        ]
 
     async def create_category_tree(self, cmd, index=int(0)) -> str:
         """
@@ -59,35 +71,49 @@ class Help(HelpCommand):
             return content
 
     async def send_bot_help(self, mapping):
-        opt = me.MyEmbed
+        content = str()
+        count = 1
+        for cog in mapping:
+            cog_name = cog.qualified_name if cog else self.no_category_name
+            if (cog_name == "Help") | (cog_name == "hide"):
+                continue
+            # command_list = await self.filter_commands(mapping[cog], sort=True)
+            # content = str()
+            # if command_list:
+            #     command_list = set(command_list)
+            #     for cmd in command_list:
+            #         content += (
+            #             f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
+            #         )
+            # for temp in cog.walk_commands():
+            #     opt.add(
+            #         name=f":{str(counts.pop(-1))}:{cog_name}",
+            #         value=cog.description,
+            #         inline=False,
+            #     )
+            #     break
+            # content += f"> :{str(counts.pop(-1))}:**{cog_name}**\r"
+            content += f"**{str(count)}.{cog_name}**\r"
+            count += 1
+        # opt = me.MyEmbed
         opt = self.dfembed.clone(self.context)
         opt.change(
-            header="このボットについて",
+            header="ℹ機能説明",
+            thumbnail=True,
             desc=(
                 f"{self.context.bot.description}\n"
                 f"**{self.context.prefix}help**\n--{self.command_attrs['description']}\n"
             ),
+            bottums_sub=self.counts[: (count - 1)],
         )
-        for cog in mapping:
-            cog_name = cog.qualified_name if cog else self.no_category_name
-            if cog_name == "Help":
-                continue
-            command_list = await self.filter_commands(mapping[cog], sort=True)
-            content = str()
-            if command_list:
-                command_list = set(command_list)
-                for cmd in command_list:
-                    content += (
-                        f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
-                    )
-                opt.add(name=f"> {cog_name}", value=content, inline=False)
+        opt.description = opt.description + content
         await opt.sendEmbed()
 
     async def send_cog_help(self, cog: Cog):
         embed = me.MyEmbed(self.context)
         temp = str()
         embed.default_embed(
-            title=f"説明@{cog.qualified_name}",
+            title=f"{cog.qualified_name}",
             description=f"{cog.description}",
             time=False,
         )

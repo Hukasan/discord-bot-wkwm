@@ -15,7 +15,11 @@ import re
 
 
 class DispInfo_Settings(Cog):
-    qualified_name = "表示設定"
+    """
+    ServerInfoカテゴリに表示
+    """
+
+    qualified_name = "サーバ情報表示"
 
     def __init__(self, bot: Bot):
         self.bot = bot

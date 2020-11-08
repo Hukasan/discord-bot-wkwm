@@ -4,6 +4,8 @@ from Cogs.app import table, make_embed as me, extentions
 
 
 class Welcome(Cog):
+    qualified_name = "ウェルカムメッセージ"
+
     def __init__(self, bot):
         self.bot = bot
 

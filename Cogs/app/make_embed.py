@@ -4,6 +4,7 @@ from os import linesep
 from datetime import datetime
 from Cogs.app.mymethods import dainyu
 from copy import copy
+from emoji import UNICODE_EMOJI
 
 """
     embed作成、送信
@@ -21,7 +22,8 @@ class MyEmbed:
         self.bot = ctx.bot if ctx else None
         self.target = ctx.channel if ctx else None
         self.obj = None
-        self.mention = False
+        self.mention = str()
+        self.mention_author = bool()
         self.title = str()  # タイトル
         self.color = None  # 色
         self.thumbnail = False  # 大きめのアイコン画像を表示させるかどうか
@@ -34,13 +36,13 @@ class MyEmbed:
         self.description = str()
         self.descriptions = list()
         self.line_number = int(0)
-        self.bot_info = None
         self.greeting = str()
         self.files = list()
         self.time = False
-        self.dust = False
+        self.dust = True
         self.footer_arg = str()
         self.bottums = list()
+        self.bottums_sub = list()
 
     def setTarget(self, target, bot=None):
         self.target = target
@@ -54,11 +56,28 @@ class MyEmbed:
         desc=str(),
         arg=str(),
         bottums=list(),
+        bottums_sub=list(),
         greeting=str(),
         header=str(),
         header_icon_url=str(),
+        thumbnail=bool(),
         footer=str(),
     ):
+        """
+        設定書き換え
+
+        Args:
+            title ([type], optional): [description]. Defaults to str().
+            desc ([type], optional): [description]. Defaults to str().
+            arg ([type], optional): [description]. Defaults to str().
+            bottums ([type], optional): [description]. Defaults to list().
+            greeting ([type], optional): [description]. Defaults to str().
+            header ([type], optional): [description]. Defaults to str().
+            header_icon_url ([type], optional): [description]. Defaults to str().
+            thumbnail ([type], optional): [description]. Defaults to bool().
+            footer ([type], optional): [description]. Defaults to str().
+        """
+        self.thumbnail = dainyu(thumbnail, self.thumbnail)
         self.header = dainyu(header, self.header)
         self.header_icon_url = dainyu(header_icon_url, self.header_icon_url)
         self.footer = dainyu(footer, self.footer)
@@ -67,8 +86,8 @@ class MyEmbed:
         self.description = desc
         if arg:
             self.footer_arg += arg
-        if bottums:
-            self.bottums.extend(bottums)
+        self.bottums = dainyu(bottums, self.bottums)
+        self.bottums_sub = dainyu(bottums_sub, self.bottums_sub)
 
     def setCtx(self, ctx):
         self.ctx = dainyu(ctx, self.ctx)
@@ -125,7 +144,8 @@ class MyEmbed:
     def default_embed(
         self,
         bot=None,
-        mention=False,
+        mention=str(),
+        mention_author=bool(),
         title=None,
         color=0x00FF00,
         description=None,
@@ -137,6 +157,7 @@ class MyEmbed:
         time=True,
         greeting=str(),
         footer_arg=str(),
+        dust=True,
     ) -> classmethod:
         """
         embed初期化※必ず必要
@@ -158,6 +179,7 @@ class MyEmbed:
             [type]: [description]
         """
         self.mention = mention
+        self.mention_author = mention_author
         self.title = title
         self.color = color
         self.time = time
@@ -188,11 +210,14 @@ class MyEmbed:
     async def sendEmbed(
         self,
         obj=None,
+        mention_author=bool(),
+        mention=str(),
         greeting=str(),
         footer_arg=str(),
         bottums=list(),
+        bottums_sub=list(),
         files=list(),
-        dust=True,
+        dust=bool(),
     ) -> Message:
         """
         embed送信
@@ -208,14 +233,18 @@ class MyEmbed:
         Returns:
             Message: 送信したメッセージ
         """
+        self.mention = dainyu(mention, self.mention)
+        self.mention_author = dainyu(mention_author, self.mention_author)
         self.greeting = dainyu(greeting, self.greeting)
-        if bool(self.mention) & bool(self.ctx):
+        if self.mention:
+            self.greeting = self.mention + self.greeting
+        elif bool(self.mention_author) & bool(self.ctx):
             self.greeting = self.ctx.author.mention + self.greeting
         self.dust = dainyu(dust, self.dust)
         if bool(self.footer_arg) or bool(footer_arg):
             self.footer_arg = f"@{self.footer_arg}{footer_arg}"
-        if bottums:
-            self.bottums.extend(bottums)
+        self.bottums = dainyu(bottums, self.bottums)
+        self.bottums_sub = dainyu(bottums_sub, self.bottums_sub)
         config = dict()
         config["title"] = dainyu(self.title)
         config["description"] = dainyu(self.description)
@@ -231,8 +260,8 @@ class MyEmbed:
 
         bot_info = await self.bot.application_info()
 
-        if bool(self.bot) & self.thumbnail & bool(bot_info):
-            config["thumbnail"] = {"url": str(self.bot_info.icon_url)}
+        if ((bool(self.bot)) & self.thumbnail) & (bool(bot_info)):
+            config["thumbnail"] = {"url": str(bot_info.icon_url)}
 
         if self.header:
             config["author"] = {"name": self.header}
@@ -255,8 +284,14 @@ class MyEmbed:
                 await ms.add_reaction("🗑")
             if self.bottums:
                 for b in self.bottums:
-                    if isinstance(b, str):
+                    if b in UNICODE_EMOJI:
                         await ms.add_reaction(b)
+            if self.bottums_sub:
+                await ms.add_reaction("🔽")
+                self.bot.config[str(ms.guild.id)]["bottoms_sub"][
+                    ms.id
+                ] = self.bottums_sub
+                self.bot.config[str(ms.guild.id)]["bottoms"][ms.id] = self.bottums
         return ms
 
 

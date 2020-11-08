@@ -22,6 +22,8 @@ class ReactionEvent(Cog):
     ear:embed_reaction_actionえ？それじゃeraじゃんて。そんなこたぁきにすんなって
     """
 
+    qualified_name = "hide"
+
     def __init__(self, bot: Bot):
         self.bot = bot
         self.funcs = {
@@ -35,11 +37,37 @@ class ReactionEvent(Cog):
         self, usr_id: int, ms: Message, react: Emoji, arg: list
     ) -> bool:
         usr = self.bot.get_user(usr_id)
+        func = None
         if (str(react) == "🗑") & (usr in ms.mentions):
             await ms.delete()
             return
-        func = None
-        if arg:
+        elif str(react) == "🔽":
+            buttoms_sub = self.bot.config[str(ms.guild.id)]["bottoms_sub"].get(ms.id)
+            if buttoms_sub:
+                await ms.clear_reactions()
+                for b in buttoms_sub:
+                    await ms.add_reaction(b)
+                await ms.add_reaction("🔼")
+            else:
+                await me.MyEmbed().setTarget(ms.channel, bot=self.bot).default_embed(
+                    mention=ms.content,
+                    header="🙇ごめんなさいませｎ(殴",
+                    title="ボタンの読み込みにしっぺいしました",
+                    description="おそらくボットに再起動がかかって初期化されたと思います",
+                    dust=True,
+                ).sendEmbed()
+                await ms.clear_reaction("🔽")
+            return
+        elif str(react) == "🔼":
+            await ms.clear_reactions()
+            await ms.add_reaction("🗑")
+            await ms.add_reaction("🔽")
+            buttoms = self.bot.config[str(ms.guild.id)]["bottoms"].get(ms.id)
+            if buttoms:
+                for b in buttoms:
+                    await ms.add_reaction(b)
+            return
+        elif arg:
             func = self.funcs.get(arg[0])
         if func:
             ctx = await self.bot.get_context(ms)
@@ -96,7 +124,7 @@ class ReactionEvent(Cog):
     async def ear_hp(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
         usr = self.bot.get_user(usr_id)
         if usr in ctx.message.mentions:
-            if str(react) == ":seven:":
+            if str(react) == "6️⃣":
                 await ctx.send("hi")
 
     @Cog.listener()

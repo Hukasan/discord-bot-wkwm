@@ -1,10 +1,25 @@
 from discord.ext.tasks import loop
 from discord import Guild
-from discord.ext.commands import Cog, Bot, Context, command, is_owner, Group, Command, group
+from discord.ext.commands import (
+    Cog,
+    Bot,
+    Context,
+    command,
+    is_owner,
+    Group,
+    Command,
+    group,
+)
 from Cogs.app import table, make_embed as me, role_checker as ac, mymethods as mm
 
 
 class Setting(Cog):
+    """
+    開発者コマンド
+    """
+
+    qualified_name = "開発者設定"
+
     def __init__(self, bot: Bot):
         self.bot = bot
 

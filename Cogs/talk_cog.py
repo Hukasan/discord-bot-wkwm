@@ -16,7 +16,7 @@ from emoji import UNICODE_EMOJI
 class Talk(commands.Cog):
     """会話系のコマンド群"""
 
-    qualified_name = "トーク設定"
+    qualified_name = "おはなし"
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -119,9 +119,9 @@ class Talk(commands.Cog):
     async def view(self, ctx: Context):
         if ctx.invoked_subcommand is None:
             embed = me.MyEmbed(ctx)
-            await self.view_titles_toembed(embed, t=self.db_cat, title="リアクション")
-            await self.view_titles_toembed(embed, t=self.db_cmd, title="コマンド")
-            await embed.sendEmbed(greeting=ctx.author.mention)
+            self.view_titles_toembed(embed, t=self.db_cat, title="YokoYari")
+            self.view_titles_toembed(embed, t=self.db_cmd, title="Phrase")
+            await embed.sendEmbed(mention=ctx.author.mention)
 
     @view.command(
         aliases=["リアクション", "りあくしょん", "reaction", "react", "r", "cat"],
@@ -129,24 +129,29 @@ class Talk(commands.Cog):
     )
     async def view_cat(self, ctx):
         embed = me.MyEmbed(ctx)
-        await self.view_titles_toembed(embed, t=self.db_cat, title="リアクション")
+        await self.view_titles_toembed(embed, t=self.db_cat, title="Reaction")
         await embed.sendEmbed(greeting=ctx.author.mention)
 
     @view.command(aliases=["コマンド", "こまんど", "cmd", "command", "c"], description="コマンド一覧")
     async def view_cmd(self, ctx):
         """"""
-        embed = me.MyEmbed(ctx)
-        await self.view_titles_toembed(embed, t=self.db_cmd, title="コマンド")
+        embed = me.MyEmbed(ctx).default_embed(header="トリガープレビュー")
+        await self.view_titles_toembed(embed, t=self.db_cmd, title="phrase")
         await embed.sendEmbed(greeting=ctx.author.mention)
 
-    async def view_titles_toembed(self, embed: me.MyEmbed, t, title=str()):
+    def view_titles_toembed(self, embed: me.MyEmbed, t, title=str()):
         content = str()
         qlist = t.tbselect()
+        count = 0
         for q in qlist:
             content += f"・{q.id}\n"
-        if not (embed.title):
-            await embed.default_embed(title="トリガープレビュー")
-        embed.add(name=f"**{title}**", value=f"```{content}```", inline=True)  # noqa
+            count += 1
+            if count > 15:
+                embed.add(name=f"**{title}**", value=f"```{content}```", inline=True)
+                content = str()
+                count = 0
+        if content:
+            embed.add(name=f"**{title}**", value=f"```{content}```", inline=True)
 
 
 def setup(bot):
