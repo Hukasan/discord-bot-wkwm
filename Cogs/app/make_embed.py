@@ -25,7 +25,7 @@ class MyEmbed:
         self.mention = str()
         self.mention_author = bool()
         self.title = str()  # タイトル
-        self.color = None  # 色
+        self.color = 0x00FF00  # 色
         self.thumbnail = False  # 大きめのアイコン画像を表示させるかどうか
         self.footer = str()  # フッター文
         self.icon_url = str()  # フッター画像url
@@ -43,6 +43,7 @@ class MyEmbed:
         self.footer_arg = str()
         self.bottums = list()
         self.bottums_sub = list()
+        self.bottum_args = None
 
     def setTarget(self, target, bot=None):
         self.target = target
@@ -52,11 +53,13 @@ class MyEmbed:
 
     def change(
         self,
+        color=None,
         title=str(),
         desc=str(),
         arg=str(),
         bottums=list(),
         bottums_sub=list(),
+        bottum_args=None,
         greeting=str(),
         header=str(),
         header_icon_url=str(),
@@ -77,6 +80,7 @@ class MyEmbed:
             thumbnail ([type], optional): [description]. Defaults to bool().
             footer ([type], optional): [description]. Defaults to str().
         """
+        self.color = dainyu(color, self.color)
         self.thumbnail = dainyu(thumbnail, self.thumbnail)
         self.header = dainyu(header, self.header)
         self.header_icon_url = dainyu(header_icon_url, self.header_icon_url)
@@ -88,6 +92,7 @@ class MyEmbed:
             self.footer_arg += arg
         self.bottums = dainyu(bottums, self.bottums)
         self.bottums_sub = dainyu(bottums_sub, self.bottums_sub)
+        self.bottum_args = dainyu(bottum_args, self.bottum_args)
 
     def setCtx(self, ctx):
         self.ctx = dainyu(ctx, self.ctx)
@@ -147,7 +152,7 @@ class MyEmbed:
         mention=str(),
         mention_author=bool(),
         title=None,
-        color=0x00FF00,
+        color=None,
         description=None,
         thumbnail=False,
         header=str(),
@@ -158,6 +163,7 @@ class MyEmbed:
         greeting=str(),
         footer_arg=str(),
         dust=True,
+        bottum_args=None,
     ) -> classmethod:
         """
         embed初期化※必ず必要
@@ -181,7 +187,7 @@ class MyEmbed:
         self.mention = mention
         self.mention_author = mention_author
         self.title = title
-        self.color = color
+        self.color = dainyu(color, self.color)
         self.time = time
         self.footer = footer
         self.icon_url = footer_url if footer else str()
@@ -193,6 +199,7 @@ class MyEmbed:
         self.description = (
             (self.__export_complist(obj=description)).pop() if description else None
         )
+        self.bottum_args = bottum_args
         return self
 
     def add(
@@ -216,6 +223,7 @@ class MyEmbed:
         footer_arg=str(),
         bottums=list(),
         bottums_sub=list(),
+        bottum_args=None,
         files=list(),
         dust=bool(),
     ) -> Message:
@@ -245,7 +253,9 @@ class MyEmbed:
             self.footer_arg = f"@{self.footer_arg}{footer_arg}"
         self.bottums = dainyu(bottums, self.bottums)
         self.bottums_sub = dainyu(bottums_sub, self.bottums_sub)
+        self.bottum_args = dainyu(bottum_args, self.bottum_args)
         config = dict()
+        config["color"] = self.color
         config["title"] = dainyu(self.title)
         config["description"] = dainyu(self.description)
         config["files"] = dainyu(self.files)
@@ -292,6 +302,10 @@ class MyEmbed:
                     ms.id
                 ] = self.bottums_sub
                 self.bot.config[str(ms.guild.id)]["bottoms"][ms.id] = self.bottums
+            if self.bottum_args:
+                self.bot.config[str(ms.guild.id)]["bottom_args"][
+                    ms.id
+                ] = self.bottum_args
         return ms
 
 

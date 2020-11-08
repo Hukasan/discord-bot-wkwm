@@ -32,7 +32,7 @@ class Utilitys(Cog):
     async def serch(self, ctx: Context, name: str):
         g = ctx.guild
         opt = me.MyEmbed(ctx)
-        await opt.default_embed(title=f'SerchRole"{name}"')
+        opt.default_embed(title=f'SerchRole"{name}"', mention_author=True)
         i = 0
         context = str()
         for role in await g.fetch_roles():

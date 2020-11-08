@@ -14,9 +14,9 @@ from emoji import UNICODE_EMOJI
 
 
 class Talk(commands.Cog):
-    """会話系のコマンド群"""
+    """会話系のコマンド"""
 
-    qualified_name = "おはなし"
+    qualified_name = "会話に横槍"
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -132,7 +132,7 @@ class Talk(commands.Cog):
         await self.view_titles_toembed(embed, t=self.db_cat, title="Reaction")
         await embed.sendEmbed(greeting=ctx.author.mention)
 
-    @view.command(aliases=["コマンド", "こまんど", "cmd", "command", "c"], description="コマンド一覧")
+    @view.command(aliases=["コマンド", "こまんど", "cmd", "command", "c"], description="フレーズ一覧")
     async def view_cmd(self, ctx):
         """"""
         embed = me.MyEmbed(ctx).default_embed(header="トリガープレビュー")

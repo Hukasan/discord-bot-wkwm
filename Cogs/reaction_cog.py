@@ -16,7 +16,7 @@ from Cogs.app import table, extentions, make_embed as me
 # from Cogs.app.MakeEmbed import MakeEmbed
 
 
-class ReactionEvent(Cog):
+class ReactionEvent(Cog, name="ReactionEvent"):
     """
     リアクションに対しての処理
     ear:embed_reaction_actionえ？それじゃeraじゃんて。そんなこたぁきにすんなって
@@ -123,9 +123,27 @@ class ReactionEvent(Cog):
 
     async def ear_hp(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
         usr = self.bot.get_user(usr_id)
-        if usr in ctx.message.mentions:
-            if str(react) == "6️⃣":
-                await ctx.send("hi")
+        bottoms = self.bot.config[str(ctx.guild.id)]["bottoms_sub"].get(ctx.message.id)
+        args = self.bot.config[str(ctx.guild.id)]["bottom_args"].get(ctx.message.id)
+        target = str()
+        count = 0
+        if (usr in ctx.message.mentions) & bool(bottoms) & bool(args):
+            for c in bottoms:
+                if str(react) == c:
+                    target = args[count]
+                    self.bot.config[str(ctx.guild.id)]["help_author"].update(
+                        {ctx.channel.id: {target: ctx.author}}
+                    )
+                    await ctx.send_help(target)
+                    return
+                count += 1
+        await me.MyEmbed().setTarget(ctx.channel, bot=self.bot).default_embed(
+            mention=ctx.content,
+            header="🙇ごめんなさいませｎ(殴",
+            title="ボタンの読み込みにしっぺいしました",
+            description="おそらくボットに再起動がかかって初期化されたと思います",
+            dust=True,
+        ).sendEmbed()
 
     @Cog.listener()
     async def on_raw_reaction_add(self, rrae: RawReactionActionEvent):

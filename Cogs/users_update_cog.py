@@ -1,4 +1,4 @@
-from discord import Embed, Member, AuditLogAction, User, Message
+from discord import Embed, Member, AuditLogAction, User, Message, Role
 from discord.ext.commands import Cog, Bot
 from datetime import datetime
 from pytz import utc
@@ -42,7 +42,7 @@ class UserEvent(Cog):
             room = self.bot.get_channel(
                 int(self.bot.config[str(after.guild.id)]["channel_ids"]["room"])
             )
-            opt = me.MyEmbed().setTarget(room)
+            opt = me.MyEmbed().setTarget(target=room, bot=self.bot)
             conf = list((br - ar) if len(br) > len(ar) else (ar - br))
             async for entry in after.guild.audit_logs(
                 action=AuditLogAction.member_role_update, oldest_first=False
@@ -51,7 +51,7 @@ class UserEvent(Cog):
                     if isinstance(entry.target, Member) | isinstance(
                         entry.target, User
                     ):
-                        await opt.default_embed(
+                        opt.default_embed(
                             footer="ロール変更通知",
                             header=f"{entry.user.name}により",
                             header_icon=entry.user.avatar_url,
@@ -66,13 +66,15 @@ class UserEvent(Cog):
                         if conf[0] != nozoki:
                             if dif > 0:
                                 conf = list(br - ar)
-                                opt.change_description(
-                                    f"「**{conf[0].name}**」のロールから除かれました"
+                                opt.change(
+                                    desc=f"「**{conf[0].name}**」のロールから除かれました",
+                                    color=conf[0].color.value,
                                 )
                             elif dif < 0:
                                 conf = list(ar - br)
-                                opt.change_description(
-                                    f"「**{conf[0].name}**」のロールに加わりました"
+                                opt.change(
+                                    desc=f"「**{conf[0].name}**」のロールに加わりました",
+                                    color=conf[0].color.value,
                                 )
                             await opt.sendEmbed(greeting=f"{after.mention}くん、ロール変更通知です")
         self.lastchecktime = datetime.now(utc)

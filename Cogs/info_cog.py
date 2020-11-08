@@ -1,5 +1,5 @@
 from discord.ext.tasks import loop
-from discord import Guild
+from discord import Guild, utils
 from discord.ext.commands import (
     Cog,
     Bot,
@@ -36,6 +36,10 @@ class DispInfo_Settings(Cog):
         """
         if ctx.invoked_subcommand is None:
             raise Exception("trigger is a required argument that is missing.")
+
+    @info.command(aliases=["update", "u", "あっぷでーと"])
+    async def info_update(self, ctx):
+        await self.update()
 
     @info.command()
     async def addrole(self, ctx: Context, id):
@@ -99,16 +103,14 @@ class DispInfo_Settings(Cog):
                             scope_roles.update(
                                 {(server.get_role(int(scope_role_id))): "🧻"}
                             )
-
             for temp in server.by_category():
                 if temp[0]:
                     if temp[0].name == category_name:
                         category = temp[0]
                         break
-
+            flag_all = False
+            flag_roles = dict()
             if category:
-                flag_all = False
-                flag_roles = dict()
                 for channel, islast in mm.lastone(category.voice_channels):
                     if flag_all:
                         pass

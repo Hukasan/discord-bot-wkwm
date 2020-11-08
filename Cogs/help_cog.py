@@ -73,28 +73,15 @@ class Help(HelpCommand):
     async def send_bot_help(self, mapping):
         content = str()
         count = 1
+        cog_name_list = list()
+        cog = Cog
         for cog in mapping:
             cog_name = cog.qualified_name if cog else self.no_category_name
             if (cog_name == "Help") | (cog_name == "hide"):
                 continue
-            # command_list = await self.filter_commands(mapping[cog], sort=True)
-            # content = str()
-            # if command_list:
-            #     command_list = set(command_list)
-            #     for cmd in command_list:
-            #         content += (
-            #             f"**{self.context.prefix}{cmd.name}**\n--{cmd.description}\n"
-            #         )
-            # for temp in cog.walk_commands():
-            #     opt.add(
-            #         name=f":{str(counts.pop(-1))}:{cog_name}",
-            #         value=cog.description,
-            #         inline=False,
-            #     )
-            #     break
-            # content += f"> :{str(counts.pop(-1))}:**{cog_name}**\r"
             content += f"**{str(count)}.{cog_name}**\r"
             count += 1
+            cog_name_list.append(cog.__class__.__name__)
         # opt = me.MyEmbed
         opt = self.dfembed.clone(self.context)
         opt.change(
@@ -105,6 +92,7 @@ class Help(HelpCommand):
                 f"**{self.context.prefix}help**\n--{self.command_attrs['description']}\n"
             ),
             bottums_sub=self.counts[: (count - 1)],
+            bottum_args=cog_name_list,
         )
         opt.description = opt.description + content
         await opt.sendEmbed()
