@@ -75,9 +75,14 @@ class ReactionEvent(Cog, name="ReactionEvent"):
 
     async def ear_ech(self, usr_id: int, ctx: Context, react: Emoji, arg: list):
         if str(react) == "🙆":
-            ctx.prefix = arg[1][0]
-            ctx.author = ctx.message.mentions[0]
-            await ctx.send_help(arg[1][1:])
+            usr = self.bot.get_user(usr_id)
+            target = arg[1]
+            # print(arg)
+            # print(target, ctx.channel, usr.mention)
+            self.bot.config[str(ctx.guild.id)]["help_author"].update(
+                {ctx.channel.id: {target: usr.mention}}
+            )
+            await ctx.send_help(target)
             await ctx.message.delete()
         else:
             pass
@@ -94,7 +99,7 @@ class ReactionEvent(Cog, name="ReactionEvent"):
                 if usr in ctx.message.mentions:
                     await member.add_roles(nozoki_role)
                     await ctx.message.delete()
-                    await embed.default_embed(
+                    embed.default_embed(
                         header_icon=ctx.guild.icon_url,
                         header="公開チャンネルの説明",
                         footer="ウェルカムメッセージ",
@@ -105,7 +110,7 @@ class ReactionEvent(Cog, name="ReactionEvent"):
                         value="各受付内容のチャンネルにお願いします。\r__チャンネルの詳細、試験内容などはピン留めに貼り付けてます__\r\r以上です🍌\rよろしければ☑を押してください",
                     )
                     await embed.sendEmbed(
-                        bottums=["☑"],
+                        bottoms=["☑"],
                         footer_arg="w-2",
                         greeting=f"{usr.mention}",
                         dust=False,
@@ -132,13 +137,14 @@ class ReactionEvent(Cog, name="ReactionEvent"):
                 if str(react) == c:
                     target = args[count]
                     self.bot.config[str(ctx.guild.id)]["help_author"].update(
-                        {ctx.channel.id: {target: ctx.author}}
+                        {ctx.channel.id: {target: usr.mention}}
                     )
                     await ctx.send_help(target)
                     return
                 count += 1
+
         await me.MyEmbed().setTarget(ctx.channel, bot=self.bot).default_embed(
-            mention=ctx.content,
+            mention=ctx.message.content,
             header="🙇ごめんなさいませｎ(殴",
             title="ボタンの読み込みにしっぺいしました",
             description="おそらくボットに再起動がかかって初期化されたと思います",

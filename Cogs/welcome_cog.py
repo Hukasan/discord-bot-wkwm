@@ -18,7 +18,7 @@ class Welcome(Cog):
         )
         if welcome_room:
             opt = me.MyEmbed().setTarget(target=welcome_room, bot=self.bot)
-            await opt.default_embed(
+            opt.default_embed(
                 header="はじめまして、わけわかめBotです",
                 header_icon=True,
                 description="ようこそ猿sのばなな農園へ!🍌🐵\r🙇公開チャンネルに入る前に、おやくそくです",
@@ -29,7 +29,7 @@ class Welcome(Cog):
                 value="・ 無許可宣伝(url転載含む)\r・ 他人を傷付ける言葉\rはやめれください\r気持ち良いサーバづくりにご協力ください\r\r了解されたら、↓🍌を押してください",
             )
             await opt.sendEmbed(
-                greeting=(member.mention), footer_arg="w-1", dust=False, bottums="🍌"
+                greeting=(member.mention), footer_arg="w-1", dust=False, bottoms="🍌"
             )
         else:
             raise extentions.GetDatafromDiscordError(

@@ -48,11 +48,6 @@ class Talk(commands.Cog):
     @commands.group(aliases=["フレーズ", "ふれーず", "ふれ", "ph"], description="フレーズ管理")
     @ac.check_role_is_upper_member()
     async def phrase(self, ctx):
-        """
-        ・親コマンドです、サブコマンドを指定してください。
-        ・指定ロール以上のみ使えます。※設定は、
-        **?help setting**　で確認ください
-        """
         if ctx.invoked_subcommand is None:
             raise Exception("trigger is a required argument that is missing.")
 
@@ -67,24 +62,34 @@ class Talk(commands.Cog):
         await ctx.send(f"さくせす {key} の削除に成功しましたぁ")
 
     @commands.group(
-        aliases=["r", "ｒ", "react", "reaction", "りあくしょん", "リアクション"],
+        aliases=[
+            "r",
+            "ｒ",
+            "react",
+            "reaction",
+            "りあくしょん",
+            "リアクション",
+            "ｃ",
+            "c",
+            "きゃっと",
+            "キャット",
+        ],
         description="リアクション管理",
     )
     async def cat(self, ctx):
         """
-        ※このコマンドは親コマンドです、サブコマンドを指定してください。
+        特定のワードを会話の中に見つけると決められた言葉を喋りだす機能の設定を行うコマンドです、追加されている組み合わせは\r?viewで確認できます
         """
         if ctx.invoked_subcommand is None:
             raise Exception("trigger is a required argument that is missing.")
 
-    @cat.command(aliases=["add", "a", "ついか", "追加"], description=("追加"))
+    @cat.command(aliases=["add", "a", "ついか", "追加", "つ", "あ"], description=("追加"))
     async def cat_add(self, ctx: Context, trigger, reaction):
         """
-        リアクションを追加します。
-            trigger 　: 反応する言葉
-            reaction　: リアクション
+        trigger---反応させる言葉
+        reaction---しゃべる内容
         > ? cat add てすと うんち
-        で、会話内の「てすと」に対して「うんち」といいます
+        を実行すると、会話内の「てすと」に対して「うんち」といいます
         """
         if ctx.invoked_subcommand is None:
             self.db_cat.add(id=trigger, body=reaction)
@@ -117,6 +122,9 @@ class Talk(commands.Cog):
         aliases=["v", "ｖｉｅｗ", "ｖ", "ビュー", "びゅー", "一覧", "いちらん"], description="一覧表示"
     )
     async def view(self, ctx: Context):
+        """
+        登録されている語句が表示されます
+        """
         if ctx.invoked_subcommand is None:
             embed = me.MyEmbed(ctx)
             self.view_titles_toembed(embed, t=self.db_cat, title="YokoYari")
@@ -124,17 +132,16 @@ class Talk(commands.Cog):
             await embed.sendEmbed(mention=ctx.author.mention)
 
     @view.command(
-        aliases=["リアクション", "りあくしょん", "reaction", "react", "r", "cat"],
-        description="リアクション一覧",
+        aliases=["リアクション", "りあくしょん", "ふ", "reaction", "react", "r", "cat", "c"],
+        description="リアクションの表示",
     )
     async def view_cat(self, ctx):
         embed = me.MyEmbed(ctx)
         await self.view_titles_toembed(embed, t=self.db_cat, title="Reaction")
         await embed.sendEmbed(greeting=ctx.author.mention)
 
-    @view.command(aliases=["コマンド", "こまんど", "cmd", "command", "c"], description="フレーズ一覧")
-    async def view_cmd(self, ctx):
-        """"""
+    @view.command(aliases=["フレーズ", "ふれーず", "phrase", "p"], description="フレーズの表示")
+    async def view_phrase(self, ctx):
         embed = me.MyEmbed(ctx).default_embed(header="トリガープレビュー")
         await self.view_titles_toembed(embed, t=self.db_cmd, title="phrase")
         await embed.sendEmbed(greeting=ctx.author.mention)

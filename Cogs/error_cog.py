@@ -42,7 +42,7 @@ class OutputError(Cog):
                 return
             else:
                 dubleq = str(error).split('"')
-                await embed.default_embed(
+                embed.default_embed(
                     footer=self.__error_fotter, title=self.__error_title
                 )
                 if dubleq:
@@ -72,13 +72,15 @@ class OutputError(Cog):
                 time=False,
             )
             if "required argument that is missing." in str(error):
-                string = f"{ctx.prefix}{ctx.command}"
-                if ctx.invoked_subcommand:
-                    string += f" {(ctx.invoked_subcommand).name}"
-                embed.change_description(
+                string = f"{ctx.command}"
+                # if ctx.invoked_subcommand:
+                #     string = (ctx.invoked_subcommand).name
+                # else:
+                #     string = f"{ctx.command}"
+                embed.change(
                     desc=self.__missing_arg_message,
                     arg=f"e-c-h {string}",
-                    bottums=["🙆"],
+                    bottoms=["🙆"],
                 )
             elif "You do not own this bot." in str(error):
                 embed.change_description(self.__permission_message)
@@ -94,5 +96,5 @@ class OutputError(Cog):
 
 
 def setup(bot):
-    # return bot.add_cog(OutputError(bot))
+    return bot.add_cog(OutputError(bot))
     pass

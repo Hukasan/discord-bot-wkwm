@@ -24,7 +24,7 @@ class UserEvent(Cog):
             int(self.bot.config[str(member.guild.id)]["channel_ids"]["leave_notice"])
         )
         opt = me.MyEmbed().setTarget(target=leave_notice_room)
-        await opt.default_embed(
+        opt.default_embed(
             footer="サーバー脱退通知",
             header_icon=member.avatar_url,
             header=f"{member.name}",

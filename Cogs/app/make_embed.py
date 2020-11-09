@@ -41,9 +41,9 @@ class MyEmbed:
         self.time = False
         self.dust = True
         self.footer_arg = str()
-        self.bottums = list()
-        self.bottums_sub = list()
-        self.bottum_args = None
+        self.bottoms = list()
+        self.bottoms_sub = list()
+        self.bottom_args = None
 
     def setTarget(self, target, bot=None):
         self.target = target
@@ -57,9 +57,9 @@ class MyEmbed:
         title=str(),
         desc=str(),
         arg=str(),
-        bottums=list(),
-        bottums_sub=list(),
-        bottum_args=None,
+        bottoms=list(),
+        bottoms_sub=list(),
+        bottom_args=None,
         greeting=str(),
         header=str(),
         header_icon_url=str(),
@@ -73,7 +73,7 @@ class MyEmbed:
             title ([type], optional): [description]. Defaults to str().
             desc ([type], optional): [description]. Defaults to str().
             arg ([type], optional): [description]. Defaults to str().
-            bottums ([type], optional): [description]. Defaults to list().
+            bottoms ([type], optional): [description]. Defaults to list().
             greeting ([type], optional): [description]. Defaults to str().
             header ([type], optional): [description]. Defaults to str().
             header_icon_url ([type], optional): [description]. Defaults to str().
@@ -90,9 +90,9 @@ class MyEmbed:
         self.description = desc
         if arg:
             self.footer_arg += arg
-        self.bottums = dainyu(bottums, self.bottums)
-        self.bottums_sub = dainyu(bottums_sub, self.bottums_sub)
-        self.bottum_args = dainyu(bottum_args, self.bottum_args)
+        self.bottoms = dainyu(bottoms, self.bottoms)
+        self.bottoms_sub = dainyu(bottoms_sub, self.bottoms_sub)
+        self.bottom_args = dainyu(bottom_args, self.bottom_args)
 
     def setCtx(self, ctx):
         self.ctx = dainyu(ctx, self.ctx)
@@ -163,7 +163,7 @@ class MyEmbed:
         greeting=str(),
         footer_arg=str(),
         dust=True,
-        bottum_args=None,
+        bottom_args=None,
     ) -> classmethod:
         """
         embed初期化※必ず必要
@@ -199,7 +199,7 @@ class MyEmbed:
         self.description = (
             (self.__export_complist(obj=description)).pop() if description else None
         )
-        self.bottum_args = bottum_args
+        self.bottom_args = bottom_args
         return self
 
     def add(
@@ -221,9 +221,9 @@ class MyEmbed:
         mention=str(),
         greeting=str(),
         footer_arg=str(),
-        bottums=list(),
-        bottums_sub=list(),
-        bottum_args=None,
+        bottoms=list(),
+        bottoms_sub=list(),
+        bottom_args=None,
         files=list(),
         dust=bool(),
     ) -> Message:
@@ -234,7 +234,7 @@ class MyEmbed:
             obj (object, optional): なんだっけこれ. Defaults to None.
             greeting (str, optional): えむベッドの前につける文. Defaults to str().
             footer_arg (str, optional): embed識別コード. Defaults to str().
-            bottums (list, optional): 追加するリアクションのリスト. Defaults to list().
+            bottoms (list, optional): 追加するリアクションのリスト. Defaults to list().
             files (list, optional): 添付ファイルのリスト. Defaults to list().
             dust (bool), optional): ゴミ箱リアクションをつけるかどうか. Defaults to True.
 
@@ -251,9 +251,9 @@ class MyEmbed:
         self.dust = dainyu(dust, self.dust)
         if bool(self.footer_arg) or bool(footer_arg):
             self.footer_arg = f"@{self.footer_arg}{footer_arg}"
-        self.bottums = dainyu(bottums, self.bottums)
-        self.bottums_sub = dainyu(bottums_sub, self.bottums_sub)
-        self.bottum_args = dainyu(bottum_args, self.bottum_args)
+        self.bottoms = dainyu(bottoms, self.bottoms)
+        self.bottoms_sub = dainyu(bottoms_sub, self.bottoms_sub)
+        self.bottom_args = dainyu(bottom_args, self.bottom_args)
         config = dict()
         config["color"] = self.color
         config["title"] = dainyu(self.title)
@@ -292,20 +292,20 @@ class MyEmbed:
             ms = await obj.send(embed=self.embed, content=self.greeting)
             if self.dust:
                 await ms.add_reaction("🗑")
-            if self.bottums:
-                for b in self.bottums:
+            if self.bottoms:
+                for b in self.bottoms:
                     if b in UNICODE_EMOJI:
                         await ms.add_reaction(b)
-            if self.bottums_sub:
+            if self.bottoms_sub:
                 await ms.add_reaction("🔽")
                 self.bot.config[str(ms.guild.id)]["bottoms_sub"][
                     ms.id
-                ] = self.bottums_sub
-                self.bot.config[str(ms.guild.id)]["bottoms"][ms.id] = self.bottums
-            if self.bottum_args:
+                ] = self.bottoms_sub
+                self.bot.config[str(ms.guild.id)]["bottoms"][ms.id] = self.bottoms
+            if self.bottom_args:
                 self.bot.config[str(ms.guild.id)]["bottom_args"][
                     ms.id
-                ] = self.bottum_args
+                ] = self.bottom_args
         return ms
 
 

@@ -30,9 +30,7 @@ class DispInfo_Settings(Cog):
     @ac.check_role_is_upper_member()
     async def info(self, ctx):
         """
-        ・親コマンドです、サブコマンドを指定してください。
-        ・指定ロール以上のみ使えます。※設定は、
-        **?help setting**　で確認ください
+        サーバ情報をチャンネル名として表示するカテゴリを生成、更新します
         """
         if ctx.invoked_subcommand is None:
             raise Exception("trigger is a required argument that is missing.")

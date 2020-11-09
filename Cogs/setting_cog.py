@@ -24,7 +24,7 @@ class Setting(Cog):
         self.bot = bot
 
     @is_owner()
-    @command(aliases=["re", "lode", "l"], description="プログラムを再読み込み")
+    @command(aliases=["re", "lode", "l", "れ"], description="プログラムを再読み込み")
     async def load(self, ctx: Context):
         for extension in list(self.bot.extensions):
             self.bot.reload_extension(f"{extension}")

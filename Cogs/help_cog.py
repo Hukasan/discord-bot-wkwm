@@ -1,4 +1,4 @@
-from discord import Embed
+from discord import Embed, User
 from discord.ext.commands import (
     Cog,
     Bot,
@@ -8,7 +8,7 @@ from discord.ext.commands import (
     Group,
     Command,
 )
-from Cogs.app import table, make_embed as me
+from Cogs.app import table, make_embed as me, mymethods as mm
 
 
 class Help(HelpCommand):
@@ -17,7 +17,16 @@ class Help(HelpCommand):
         self.no_category_name = "Help"  # カテゴリが見つからなかった場合のカテゴリ
         self.command_attrs["description"] = "このメッセージを表示"
         self.command_attrs["help"] = "このBOTのヘルプコマンドです。"
-        self.command_attrs["aliases"] = ["ヘルプ", "へるぷ", "h", "ｈ", "コマンド", "こまんど", "cmd"]
+        self.command_attrs["aliases"] = [
+            "ヘルプ",
+            "へるぷ",
+            "h",
+            "ｈ",
+            "コマンド",
+            "こまんど",
+            "cmd",
+            "へ",
+        ]
         self.dfembed = me.MyEmbed().default_embed(
             mention_author=True,
             header_icon=True,
@@ -54,7 +63,7 @@ class Help(HelpCommand):
         if 0 >= index:
             pass
         else:
-            indent = (index) * "\t"
+            indent = (index) * "--"
             underber_p = cmd.name.rfind("_")
             if underber_p:
                 name = cmd.name[(underber_p + 1) :]
@@ -89,82 +98,158 @@ class Help(HelpCommand):
             thumbnail=True,
             desc=(
                 f"{self.context.bot.description}\n"
-                f"**{self.context.prefix}help**\n--{self.command_attrs['description']}\n"
+                f"先頭文字は **{str(self.context.bot.command_prefix[0])}** です\n"
+                f"**{self.context.prefix}help**\n--{self.command_attrs['description']}\n{content}"
             ),
-            bottums_sub=self.counts[: (count - 1)],
-            bottum_args=cog_name_list,
+            bottoms_sub=self.counts[: (count - 1)],
+            bottom_args=cog_name_list,
         )
-        opt.description = opt.description + content
         await opt.sendEmbed()
 
     async def send_cog_help(self, cog: Cog):
-        embed = me.MyEmbed(self.context)
+        # embed = me.MyEmbed
+        embed = self.dfembed.clone(ctx=self.context)
         temp = str()
-        embed.default_embed(
-            title=f"{cog.qualified_name}",
-            description=f"{cog.description}",
-            time=False,
-        )
+        mention = str()
+        command_name_list = list()
+        count = 1
         for cmd in cog.walk_commands():
             if (temp != cmd.name) & (not (cmd.root_parent)):
                 temp = cmd.name
                 embed.add(
-                    name=f"> ${cmd.name}",
+                    name=f"> {count} ${cmd.name}",
                     value=f"{cmd.description}\r{await self.create_category_tree(cmd=cmd)}",
                 )
-        await embed.sendEmbed()
+                command_name_list.append(temp)
+                count += 1
+        embed.change(
+            header="ℹカテゴリ説明",
+            title=f"{cog.qualified_name}",
+            desc=f"{cog.description}",
+            bottoms_sub=self.counts[: len(command_name_list)],
+            bottom_args=command_name_list,
+        )
+        botid = (await self.context.bot.application_info()).id
+        if self.context.author.id == botid:
+            if self.context.bot.config[str(self.context.guild.id)]["help_author"].get(
+                self.context.channel.id
+            ):
+                mention = (
+                    self.context.bot.config[str(self.context.guild.id)]["help_author"]
+                    .get(self.context.channel.id)
+                    .get(cog.__class__.__name__)
+                )
+        await embed.sendEmbed(mention=mention)
 
-    async def send_group_help(self, group):
-        embed = me.MyEmbed(self.context)
-        await embed.default_embed(
-            title=f"{self.context.prefix}{group.qualified_name}",
-            description=group.description,
-            footer="#ヘルプ",
-            time=False,
+    async def send_group_help(self, group: Group):
+        embed = me.MyEmbed
+        embed = self.dfembed.clone(ctx=self.context)
+        mention = str()
+        # value = "`" + "`, `".join(group.aliases) + "`"
+        tab = "|"
+        value = "以下の言葉でも呼び出し可能です"
+        count = 0
+        for a, lastone in mm.lastone(group.aliases):
+            if lastone:
+                value += f"{tab}{a}```"
+            elif count % 4 == 0:
+                if count == 0:
+                    value += f"```{a}"
+                    count += 1
+                else:
+                    value += f"{tab}{a}\r"
+            elif count % 4 == 1:
+                value += a
+            else:
+                value += tab + a
+            count += 1
+        if group.help:
+            embed.add(name="詳細", value="```" + group.help + "```", inline=False)
+        content = await self.create_category_tree(group)
+        print(content)
+        embed.add(
+            name="> subcommands",
+            value=content,
+            inline=True,
         )
         if group.aliases:
             embed.add(
-                name="__別の呼び出し方__",
-                value="`" + "`, `".join(group.aliases) + "`",
-                inline=False,
+                name="> othercall",
+                value=value,
+                inline=True,
             )
-        if group.help:
-            embed.add(name="__詳細__", value=group.help, inline=False)
-        embed.add(
-            name="__サブコマンド__",
-            value=await self.create_category_tree(group),
-            inline=False,
+        prefix = (
+            self.context.prefix
+            if self.context.prefix
+            else self.context.bot.command_prefix[0]
         )
-        await embed.sendEmbed(greeting=f"{self.context.author.mention}")
+        embed.change(
+            header="ℹコマンド(親)ヘルプ",
+            title=f"{prefix} {group.name} コマンド",
+            desc="__親cmdです、サブcmdが必要です__",
+        )
+        botid = (await self.context.bot.application_info()).id
+        if self.context.author.id == botid:
+            if self.context.bot.config[str(self.context.guild.id)]["help_author"].get(
+                self.context.channel.id
+            ):
+                mention = (
+                    self.context.bot.config[str(self.context.guild.id)]["help_author"]
+                    .get(self.context.channel.id)
+                    .get(group.name)
+                )
+        await embed.sendEmbed(mention=mention)
 
-    async def send_command_help(self, command):
+    async def send_command_help(self, command: Command):
         params = "} {".join(command.clean_params.keys())
-        params = "{" + params + "}"
-        embed = me.MyEmbed(self.context)
+        params = "{ " + params + " }"
+        embed = me.MyEmbed
+        embed = self.dfembed.clone(ctx=self.context)
+        mention = str()
         desc = str()
-        if params:
-            desc = "{}内は要素指定です。"
-        await embed.default_embed(
-            title="コマンドヘルプ",
-            description="**" + command.name + "**",
-            time=False,
-            footer=f"[{self.context.prefix}help send_command_help] {command.qualified_name}",
+        prefix = (
+            self.context.prefix
+            if self.context.prefix
+            else self.context.bot.command_prefix[0]
         )
+        embed.change(
+            header="コマンドヘルプ",
+            title=f"**{prefix}{command.name}**",
+        )
+        if params:
+            desc = "{}の部分に設定したい語句を入れてください"
         embed.add(
-            name="__利用方法__",
+            name="・ 利用方法",
             value=(
                 f"**{self.context.prefix}{command.qualified_name} {params}**\r" + desc
             ),
         )
         if command.help:
-            embed.add(name="__詳細__", value=command.help, inline=False)
+            embed.add(name="・詳細", value=command.help, inline=False)
         if command.aliases:
             embed.add(
-                name="__別の呼び出し方__",
+                name="> 別の呼び出し方",
                 value="`" + "`, `".join(command.aliases) + "`",
                 inline=False,
             )
-        await embed.sendEmbed(greeting=f"{self.context.author.mention}")
+        botid = (await self.context.bot.application_info()).id
+        print(self.context.bot.config[str(self.context.guild.id)]["help_author"])
+        if self.context.author.id == botid:
+            if self.context.bot.config[str(self.context.guild.id)]["help_author"].get(
+                self.context.channel.id
+            ):
+                print("hi")
+                mention = (
+                    self.context.bot.config[str(self.context.guild.id)]["help_author"]
+                    .get(self.context.channel.id)
+                    .get(f"{command.full_parent_name} {command.name}")
+                )
+                print(
+                    self.context.bot.config[str(self.context.guild.id)][
+                        "help_author"
+                    ].get(self.context.channel.id)
+                )
+        await embed.sendEmbed(mention=mention)
 
     async def send_error_message(self, error):
         embed = me.MyEmbed(self.context)
