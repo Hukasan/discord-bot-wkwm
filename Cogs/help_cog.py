@@ -121,19 +121,23 @@ class Help(HelpCommand):
         mention = str()
         command_name_list = list()
         count = 1
-        for cmd in cog.walk_commands():
-            if (temp != cmd.name) & (not (cmd.root_parent)):
-                temp = cmd.name
-                embed.add(
-                    name=f"> {count} ${cmd.name}",
-                    value=f"{cmd.description}",
-                )
-                command_name_list.append(temp)
-                count += 1
+        empty_message = str()
+        if cog.walk_commands:
+            for cmd in cog.walk_commands():
+                if (temp != cmd.name) & (not (cmd.root_parent)):
+                    temp = cmd.name
+                    embed.add(
+                        name=f"> {count} ${cmd.name}",
+                        value=f"{cmd.description}",
+                    )
+                    command_name_list.append(temp)
+                    count += 1
+        else:
+            empty_message = "\rコマンドはありません"
         embed.change(
             header="ℹカテゴリ説明",
             title=f"{cog.qualified_name}",
-            description=f"{cog.description}",
+            description=f"{cog.description}{empty_message}",
             bottoms_sub=self.counts[: len(command_name_list)],
             bottom_args=command_name_list,
         )
@@ -240,19 +244,19 @@ class Help(HelpCommand):
             for a, lastone in mm.lastone(command.aliases):
                 if lastone:
                     value += f"{tab}{a}```"
-                elif count % 4 == 0:
+                elif count % 3 == 0:
                     if count == 0:
                         value += f"```{a}"
                         count += 1
                     else:
                         value += f"{tab}{a}\r"
-                elif count % 4 == 1:
+                elif count % 3 == 1:
                     value += a
                 else:
                     value += tab + a
                 count += 1
             embed.add(
-                name="Othercall",
+                name="> Othercall",
                 value=value,
                 inline=True,
             )

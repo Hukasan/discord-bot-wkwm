@@ -29,6 +29,8 @@ async def era_e_ch(bot: Bot, usr_id: int, ctx: Context, react: Emoji, arg: list)
 
 
 class OutputError(Cog):
+    qualified_name = "hide"
+
     def __init__(self, bot):
         self.bot = bot
         self.owner = None

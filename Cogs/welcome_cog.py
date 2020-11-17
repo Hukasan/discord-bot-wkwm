@@ -8,6 +8,7 @@ EMBED2_IDENTIFIER = "W_THANKS"
 
 class Welcome(Cog):
     qualified_name = "ウェルカムメッセージ"
+    description = "サーバにきた人に元気なございさつをします"
 
     def __init__(self, bot):
         self.bot = bot

@@ -17,7 +17,7 @@ class Setting(Cog):
     開発者コマンド
     """
 
-    qualified_name = "開発者設定"
+    qualified_name = "hide"
 
     def __init__(self, bot: Bot):
         self.bot = bot

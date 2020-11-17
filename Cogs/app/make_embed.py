@@ -238,7 +238,6 @@ class MyEmbed:
         elif self.ctx:
             obj = self.ctx.channel
         if obj:
-            print(embed.timestamp)
             ms = await obj.send(embed=embed, content=self.greeting)
             if self.bottoms:
                 for b in self.bottoms:
