@@ -1,4 +1,4 @@
-import discord
+from discord import Emoji
 from discord.ext.commands import (
     Cog,
     Bot,
@@ -10,6 +10,22 @@ from discord.ext.commands import (
     Command,
 )
 from Cogs.app import table, make_embed as me
+
+EMBED_IDENTIFIER = "ERROR_CMD_HELP"
+E_CH_REACTION_ACCEPT = "🙆"
+
+
+async def era_e_ch(bot: Bot, usr_id: int, ctx: Context, react: Emoji, arg: list):
+    if str(react) == E_CH_REACTION_ACCEPT:
+        usr = bot.get_user(usr_id)
+        target = arg[1]
+        bot.config[str(ctx.guild.id)]["help_author"].update(
+            {ctx.channel.id: {target: usr.mention}}
+        )
+        await ctx.send_help(target)
+        await ctx.message.delete()
+    else:
+        pass
 
 
 class OutputError(Cog):
@@ -47,11 +63,9 @@ class OutputError(Cog):
                 )
                 if dubleq:
                     if dubleq[0] == "Command " and dubleq[2] == " is not found":
-                        embed.add(
-                            name="無効なコマンド",
-                            value=f'コマンドに " {dubleq[1]} " はありませんでした。\r？help コマンドで確認することができます',
-                            greeting=ctx.author.mention,
-                        )
+                        # await ctx.message.add_reaction("‍🙅‍")
+                        await ctx.message.add_reaction("❔")
+                        return
                     else:
                         embed.add(
                             name=self.__undefine_error_title,
@@ -78,9 +92,9 @@ class OutputError(Cog):
                 # else:
                 #     string = f"{ctx.command}"
                 embed.change(
-                    desc=self.__missing_arg_message,
-                    arg=f"e-c-h {string}",
-                    bottoms=["🙆"],
+                    description=self.__missing_arg_message,
+                    footer_arg=f"{EMBED_IDENTIFIER} {string}",
+                    bottoms=[E_CH_REACTION_ACCEPT],
                 )
             elif "You do not own this bot." in str(error):
                 embed.change_description(self.__permission_message)
@@ -96,5 +110,10 @@ class OutputError(Cog):
 
 
 def setup(bot):
+    bot.config["funcs"].update(
+        {
+            EMBED_IDENTIFIER: era_e_ch,
+        }
+    )
     return bot.add_cog(OutputError(bot))
     pass

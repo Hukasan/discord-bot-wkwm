@@ -86,10 +86,10 @@ class Talk(commands.Cog):
     @cat.command(aliases=["add", "a", "ついか", "追加", "つ", "あ"], description=("追加"))
     async def cat_add(self, ctx: Context, trigger, reaction):
         """
-        trigger---反応させる言葉
-        reaction---しゃべる内容
-        > ? cat add てすと うんち
-        を実行すると、会話内の「てすと」に対して「うんち」といいます
+        trigger --- 反応させる言葉
+        reaction --- しゃべる内容
+        「?cat add てすと うんち」
+        とすると、会話内の「てすと」に\r「うんち」と喋るよう設定されます
         """
         if ctx.invoked_subcommand is None:
             self.db_cat.add(id=trigger, body=reaction)

@@ -23,12 +23,12 @@ class UserEvent(Cog):
         leave_notice_room = self.bot.get_channel(
             int(self.bot.config[str(member.guild.id)]["channel_ids"]["leave_notice"])
         )
-        opt = me.MyEmbed().setTarget(target=leave_notice_room)
+        opt = me.MyEmbed().setTarget(target=leave_notice_room, bot=self.bot)
         opt.default_embed(
             footer="サーバー脱退通知",
-            header_icon=member.avatar_url,
+            header_icon=str(member.avatar_url),
             header=f"{member.name}",
-            description=["が脱退しました。", f"UserID: {member.mention}"],
+            description=f"が脱退しました。\rUserID: {member.mention}",
             dust=False,
         )
         await opt.sendEmbed()
@@ -54,7 +54,7 @@ class UserEvent(Cog):
                         opt.default_embed(
                             footer="ロール変更通知",
                             header=f"{entry.user.name}により",
-                            header_icon=entry.user.avatar_url,
+                            header_icon=str(entry.user.avatar_url),
                         )
                         nozoki = room.guild.get_role(
                             int(
@@ -67,13 +67,13 @@ class UserEvent(Cog):
                             if dif > 0:
                                 conf = list(br - ar)
                                 opt.change(
-                                    desc=f"「**{conf[0].name}**」のロールから除かれました",
+                                    description=f"「**{conf[0].name}**」のロールから除かれました",
                                     color=conf[0].color.value,
                                 )
                             elif dif < 0:
                                 conf = list(ar - br)
                                 opt.change(
-                                    desc=f"「**{conf[0].name}**」のロールに加わりました",
+                                    description=f"「**{conf[0].name}**」のロールに加わりました",
                                     color=conf[0].color.value,
                                 )
                             await opt.sendEmbed(greeting=f"{after.mention}くん、ロール変更通知です")

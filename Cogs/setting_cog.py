@@ -1,4 +1,3 @@
-from discord.ext.tasks import loop
 from discord import Guild
 from discord.ext.commands import (
     Cog,

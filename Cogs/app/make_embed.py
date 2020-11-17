@@ -1,6 +1,5 @@
-from discord import Embed, TextChannel, Message
-from discord.ext.commands import Cog, Bot, Context
-from os import linesep
+from discord import Embed, Message
+
 from datetime import datetime
 from Cogs.app.mymethods import dainyu
 from copy import copy
@@ -23,27 +22,27 @@ class MyEmbed:
         self.target = ctx.channel if ctx else None
         self.obj = None
         self.mention = str()
-        self.mention_author = bool()
+        self.mention_author = False
         self.title = str()  # タイトル
         self.color = 0x00FF00  # 色
         self.thumbnail = False  # 大きめのアイコン画像を表示させるかどうか
         self.footer = str()  # フッター文
-        self.icon_url = str()  # フッター画像url
+        self.footer_icon = str()  # フッター画像url
         self.header = None  # ヘッダー文
-        self.header_icon_url = str()  # ヘッダー画像url
+        self.header_icon = str()  # ヘッダー画像url
         self.fields = list()
-        self.embed = None
         self.description = str()
         self.descriptions = list()
         self.line_number = int(0)
         self.greeting = str()
-        self.files = list()
         self.time = False
         self.dust = True
         self.footer_arg = str()
         self.bottoms = list()
         self.bottoms_sub = list()
         self.bottom_args = None
+        self.image_url = dict()
+        self.video = dict()
 
     def setTarget(self, target, bot=None):
         self.target = target
@@ -53,46 +52,47 @@ class MyEmbed:
 
     def change(
         self,
+        time=True,
+        mention=str(),
+        mention_author=None,
+        title=None,
         color=None,
-        title=str(),
-        desc=str(),
-        arg=str(),
+        timestamp=str(),
+        url=str(),
+        description=None,
+        thumbnail=False,
+        header=str(),
+        header_icon=None,
+        footer=str(),
+        footer_icon=str(),
+        greeting=str(),
+        footer_arg=str(),
+        dust=None,
         bottoms=list(),
         bottoms_sub=list(),
         bottom_args=None,
-        greeting=str(),
-        header=str(),
-        header_icon_url=str(),
-        thumbnail=bool(),
-        footer=str(),
+        image_url=None,
+        video=None,
     ):
         """
         設定書き換え
-
-        Args:
-            title ([type], optional): [description]. Defaults to str().
-            desc ([type], optional): [description]. Defaults to str().
-            arg ([type], optional): [description]. Defaults to str().
-            bottoms ([type], optional): [description]. Defaults to list().
-            greeting ([type], optional): [description]. Defaults to str().
-            header ([type], optional): [description]. Defaults to str().
-            header_icon_url ([type], optional): [description]. Defaults to str().
-            thumbnail ([type], optional): [description]. Defaults to bool().
-            footer ([type], optional): [description]. Defaults to str().
         """
         self.color = dainyu(color, self.color)
         self.thumbnail = dainyu(thumbnail, self.thumbnail)
         self.header = dainyu(header, self.header)
-        self.header_icon_url = dainyu(header_icon_url, self.header_icon_url)
+        self.header_icon = dainyu(header_icon, self.header_icon)
         self.footer = dainyu(footer, self.footer)
         self.title = dainyu(title, self.title)
         self.greeting = dainyu(greeting, self.greeting)
-        self.description = desc
-        if arg:
-            self.footer_arg += arg
+        self.description = dainyu(description, self.description)
+        self.footer_arg = dainyu(footer_arg, self.footer_arg)
         self.bottoms = dainyu(bottoms, self.bottoms)
         self.bottoms_sub = dainyu(bottoms_sub, self.bottoms_sub)
         self.bottom_args = dainyu(bottom_args, self.bottom_args)
+        self.time = dainyu(time, self.time)
+        self.mention_author = dainyu(mention_author, self.mention_author)
+        self.image_url = dainyu(image_url, self.image_url)
+        self.video = dainyu(video, self.video)
 
     def setCtx(self, ctx):
         self.ctx = dainyu(ctx, self.ctx)
@@ -108,7 +108,7 @@ class MyEmbed:
         if isinstance(obj, str):
             if len(obj) > point:
                 ex = f"{obj[:point+1]}\n"
-                ex = ex + (self.cut(obj[point + 1 :]))
+                ex = ex + (self.__cut(obj[point + 1 :]))
             else:
                 ex = f"{obj}\n"
         else:
@@ -149,57 +149,49 @@ class MyEmbed:
     def default_embed(
         self,
         bot=None,
+        time=True,
         mention=str(),
-        mention_author=bool(),
+        mention_author=None,
         title=None,
         color=None,
+        timestamp=str(),
+        url=str(),
         description=None,
         thumbnail=False,
         header=str(),
         header_icon=None,
         footer=str(),
-        footer_url=str(),
-        time=True,
+        footer_icon=str(),
         greeting=str(),
         footer_arg=str(),
-        dust=True,
+        dust=None,
         bottom_args=None,
+        image_url=None,
+        video=None,
     ) -> classmethod:
         """
-        embed初期化※必ず必要
-
-        Args:
-            title (str, optional): タイトル. Defaults to None.
-            color (0x, optional): 色. Defaults to 0x00FF00.
-            description (str, optional): 説明. Defaults to None.
-            thumbnail (bool), optional): 大きめのアイコン画像を表示させるかどうか. Defaults to False.
-            header (str, optional): ヘッダー文. Defaults to str().
-            header_icon (str, optional): ヘッダーアイコンurl. Defaults to None.
-            footer (str, optional): フッター文. Defaults to str().
-            footer_url (str, optional): フッター画像url. Defaults to str().
-            time (bool, optional): 時間を表示させるかどうか. Defaults to True.
-            greeting (str, optional): embedの前につける文. Defaults to str().
-            footer_arg (str, optional): embed識別コード. Defaults to str().
-
+        embed初期化
         Returns:
-            [type]: [description]
+            このクラス
         """
         self.mention = mention
         self.mention_author = mention_author
+        self.time = time
         self.title = title
         self.color = dainyu(color, self.color)
-        self.time = time
         self.footer = footer
-        self.icon_url = footer_url if footer else str()
+        self.footer_icon = footer_icon
         self.header = header
-        self.header_icon_url = header_icon if header else str()
+        self.header_icon = header_icon
         self.thumbnai = thumbnail
         self.greeting = greeting
         self.footer_arg = footer_arg
-        self.description = (
-            (self.__export_complist(obj=description)).pop() if description else None
-        )
+        self.description = description
+        self.dust = dust if (dust is not None) else self.dust
         self.bottom_args = bottom_args
+        self.image_url = image_url
+        self.video = video
+        self.timestamp = timestamp
         return self
 
     def add(
@@ -217,81 +209,37 @@ class MyEmbed:
     async def sendEmbed(
         self,
         obj=None,
-        mention_author=bool(),
+        mention_author=None,
         mention=str(),
         greeting=str(),
-        footer_arg=str(),
         bottoms=list(),
         bottoms_sub=list(),
         bottom_args=None,
-        files=list(),
-        dust=bool(),
+        dust=None,
     ) -> Message:
         """
         embed送信
-
-        Args:
-            obj (object, optional): なんだっけこれ. Defaults to None.
-            greeting (str, optional): えむベッドの前につける文. Defaults to str().
-            footer_arg (str, optional): embed識別コード. Defaults to str().
-            bottoms (list, optional): 追加するリアクションのリスト. Defaults to list().
-            files (list, optional): 添付ファイルのリスト. Defaults to list().
-            dust (bool), optional): ゴミ箱リアクションをつけるかどうか. Defaults to True.
-
-        Returns:
-            Message: 送信したメッセージ
         """
         self.mention = dainyu(mention, self.mention)
         self.mention_author = dainyu(mention_author, self.mention_author)
         self.greeting = dainyu(greeting, self.greeting)
+        self.bottoms = dainyu(bottoms, self.bottoms)
+        self.bottoms_sub = dainyu(bottoms_sub, self.bottoms_sub)
+        self.bottom_args = dainyu(bottom_args, self.bottom_args)
         if self.mention:
             self.greeting = self.mention + self.greeting
         elif bool(self.mention_author) & bool(self.ctx):
             self.greeting = self.ctx.author.mention + self.greeting
-        self.dust = dainyu(dust, self.dust)
-        if bool(self.footer_arg) or bool(footer_arg):
-            self.footer_arg = f"@{self.footer_arg}{footer_arg}"
-        self.bottoms = dainyu(bottoms, self.bottoms)
-        self.bottoms_sub = dainyu(bottoms_sub, self.bottoms_sub)
-        self.bottom_args = dainyu(bottom_args, self.bottom_args)
-        config = dict()
-        config["color"] = self.color
-        config["title"] = dainyu(self.title)
-        config["description"] = dainyu(self.description)
-        config["files"] = dainyu(self.files)
-        config["fields"] = self.fields
-
-        if (bool(self.footer)) or (bool(self.footer_arg)):
-            time_str = str()
-            if self.time:
-                time_str = (datetime.now()).strftime("%m/%d %H:%M:%S")
-            config["footer"] = {"text": f"{time_str}#{self.footer}{self.footer_arg}"}
-            config["footer"]["icon_url"] = dainyu(self.icon_url)
-
-        bot_info = await self.bot.application_info()
-
-        if ((bool(self.bot)) & self.thumbnail) & (bool(bot_info)):
-            config["thumbnail"] = {"url": str(bot_info.icon_url)}
-
-        if self.header:
-            config["author"] = {"name": self.header}
-            if isinstance(self.header_icon_url, str):
-                config["author"]["icon_url"] = str(self.header_icon_url)
-            elif bot_info:
-                config["author"]["icon_url"] = str(bot_info.icon_url)
-
-        self.embed = Embed()
-        self.embed = Embed.from_dict(config)
-
+        self.dust = dust if dust is not None else self.dust
+        embed = await self.export_embed()
         obj = obj[0] if isinstance(self.obj, list) else self.obj
         if (not (self.obj)) & bool(self.target):
             obj = self.target
         elif self.ctx:
             obj = self.ctx.channel
         if obj:
-            ms = await obj.send(embed=self.embed, content=self.greeting)
-            if self.dust:
-                await ms.add_reaction("🗑")
+            print(embed.timestamp)
+            ms = await obj.send(embed=embed, content=self.greeting)
             if self.bottoms:
                 for b in self.bottoms:
                     if b in UNICODE_EMOJI:
@@ -306,7 +254,91 @@ class MyEmbed:
                 self.bot.config[str(ms.guild.id)]["bottom_args"][
                     ms.id
                 ] = self.bottom_args
+            if self.dust:
+                await ms.add_reaction("🗑")
         return ms
+
+    async def export_embed(self) -> Embed:
+        """
+        embed生成
+
+        Returns:
+            Embed: 生成したembed
+        """
+
+        config = dict()
+        config["color"] = self.color
+        config["title"] = dainyu(self.title)
+        config["description"] = dainyu(self.description)
+        config["fields"] = self.fields
+        config["video"] = self.video
+
+        bot_info = await self.bot.application_info()
+
+        if self.time:
+            if isinstance(self.time, bool):
+                config["timestamp"] = (
+                    ((self.ctx.message.created_at).isoformat())
+                    if self.ctx
+                    else ((datetime.utcnow()).isoformat())
+                )
+            else:
+                config["timestamp"] = self.time.isoformat()
+        if (bool(self.footer)) or (bool(self.footer_arg)):
+            config["footer"] = {
+                "text": f"{self.footer}{'@' if self.footer_arg else ''}{self.footer_arg}"
+            }
+            if isinstance(self.footer_icon, str):
+                config["footer"]["icon_url"] = str(self.footer_icon)
+            elif (
+                bool(bot_info)
+                & (isinstance(self.footer_icon, bool))
+                & bool(self.footer_icon)
+            ):
+                config["footer"]["icon_url"] = str(bot_info.icon_url)
+
+        if ((bool(self.bot)) & self.thumbnail) & (bool(bot_info)):
+            config["thumbnail"] = {"url": str(bot_info.icon_url)}
+
+        if self.header:
+            config["author"] = {"name": self.header}
+            if isinstance(self.header_icon, str):
+                config["author"]["icon_url"] = str(self.header_icon)
+            elif (
+                bool(bot_info)
+                & (isinstance(self.header_icon, bool))
+                & bool(self.header_icon)
+            ):
+                config["author"]["icon_url"] = str(bot_info.icon_url)
+        if self.image_url:
+            config["image"] = {"url": str(self.image_url)}
+
+        return Embed.from_dict(config)
+
+    def import_embed(self, embed: Embed):
+        gotten_dict = embed.to_dict()
+        (footer, footer_icon) = (
+            (gotten_dict["footer"].get("text"), gotten_dict["footer"].get("icon_url"))
+            if gotten_dict.get("footer")
+            else (
+                None,
+                None,
+            )
+        )
+        self.change(
+            title=gotten_dict.get("title"),
+            description=gotten_dict.get("description"),
+            url=gotten_dict.get("url"),
+            time=gotten_dict.get("timestamp"),
+            footer=footer,
+            footer_icon=footer_icon,
+            color=gotten_dict.get("color"),
+            thumbnail=gotten_dict.get("thumbnail"),
+            image_url=gotten_dict.get("image").get("url")
+            if gotten_dict.get("image")
+            else None,
+            video=gotten_dict.get("video"),
+        )
 
 
 def scan_footer(embed: Embed) -> list:
@@ -317,6 +349,7 @@ def scan_footer(embed: Embed) -> list:
         if footer:
             text = footer.get("text")
             if "@" in text:
-                arg = text.split("@")[1]
-                return arg.split(" ", 1)
+                arg = text.split("@")[-1]
+                # print(arg.split(" "))
+                return arg.split(" ")
     return list()
