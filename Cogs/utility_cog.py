@@ -63,8 +63,10 @@ class Utilitys(Cog):
         opt.default_embed(mention_author=True, footer="🔎ロール検索")
         i = 0
         context = str()
+        flag_find = True
         for (role, lastone) in mm.lastone(await g.fetch_roles()):
             if role.name == name:
+                flag_find = False
                 for m in role.members:
                     i += 1
                     context += f"{i} : {m.mention}\r"
@@ -72,7 +74,7 @@ class Utilitys(Cog):
                     opt.add(name=f"🧻 {name} の猿ども", value=context, inline=False)
                 else:
                     opt.add(name=f"🧻 {name} の猿ども", value="は、居ませんでした😢", inline=False)
-            elif lastone:
+            elif lastone & flag_find:
                 opt.add(name=f"🧻 {name} なんてなかった", value="そんなロールはござらん", inline=False)
         await opt.sendEmbed()
 
