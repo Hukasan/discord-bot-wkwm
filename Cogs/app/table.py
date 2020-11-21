@@ -48,16 +48,6 @@ class DBIO:
         session.close()
 
 
-class Roletb(DBIO):
-    def __init__(self):
-        self.table = self.Role
-
-    class Role(Model):
-        __tablename__ = "roles"
-        id = Column(Integer(), nullable=False, primary_key=True)
-        seed = Column(String(), nullable=True)
-
-
 class Cmdtb(DBIO):
     def __init__(self):
         self.table = self.Cmd
@@ -85,6 +75,16 @@ class Cmdtb(DBIO):
             t.body = body
         session.commit()
         session.close()
+
+
+class Clantb(DBIO):
+    def __init__(self):
+        self.table = self.Clan
+
+    class Clan(Model):
+        __tablename__ = "clans"
+        id = Column(Integer, primary_key=True)
+        body = Column(String(), nullable=False)
 
 
 class Cattb(DBIO):
@@ -117,50 +117,6 @@ class Cattb(DBIO):
             t.isreact = isreact
         session.commit()
         session.close()
-
-
-# class MsfRtb(DBIO):
-#     def __init__(self):
-#         self.table = self.MsforReact
-
-#     class MsforReact(Model):
-#         __tablename__ = "msforreact"
-#         id = Column(String(), nullable=False, primary_key=True)
-#         cid = Column(String(), nullable=False)
-#         seed = Column(String(), nullable=True)
-
-#     def add(self, id: str, cid: str, seed: str):
-#         t = self.table()
-#         if not (self.tbdelete(id=id)):
-#             t.id = id
-#             t.cid = cid
-#             t.seed = seed
-#             session.add(t)
-#         session.commit()
-#         session.close()
-
-
-# class EmbedPages(DBIO):
-#     def __init__(self):
-#         self.table = self.Page
-
-#     class Page(Model):
-#         __tablename__ = "embedpages"
-#         id = Column(String(), nullable=False, primary_key=True)
-#         number = Column(Integer, nullable=False)
-#         content = Column(String(), nullable=False)
-#         isnow = Column(Boolean(), nullable=False)
-
-#     def add(self, id: str, number: int, content: str, isnow: bool):
-#         t = self.table()
-#         if not (self.tbdelete(id=id)):
-#             t.id = id
-#             t.number = number
-#             t.content = content
-#             t.isnow = isnow
-#             session.add(t)
-#         session.commit()
-#         session.close()
 
 
 if __name__ == "__main__":

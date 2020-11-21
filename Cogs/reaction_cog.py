@@ -9,7 +9,7 @@ from discord import (
 )
 from discord.ext.commands import Cog, Bot, Context
 from discord.abc import GuildChannel, PrivateChannel
-from Cogs.app import table, extentions, make_embed as me
+from Cogs.app import table, extentions, make_embed as me, role_checker as ac
 
 # from datetime import datetime
 # from pytz import utc
@@ -32,8 +32,20 @@ class ReactionEvent(Cog, name="ReactionEvent"):
     async def do_era(self, usr_id: int, ms: Message, react: Emoji, arg: list) -> bool:
         usr = self.bot.get_user(usr_id)
         func = None
-        if (str(react) == "🗑") & (usr in ms.mentions):
-            await ms.delete()
+        if str(react) == "🗑":
+            if (usr in ms.mentions) or (
+                (
+                    await ac.isroleupper(
+                        role_id=self.bot.config[str(ms.guild.id)]["role_ids"].get(
+                            "ministar"
+                        ),
+                        user=usr,
+                        ignore_same=True,
+                        guild=ms.guild,
+                    )
+                )
+            ):
+                await ms.delete()
             return
         elif str(react) == "🔽":
             buttoms_sub = self.bot.config[str(ms.guild.id)]["bottoms_sub"].get(ms.id)

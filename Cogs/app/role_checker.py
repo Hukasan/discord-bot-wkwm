@@ -5,8 +5,8 @@ from discord import (
     RawReactionActionEvent,
     TextChannel,
     Message,
-    Emoji,
     Guild,
+    Emoji,
     Role,
     User,
 )
@@ -14,13 +14,13 @@ from discord.ext.commands import Cog, Bot, Context, check
 from discord.abc import GuildChannel, PrivateChannel
 
 
-async def isroleupper(role_id: int, user: User, ignore_same=True) -> bool:
+async def isroleupper(
+    role_id: int, user: Member, guild: Guild, ignore_same=True
+) -> bool:
     """
     check
     ユーザがそのロールを超えるロールを持っているかどうかを判断します
     """
-    guild = Guild
-    guild = user.guild
     member = guild.get_member(user_id=int(user.id))
     comp_role = guild.get_role(int(role_id))
     guild_role_list = guild.roles
@@ -42,6 +42,7 @@ def check_role_is_upper_member():
         return await isroleupper(
             role_id=ctx.bot.config[str(ctx.guild.id)]["role_ids"]["ministar"],
             user=ctx.author,
+            guild=ctx.guild,
         )
 
     return check(predicate)

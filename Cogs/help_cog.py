@@ -298,10 +298,11 @@ async def era_h_table(bot: Bot, usr_id: int, ctx: Context, react: Emoji, arg: li
     args = bot.config[str(ctx.guild.id)]["bottom_args"].get(ctx.message.id)
     target = str()
     count = 0
-    if (usr in ctx.message.mentions) & bool(bottoms) & bool(args):
+    if bool(bottoms) & bool(args):
         for c in bottoms:
             if str(react) == c:
                 target = args[count]
+                print(usr)
                 bot.config[str(ctx.guild.id)]["help_author"].update(
                     {ctx.channel.id: {target: usr.mention}}
                 )
@@ -310,7 +311,7 @@ async def era_h_table(bot: Bot, usr_id: int, ctx: Context, react: Emoji, arg: li
             count += 1
 
     await me.MyEmbed().setTarget(ctx.channel, bot=bot).default_embed(
-        mention=ctx.message.content,
+        mention=usr.mention,
         header="🙏ごめんなさい",
         title="ボタンの読み込みにしっぺいしました",
         description="ボットに再起動がかかり初期化された、もしくは内部エラーです",
