@@ -60,8 +60,9 @@ class DispInfo_Settings(Cog):
     async def loop_start(self):
         await self.loop_update.start()
 
-    @loop(seconds=10.0)
+    @loop(hours=1.0)
     async def loop_update(self):
+        # print("update")
         await self.update()
 
     async def update(self):
@@ -143,4 +144,5 @@ class DispInfo_Settings(Cog):
 
 
 def setup(bot):
+    bot.config["loop_functions"].append(DispInfo_Settings(bot).loop_start)
     return bot.add_cog(DispInfo_Settings(bot))
