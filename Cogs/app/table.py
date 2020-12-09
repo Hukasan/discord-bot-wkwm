@@ -151,12 +151,13 @@ if __name__ == "__main__":
         proc = subprocess.run(
             s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
+        print(str(proc))
     if table_names:
         Model.metadata.drop_all(engine)
         print("初期化しました、ファイルを読み込みます..")
         Model.metadata.create_all(engine)
         print("生成完了")
-        p = "/home/hukasan/discord-bot-id/db_new"
+        p = "db_new"
         for f in listdir(p):
             if path.isfile(path.join(p, f)):
                 for table_name in table_names:
