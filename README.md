@@ -2,7 +2,7 @@
 
 サーバ密着型ネカマ育成 Bot
 
-- discord.py 1.3.5
+- discord.py 1.5.1
 - python3.8.0
 - Heroku による稼働(postgres アドオン使用)
 - 完成予定：2021 年 3 月
