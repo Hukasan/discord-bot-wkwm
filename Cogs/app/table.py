@@ -144,20 +144,20 @@ class Cattb(DBIO):
 if __name__ == "__main__":
     type_dict = {"VARCHAR": "str", "BOOLEAN": "str", "INTEGER": "int"}
     table_names = Model.metadata.tables.keys()
-    p = "/home/hukasan/discord-bot-id/db_backup"
+    # p = "/home/hukasan/discord-bot-id/db_backup"
     for table_name in table_names:
         s = f"sqlcsv --db-url {db_uri} select \
-  --sql 'SELECT * FROM {table_name}' -o {p}/{table_name}.csv"
+  --sql 'SELECT * FROM {table_name}'"
         proc = subprocess.run(
             s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
-        print(str(proc))
+        print(proc.stdout)
     if table_names:
         Model.metadata.drop_all(engine)
         print("初期化しました、ファイルを読み込みます..")
         Model.metadata.create_all(engine)
         print("生成完了")
-        p = "/home/hukasan/discord-bot-id/db_new"
+        p = "db_new"
         for f in listdir(p):
             if path.isfile(path.join(p, f)):
                 for table_name in table_names:
