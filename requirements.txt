@@ -6,3 +6,4 @@ dispander==0.4.0
 pytz==2020.1
 csvkit==1.0.5
 SQLAlchemy==1.3.18
+psycopg2-binary==2.8.6
