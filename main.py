@@ -49,17 +49,28 @@ if __name__ == "__main__":
     TOKEN = environ["BOT_ACCESS_TOKEN"]  # 環境変数から取得
     bot.config = {
         "funcs": {},
+        "ready_is_road_once_flag": False,
+        "loop_functions": [],
         "wkwm": home_config,
         "707027737335955476": home_config,
     }
 
     @bot.listen()
     async def on_ready():
+        if bot.config["ready_is_road_once_flag"]:
+            return
+        else:
+            bot.config["ready_is_road_once_flag"] = True
         for g in bot.guilds:
             if g.rules_channel:
                 bot.config[str(g.id)].update(
                     {"rules_channel": f"{g.rules_channel.mention}"}
                 )
+        if bot.config.get("loop_functions"):
+            for func in bot.config.get("loop_functions"):
+                await func()
+
+    bot.add_listener(on_ready)
 
     for extension in extensions:
         bot.load_extension(f"Cogs.{extension}")
