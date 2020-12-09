@@ -157,7 +157,7 @@ if __name__ == "__main__":
         print("初期化しました、ファイルを読み込みます..")
         Model.metadata.create_all(engine)
         print("生成完了")
-        p = "db_new"
+        p = "/home/hukasan/discord-bot-id/db_new"
         for f in listdir(p):
             if path.isfile(path.join(p, f)):
                 for table_name in table_names:
